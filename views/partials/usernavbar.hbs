@@ -1,0 +1,23 @@
+<header class="navbar navbar-expand-md navbar-light d-print-none">
+  <div class="container-xl">
+    <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+        <img src="/images/instagram.png" width="40" height="40" alt="instagram" class="navbar-brand-image">
+      Instagram
+    </h1>
+    <div class="navbar-nav flex-row order-md-last">
+      <div class="nav-item dropdown">
+        <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+          <div class="d-none d-xl-block ps-2">
+            <div>{{user.name.full}}</div>
+            <div class="mt-1 small text-muted">PC Gamer</div>
+          </div>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+          <a href="/users/profile" class="dropdown-item">Profile</a>
+          <div class="dropdown-divider"></div>
+          <a href="/logout" class="dropdown-item">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,30 @@
+{{#each postList}}
+<div class="modal-header">
+    <h4 class="modal-title">{{capitalize title}}</h4>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div class="col-sm-6 col-lg-12">
+        <div class="card card-sm">
+            <a href="#" class="d-block"><img src="{{path}}" class="card-img-top"></a>
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <span class="avatar me-3 rounded" style="background-image: url({{postBy.path}})"></span>
+                    <div>
+                        <div>{{postBy.name.full}}</div>
+                        <div class="text-muted">{{format createdOn}}</div>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <div class="text-muted">{{description}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{/each}}
+<div class="modal-footer">
+    <a href="#" class="btn btn-primary" data-bs-dismiss="modal">
+        Close
+    </a>
+</div>

@@ -1,0 +1,168 @@
+<script src="/dist/js/demo-theme.min.js?1674944402"></script>
+
+<div class="page">
+    <!-- Navbar -->
+    <div class="page-wrapper">
+        <!-- Page header -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <h2 class="page-title">
+                            Posts
+                        </h2>
+                    </div>
+                    <!-- Page title actions -->
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="d-flex">
+                            <div class="text-muted mt-1 mx-2 ">Sort</div>
+                            <div class="dropdown">
+                                <button id="sort" class="btn btn-secondary dropdown-toggle btn-sm" type="button"
+                                    id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                                    aria-expanded="false">Date</button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="#">Date</a></li>
+                                    <li><a class="dropdown-item" href="#">Title</a></li>
+                                </ul>
+                            </div>
+                            <div class="text-muted mt-1 mx-2 ms-3">Filter</div>
+                            <div class="dropdown">
+                                <button id="filter" class="btn btn-secondary dropdown-toggle btn-sm ms-0 mx-3"
+                                    type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                                    aria-expanded="false">All</button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="#">All</a></li>
+                                    <li><a class="dropdown-item" href="#">Mine</a></li>
+                                    <li><a class="dropdown-item" href="#">Others</a></li>
+                                </ul>
+                            </div>
+                            <input type="search" id="searchPost" class="form-control d-inline-block w-9 me-3"
+                                placeholder="Search user…" />
+                            <a class="btn btn-primary">
+                                Search
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Page body -->
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="text-muted mt-1 mb-2">{{postList.length}} Posts</div>
+                <div class="row row-cards">
+
+                    {{#each postList}}
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="card card-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <span class="avatar me-3 rounded"
+                                        style="background-image: url({{postBy.path}})"></span>
+                                    <div>
+                                        <div>{{postBy.name.full}}</div>
+                                        <div class="text-muted">{{format createdOn}}</div>
+                                    </div>
+                                    <div class="ms-auto">
+
+                                        {{#compare postBy._id "==" ../user._id}}
+
+                                        <a class="text-muted edit" data-id="{{_id}}" data-bs-toggle="modal"
+                                            data-bs-target="#edit-modal" title="Edit Post">
+                                            <!-- Download SVG icon from http://tabler-icons.io/i/eye -->
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="icon icon-tabler icon-tabler-edit mx-3" width="24" height="24"
+                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1">
+                                                </path>
+                                                <path
+                                                    d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z">
+                                                </path>
+                                                <path d="M16 5l3 3"></path>
+                                            </svg>
+                                        </a>
+                                        {{/compare}}
+                                        <a class="text-muted view" data-id="{{_id}}" data-bs-toggle="modal"
+                                            data-bs-target="#view-modal" title="View Post">
+                                            <!-- Download SVG icon from http://tabler-icons.io/i/eye -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                                                <path
+                                                    d="M22 12c-2.667 4.667 -6 7 -10 7s-7.333 -2.333 -10 -7c2.667 -4.667 6 -7 10 -7s7.333 2.333 10 7" />
+                                            </svg>
+                                        </a>
+                                        {{#compare postBy._id "==" ../user._id}}
+                                        <a class="ms-3 text-muted archive" data-id="{{_id}}" title="Archive Post">
+                                            <!-- Download SVG icon from http://tabler-icons.io/i/heart -->
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="icon icon-tabler icon-tabler-archive" width="24" height="24"
+                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path
+                                                    d="M3 4m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z">
+                                                </path>
+                                                <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10"></path>
+                                                <path d="M10 12l4 0"></path>
+                                            </svg>
+                                        </a>
+                                        {{/compare}}
+                                        {{#compare postBy._id "!=" ../user._id}}
+                                        {{#if savedPosts}}
+                                        <a class="ms-3 text-muted save-post" data-id="{{_id}}" title="Unsave Post">
+                                            <!-- Download SVG icon from http://tabler-icons.io/i/heart -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24"
+                                                width="24">
+                                                <path d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z" />
+                                            </svg>&nbsp;
+                                        </a>
+                                        {{else}}
+                                        <a class="ms-3 text-muted save-post" data-id="{{_id}}" title="Save Post">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="icon icon-tabler icon-tabler-bookmark" width="24" height="24"
+                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M9 4h6a2 2 0 0 1 2 2v14l-5 -3l-5 3v-14a2 2 0 0 1 2 -2"></path>
+                                            </svg>
+                                        </a>
+                                        {{/if}}
+                                        {{/compare}}
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#" class="d-block"><img src="{{path}}" class="card-img-top" height="280"></a>
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <div class="h3 mb-1">{{capital title}}</div>
+                                        <div class="text-muted">{{capital description}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+                {{!-- Pagination --}}
+                <br><br>
+                <div class="d-flex">
+                    <ul class="pagination ms-auto">
+                        {{{pagination "getValue" obj}}}
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{{> modals}}
+
+<script src="/javascripts/posts/list.js" defer></script>

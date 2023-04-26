@@ -1,0 +1,57 @@
+<script src="/dist/js/demo-theme.min.js?1674944402"></script>
+
+<div class="modal-header">
+    <h4 class="modal-title">Post Edit</h4>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<form id="editPostForm" enctype="multipart/form-data">
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="card">
+                <div class="row g-0">
+                    <div class="col d-flex flex-column">
+                        <div class="card-body">
+
+                            <div class="row align-items-center">
+                                <div class="col-auto"><img src="{{postList.path}}" alt="no-image" height="200px" width="350px"><br><br><a href="#" class="btn">
+                                    
+                                        <div class="mb-3">
+                                            <input class="form-control" name="aavtar" type="file" id="formFile">
+                                        </div>
+                                    </a></div>
+                            </div>
+                            <div class="form-label mt-4">Title</div>
+                            <div>
+                                <div class="row g-2">
+                                    <div class="col-auto">
+                                        <input size="50" type="text" class="form-control" name="title"
+                                            value="{{postList.title}}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-label mt-4">Description</div>
+                            <div>
+                                <div class="row g-2">
+                                    <div class="col-auto">
+                                        <textarea rows="3" cols="70" type="text" class="form-control w-auto"
+                                            name="description">{{postList.description}}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent mt-auto">
+                            <div class="btn-list justify-content-end">
+                                <button type="submit" class="btn btn-primary" id="save" data-id="{{postList._id}}">Save</button>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <h4>{{messages}}</h4>
+        </div>
+    </div>
+</form>
+
+<script src="/javascripts/posts/edit.js" defer></script>
