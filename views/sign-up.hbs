@@ -5,7 +5,16 @@
             <h4 class="text-danger">{{messages}}</h4>
             <form class="card card-md" action="/sign-up" method="post" autocomplete="off" novalidate>
                 <div class="card-body">
-                    <h2 class="card-title text-center mb-4">Create new account</h2>
+                    <center class="mb-4">
+                        <a href="/" class="text-dark">
+                            <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+                                <img src="images/instagram.png" width="40" height="40" alt="instagram"
+                                    class="navbar-brand-image mx-2">
+                                <span class="h3 mb-0">Instagram</span>
+                            </h1>
+                        </a>
+                    </center>
+                    <h2 class="card-title text-center mb-4 h2">Create new account</h2>
                     <div class="mb-3">
                         <label class="form-label">First Name</label>
                         <input type="text" class="form-control" name="firstName" placeholder="Enter first name">
@@ -30,8 +39,8 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Password</label>
-                        <input type="password" class="form-control" name="password" id="pass-word" placeholder="Password"
-                            autocomplete="off">
+                        <input type="password" class="form-control" name="password" id="pass-word"
+                            placeholder="Password" autocomplete="off">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Confirm Password</label>

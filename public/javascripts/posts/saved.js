@@ -2,6 +2,7 @@ $(document).ready(function () {
 
     $(document).on('click', '.save-post', function () {
         const id = $(this).data('id');
+        const  element = $(this);
         $.ajax({
             type: "post",
             url: `/posts/unsave`,
@@ -11,7 +12,7 @@ $(document).ready(function () {
                     alert(`error message : ${response.messaage}`);
                 }
                 else {
-                    location.reload();
+                    element.closest("div.col-sm-6").remove();
                 }
             },
             error: function (error) {

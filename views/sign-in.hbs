@@ -1,10 +1,18 @@
-<div class=" d-flex flex-column">
+<body class=" d-flex flex-column">
   <script src="./dist/js/demo-theme.min.js?1674944402"></script>
   <div class="page page-center">
     <div class="container container-tight py-4">
       <h4 class="text-danger">{{messages}}</h4>
       <div class="card card-md">
         <div class="card-body">
+          <center class="mb-4">
+            <a href="/" class="text-dark">
+              <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+                <img src="images/instagram.png" width="40" height="40" alt="instagram" class="navbar-brand-image mx-2">
+                <span class="h3 mb-0">Instagram</span>
+              </h1>
+            </a>
+          </center>
           <h2 class="h2 text-center mb-4">Login to your account</h2>
           <form action="/sign-in" method="post" autocomplete="off" novalidate>
             <div class="mb-3">
@@ -18,8 +26,8 @@
                   <a href="">I forgot password</a>
                 </span>
               </label>
-                <input type="password" class="form-control" name="password" placeholder="Your password"
-                  autocomplete="off">
+              <input type="password" class="form-control" name="password" placeholder="Your password"
+                autocomplete="off">
             </div>
             <div class="form-footer">
               <button type="submit" class="btn btn-primary w-100">Sign in</button>
@@ -37,4 +45,4 @@
   <script src="./dist/js/demo.min.js?1674944402" defer></script>
   <script src="javascripts/public/sign-in.js" defer></script>
 
-</div>
+</body>

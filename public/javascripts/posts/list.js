@@ -117,6 +117,7 @@ $(document).ready(function () {
 
     $(document).on('click', '.archive', function () {
         const id = $(this).data('id');
+        const  element = $(this);
         $.ajax({
             type: "post",
             url: `/posts/archive`,
@@ -126,7 +127,7 @@ $(document).ready(function () {
                     alert(`error message : ${response.messaage}`);
                 }
                 else {
-                    location.reload();
+                    element.closest("div.col-sm-6").remove();
                 }
             },
             error: function (error) {

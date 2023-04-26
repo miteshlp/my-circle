@@ -30,59 +30,59 @@ var upload = multer({
 
 /* GET users listing. */
 router.get('/', async function (req, res, next) {
-  try{
-  const condition = { isDeleted: false };
-  const regex = req.query.search;
-  const page = Number(req.query.page) || 1;
-  const skip = (page - 1) * 5;
-  const sort = { createdOn: -1 };
-  if (req.xhr) {
-    if (regex != "empty") {
-      condition["$or"] = [{ email: { $regex: regex,$options: 'i' } }, { "name.full": { $regex: regex,$options: 'i' } }]
+  try {
+    const condition = { isDeleted: false };
+    const regex = req.query.search;
+    const page = Number(req.query.page) || 1;
+    const skip = (page - 1) * 5;
+    const sort = { createdOn: -1 };
+    if (req.xhr) {
+      if (regex != "empty") {
+        condition["$or"] = [{ email: { $regex: regex, $options: 'i' } }, { "name.full": { $regex: regex, $options: 'i' } }]
+      }
     }
+    const userList = await db.models.user.aggregate([
+      {
+        $match: condition
+      },
+      {
+        $lookup: {
+          from: "posts",
+          localField: "_id",
+          foreignField: "postby",
+          pipeline: [{ $match: { isDeleted: false } }],
+          as: "TotalPosts"
+        }
+      },
+      {
+        $lookup: {
+          from: "saved_posts",
+          localField: "_id",
+          foreignField: "user",
+          as: "TotalSaved"
+        }
+      },
+      {
+        $project: { savedPosts: { $size: "$TotalSaved" }, posts: { $size: "$TotalPosts" }, name: 1, eamil: 1, path: 1, createdOn: 1, }
+      },
+      {
+        $sort: { createdOn: -1 }
+      },
+      { "$skip": skip },
+      { "$limit": 5 }
+    ]);
+
+    const userCount = await db.models.user.find(condition);
+
+    const obj = pagination(userCount.length, page, 5);
+
+    if (req.xhr) {
+      return res.render('./users/filter', { userList: userList, layout: "blank", total: userCount.length, obj: obj });
+    }
+    res.render('./users/list', { userList: userList, total: userCount.length, obj: obj });
+  } catch (err) {
+    console.log("err in user get---", err);
   }
-  const userList = await db.models.user.aggregate([
-    {
-      $match: condition
-    },
-    {
-      $lookup: {
-        from: "posts",
-        localField: "_id",
-        foreignField: "postby",
-        pipeline: [{ $match: { isDeleted: false } }],
-        as: "TotalPosts"
-      }
-    },
-    {
-      $lookup: {
-        from: "saved_posts",
-        localField: "_id",
-        foreignField: "user",
-        as: "TotalSaved"
-      }
-    },
-    {
-      $project: { savedPosts: { $size: "$TotalSaved" }, posts: { $size: "$TotalPosts" }, name: 1, eamil: 1, path: 1, createdOn: 1, }
-    },
-    {
-      $sort: {createdOn : -1}
-    },
-    { "$skip": skip },
-    { "$limit": 5 }
-  ]);
-
-  const userCount = await db.models.user.find(condition);
-
-  const obj = pagination(userCount.length, page, 5);
-
-  if (req.xhr) {
-    return res.render('./users/filter', { userList: userList, layout: "blank", total: userCount.length, obj: obj });
-  }
-  res.render('./users/list', { userList: userList, total: userCount.length, obj: obj });
-}catch(err){
-  console.log("err in user get---" ,err);
-}
 });
 
 router.get('/profile', async function (req, res, next) {
@@ -94,12 +94,19 @@ router.get('/profile', async function (req, res, next) {
 });
 router.put('/profile', upload.single('aavtar'), async function (req, res, next) {
   try {
-    if (req.file) {
-      req.body.path = req.file.path.replace("public", "");
+    const update = {
+      name: {
+        first: req.body.firstName.trim(),
+        last: req.body.lastName.trim(),
+        full: req.body.firstName +" "+ req.body.lastName
+      }
     }
-    console.log("in update profile");
-    await db.models.user.findOneAndUpdate({ email: req.user.email, isDeleted: false }, { $set: req.body });
+    if (req.file) {
+      update.path = req.file.path.replace("public", "");
+    }
+    await db.models.user.updateOne({ email: req.user.email, isDeleted: false }, { $set: update });
     req.session.passport.user = await db.models.user.findOne({ email: req.user.email });
+
     res.render('./users/profile', { messages: req.flash('info') });
   } catch (error) {
     console.log("error in profile edit=> ", error);

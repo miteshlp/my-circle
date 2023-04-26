@@ -96,11 +96,10 @@ router.get('/', async function (req, res, next) {
           ],
           as: "isSaved"
         }
-      },{
-        $project :{savedPosts: { $size: "$isSaved" },title: 1, description: 1, path: 1, createdOn: 1,postBy:{ $arrayElemAt: ["$postby", 0] } }
+      }, {
+        $project: { savedPosts: { $size: "$isSaved" }, title: 1, description: 1, path: 1, createdOn: 1, postBy: { $arrayElemAt: ["$postby", 0] } }
       }
     ]);
-    console.log("posts", postList);
     const postCount = await db.models.post.find(condition);
 
     const obj = pagination(postCount.length, page, 5);
@@ -156,15 +155,15 @@ router.get('/saved', async function (req, res, next) {
 router.post('/save', async function (req, res, next) {
   try {
     if (await db.models.saved_post.findOne({ post: req.body.post, user: req.user._id })) {
-      await db.models.saved_post.deleteOne({post: req.body.post, user: req.user._id})
+      await db.models.saved_post.deleteOne({ post: req.body.post, user: req.user._id })
       return res.send({
-        "type" : "unSaved"
+        "type": "unSaved"
       });
     }
     req.body.user = req.user._id;
     await db.models.saved_post.create(req.body);
     res.send({
-      "type" : "saved"
+      "type": "saved"
     });
   } catch (err) {
     console.log("error in save ", err);
@@ -222,7 +221,6 @@ router.post('/archive', async function (req, res, next) {
 
 router.put('/restore', async function (req, res, next) {
   try {
-    console.log("restore", req.body.id);
     await db.models.post.updateOne({ _id: req.body.id }, { $set: { isDeleted: false } });
     res.send({
       "type": "success"
@@ -265,9 +263,13 @@ router.get('/create', function (req, res, next) {
 
 router.post('/create', upload.single('aavtar'), async function (req, res, next) {
   try {
-    req.body.path = req.file.path.replace("public", "");
-    req.body.postby = req.user._id;
-    await db.models.post.create(req.body);
+    const create = {
+      path: req.file.path.replace("public", ""),
+      title: req.body.title.trim(),
+      description: req.body.description.trim(),
+      postby: req.user._id
+    }
+    await db.models.post.create(create);
     res.redirect('/posts/');
   } catch (error) {
     res.redirect('/create');
@@ -283,11 +285,14 @@ router.get('/edit/:id', async function (req, res, next) {
 router.put('/edit', upload.single('aavtar'), async function (req, res, next) {
   try {
     const id = req.body.id;
-    delete req.body.id;
-    if (req.file) {
-      req.body.path = req.file.path.replace("public", "");
+    const update = {
+      title: req.body.title.trim(),
+      description: req.body.description.trim()
     }
-    await db.models.post.updateOne({ _id: new ObjectId(id), postby: new ObjectId(req.user._id) }, { $set: req.body })
+    if (req.file) {
+      update.path = req.file.path.replace("public", "");
+    }
+    await db.models.post.updateOne({ _id: new ObjectId(id), postby: new ObjectId(req.user._id) }, { $set: update })
     res.send({ "type": "success" });
   } catch (err) {
     console.log("error in edit", err);

@@ -5,6 +5,9 @@ const pagination = require('../controllers/pagination');
 
 /* GET home page. */
 router.get('/', async function (req, res) {
+  if (req.isAuthenticated()) {
+    return res.redirect('/posts');
+  }
   try {
     const condition = { isDeleted: false };
     const page = Number(req.query.page) || 1;
@@ -58,6 +61,9 @@ router.get('/', async function (req, res) {
 });
 
 router.get('/sign-in', function (req, res) {
+  if (req.isAuthenticated()) {
+    return res.redirect('/posts');
+  }
   res.render('sign-in', { title: 'Sign in Page', menu: "sign-up", layout: 'public', messages: req.flash('info') });
 });
 
@@ -81,14 +87,21 @@ router.post('/sign-in', function (req, res, next) {
 });
 
 router.get('/sign-up', function (req, res) {
-  res.render('sign-up', { title: 'Sign up Page', menu: "sign-in", layout: 'public', messages: req.flash('info') });
+  if (req.isAuthenticated()) {
+    return res.redirect('/posts');
+  }
+  res.render('sign-up', { title: 'Sign up Page', layout: 'public', messages: req.flash('info') });
 });
 
-router.get('/email-validation/:mail', async function (req, res) {
-  if (await db.models.user.findOne({ email: req.params.mail })) {
-    return res.send(true)
-  }
-  res.send(false);
+router.get('/email-validation', async function (req, res) {
+  try{
+    if (await db.models.user.findOne({ email: req.query.email })) {
+        return res.send(false)
+      }
+      res.send(true);
+    }catch(err){
+      console.log("error in email validate" , err);
+    }
 });
 
 router.post('/sign-up', async function (req, res) {

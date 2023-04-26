@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    alert("alert");
     $("#editPostForm").validate({
         rules: {
             title: "required",
@@ -18,7 +17,6 @@ $(document).ready(function () {
                 contentType: false,
                 success: function (response) {
                     if (response.type == "error") {
-                        console.log(response);
                         alert(`error message : ${response}`);
                     }
                     else {

@@ -2,7 +2,7 @@ $(document).ready(function () {
 
     $(document).on('click', '#restore', function () {
         const id = $(this).data('id');
-        console.log("restore");
+        const element = $(this);
         $.ajax({
             type: "put",
             url: `/posts/restore`,
@@ -12,7 +12,7 @@ $(document).ready(function () {
                     alert(`error message : ${response.messaage}`);
                 }
                 else {
-                    location.reload();
+                    element.closest("div.col-sm-6").remove();
                 }
             },
             error: function (error) {
