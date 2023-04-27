@@ -4,6 +4,7 @@ var router = express.Router();
 const multer = require('multer')
 var path = require('path');
 const pagination = require('../controllers/pagination');
+const postsController = require('../controllers/posts');
 
 var storage = multer.diskStorage(
   {
@@ -16,98 +17,36 @@ var storage = multer.diskStorage(
   }
 );
 var upload = multer({
-  storage: storage, fileFilter: (req, file, cb) => {
-    if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
-      cb(null, true);
-    } else {
-      cb(null, false);
-      req.flash('info', 'Only .png, .jpg and .jpeg format allowed! ')
-      return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
+  storage: storage,
+  fileFilter: function (req, file, callback) {
+    var ext = path.extname(file.originalname);
+    if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg' && ext !== '.gif') {
+      req.fileError = 'Only images are allowed (Max 2mb)';
+      return callback(null, false)
     }
+    callback(null, true)
+  },
+  limits: {
+    fileSize: 1024 * 2048
   }
 });
 /* GET users listing. */
 router.get('/', async function (req, res, next) {
   try {
-    const condition = { isDeleted: false };
-    const regex = req.query.search;
-    const page = Number(req.query.page) || 1;
-    const skip = (page - 1) * 5;
-    const sort = { createdOn: -1 };
-    if (req.xhr) {
-      if (req.query.filter == "Mine") condition.postby = new ObjectId(req.user._id);
-      if (req.query.filter == "Others") condition.postby = { $ne: new ObjectId(req.user._id) };
-      if (req.query.sort == "Title") {
-        sort.title = 1;
-        delete sort.createdOn;
-      }
-      else sort.createdOn = -1;
-      if (regex != "empty") {
-        condition["$or"] = [{ title: { $regex: regex, $options: 'i' } }, { description: { $regex: regex, $options: 'i' } }]
-      }
+    var page = Number(req.query.page) || 1;
+    let status = false;
+    if (req.xhr) status = true;
+    let result = await postsController.getPosts(req.query, req.user, status, page);
+    if (result.postList.length == 0 && page > 1) {
+      page -= 1;
+      result = await postsController.getPosts(req.query, req.user, status, page);
     }
-    const postList = await db.models.post.aggregate([
-      {
-        $match: condition
-      },
-      {
-        $sort: sort
-      },
-      { "$skip": skip },
-      { "$limit": 5 },
-      {
-        $lookup: {
-          from: "users",
-          localField: "postby",
-          foreignField: "_id",
-          pipeline: [{
-            $project: { name: 1, path: 1 }
-          }],
-          as: "postby"
-        }
-      },
-      {
-        $lookup: {
-          from: "saved_posts",
-          let: {
-            postId: "$_id",
-          },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    {
-                      $eq: [
-                        "$user",
-                        new ObjectId(req.user._id)
-                      ]
-                    },
-                    {
-                      $eq: [
-                        "$post",
-                        "$$postId"
-                      ]
-                    }
-                  ]
-                }
-              }
-            }
-          ],
-          as: "isSaved"
-        }
-      }, {
-        $project: { savedPosts: { $size: "$isSaved" }, title: 1, description: 1, path: 1, createdOn: 1, postBy: { $arrayElemAt: ["$postby", 0] } }
-      }
-    ]);
-    const postCount = await db.models.post.find(condition);
-
-    const obj = pagination(postCount.length, page, 5);
-
+    const postCount = await db.models.post.find(result.condition);
+    const obj = pagination(postCount.length, result.page, 5);
     if (req.xhr) {
-      return res.render('./posts/filter', { postList: postList, layout: "blank", total: postCount.length, obj: obj });
+      return res.render('./posts/filter', { postList: result.postList, layout: "blank", total: postCount.length, obj: obj });
     }
-    res.render('./posts/list', { postList: postList, total: postCount.length, obj: obj });
+    res.render('./posts/list', { postList: result.postList, total: postCount.length, obj: obj });
   } catch (err) {
     console.log("error in data get ", err);
   }
@@ -115,39 +54,10 @@ router.get('/', async function (req, res, next) {
 
 router.get('/saved', async function (req, res, next) {
   try {
-    const saved = await db.models.saved_post.aggregate([
-      {
-        $match: { user: new ObjectId(req.user._id) }
-      },
-      {
-        $lookup: {
-          from: "posts",
-          localField: "post",
-          foreignField: "_id",
-          pipeline: [{
-            $project: { discription: 1, path: 1, title: 1, postby: 1 }
-          },
-          {
-            $lookup: {
-              from: "users",
-              localField: "postby",
-              foreignField: "_id",
-              as: "User"
-            }
-          },
-          {
-            $project: { user: { $arrayElemAt: ["$User", 0] }, title: 1, description: 1, path: 1 }
-          }
-          ],
-          as: "postDetails"
-        }
-      },
-      {
-        $project: { post: { $arrayElemAt: ["$postDetails", 0] } }
-      },
-    ]);
+    const saved = await postsController.savedPosts(req.user);
     res.render('./posts/saved-post', { saved: saved });
   } catch (err) {
+
     console.log("error in saved post ", err);
   }
 });
@@ -183,25 +93,7 @@ router.post('/unsave', async function (req, res, next) {
 
 router.get('/archived', async function (req, res, next) {
   try {
-    const archived = await db.models.post.aggregate([
-      {
-        $match: { postby: new ObjectId(req.user._id), isDeleted: true }
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "postby",
-          foreignField: "_id",
-          pipeline: [{
-            $project: { name: 1, path: 1 }
-          }],
-          as: "postby"
-        }
-      },
-      {
-        $project: { postBy: { $arrayElemAt: ["$postby", 0] }, title: 1, description: 1, path: 1, createdOn: 1 }
-      },
-    ]);
+    const archived = await postsController.archived(req.user._id);
     res.render('./posts/archived', { archived: archived });
   } catch (err) {
     console.log(err);
@@ -232,25 +124,7 @@ router.put('/restore', async function (req, res, next) {
 
 router.get('/view/:id', async function (req, res, next) {
   try {
-    const postList = await db.models.post.aggregate([
-      {
-        $match: { _id: new ObjectId(req.params.id) }
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "postby",
-          foreignField: "_id",
-          pipeline: [{
-            $project: { name: 1, path: 1 }
-          }],
-          as: "postby"
-        }
-      },
-      {
-        $project: { postBy: { $arrayElemAt: ["$postby", 0] }, title: 1, description: 1, path: 1 }
-      }
-    ]);
+    const postList = await postsController.viewPost(req.params.id);
     res.render('./posts/view', { postList: postList, layout: "blank" });
   } catch (err) {
     console.log("error in view", err);
@@ -263,6 +137,12 @@ router.get('/create', function (req, res, next) {
 
 router.post('/create', upload.single('aavtar'), async function (req, res, next) {
   try {
+    if(req.fileError){
+      return res.status(400).json({
+        "status": 400,
+        "message": req.fileError
+      });
+    }
     const create = {
       path: req.file.path.replace("public", ""),
       title: req.body.title.trim(),
@@ -284,6 +164,12 @@ router.get('/edit/:id', async function (req, res, next) {
 
 router.put('/edit', upload.single('aavtar'), async function (req, res, next) {
   try {
+    if(req.fileError){
+      return res.status(400).json({
+        "status": 400,
+        "message": req.fileError
+      });
+    }
     const id = req.body.id;
     const update = {
       title: req.body.title.trim(),
@@ -295,7 +181,10 @@ router.put('/edit', upload.single('aavtar'), async function (req, res, next) {
     await db.models.post.updateOne({ _id: new ObjectId(id), postby: new ObjectId(req.user._id) }, { $set: update })
     res.send({ "type": "success" });
   } catch (err) {
-    console.log("error in edit", err);
+    res.status(400).json({
+      "status": 400,
+      "message": "error while post edit"
+    });
   }
 });
 

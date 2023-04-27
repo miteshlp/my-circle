@@ -6,12 +6,26 @@ function getValue(page) {
 
 $(document).ready(function () {
 
+    function debounce(func, wait, immediate) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    };
 
-    $(document).on('keyup', '#searchUser', function () {
+    $(document).on('keyup', '#searchUser',(debounce( function () {
         let match = $(this).val().concat(" ").trim();
         if (match.length == 0) match = "empty";
         filterdata(1, match);
-    });
+    },500)));
 
     window.filterdata = function (page, match) {
         $.ajax({

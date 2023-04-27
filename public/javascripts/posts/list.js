@@ -8,6 +8,17 @@ function getValue(page) {
 
 $(document).ready(function () {
 
+    // function delay(callback, ms) {
+    //     var timer = 0;
+    //     return function() {
+    //       var context = this, args = arguments;
+    //       clearTimeout(timer);
+    //       timer = setTimeout(function () {
+    //         callback.apply(context, args);
+    //       }, ms || 0);
+    //     };
+    //   }
+
     // function getValue(page = 1) {
     //     const filter = $('#filter').text();
     //     const sort = $('#sort').text();
@@ -16,14 +27,29 @@ $(document).ready(function () {
     //     filterdata(page, filter, sort, match);
     // }
 
+    function debounce(func, wait, immediate) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    };
+
     $('.dropdown-menu a').click(function () {
         $(this).parent().parent().prev().text($(this).text());
         getValue();
     });
 
-    $(document).on('keyup', '#searchPost', function () {
+    $(document).on('keyup', '#searchPost',(debounce(function () {
         getValue();
-    });
+    },500)));
 
     window.filterdata = function (page, filter, sort, match) {
         $.ajax({
@@ -98,6 +124,7 @@ $(document).ready(function () {
                     <path d="M0 0h24v24H0z" fill="none" />
                     <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z" />
                 </svg>`);
+                toastr.success('Post saved !').delay(1000).fadeOut(1000);
                 }
                 else {
                     element.html(`<svg xmlns="http://www.w3.org/2000/svg"
@@ -107,6 +134,7 @@ $(document).ready(function () {
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                     <path d="M9 4h6a2 2 0 0 1 2 2v14l-5 -3l-5 3v-14a2 2 0 0 1 2 -2"></path>
                 </svg>`);
+                toastr.success('Post unsaved !').delay(1000).fadeOut(1000);
                 };
             },
             error: function (error) {
@@ -117,7 +145,7 @@ $(document).ready(function () {
 
     $(document).on('click', '.archive', function () {
         const id = $(this).data('id');
-        const  element = $(this);
+        const element = $(this);
         $.ajax({
             type: "post",
             url: `/posts/archive`,
@@ -127,7 +155,8 @@ $(document).ready(function () {
                     alert(`error message : ${response.messaage}`);
                 }
                 else {
-                    element.closest("div.col-sm-6").remove();
+                    getValue($(".active").text());
+                    toastr.success('Post archived successfully !').delay(1000).fadeOut(1000);
                 }
             },
             error: function (error) {

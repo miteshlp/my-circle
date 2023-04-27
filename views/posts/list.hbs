@@ -36,11 +36,8 @@
                                     <li><a class="dropdown-item" href="#">Others</a></li>
                                 </ul>
                             </div>
-                            <input type="search" id="searchPost" class="form-control d-inline-block w-9 me-3"
-                                placeholder="Search user…" />
-                            <a class="btn btn-primary">
-                                Search
-                            </a>
+                            <input type="search" id="searchPost" title="Search post by title or description" class="form-control d-inline-block w-9"
+                                placeholder="Search post…" />
                         </div>
                     </div>
                 </div>
@@ -151,12 +148,14 @@
                     {{/each}}
                 </div>
                 {{!-- Pagination --}}
+                {{#if postList}}
                 <br><br>
                 <div class="d-flex">
                     <ul class="pagination ms-auto">
                         {{{pagination "getValue" obj}}}
                     </ul>
                 </div>
+                {{/if}}
             </div>
 
         </div>

@@ -24,15 +24,13 @@ $(document).ready(function () {
                 processData: false,
                 contentType: false,
                 success: function (response) {
-                    if (response.type == "error") {
-                        console.log(response);
-                    }
-                    else {
+                    toastr.success('Profile updated successfully !').delay(1500).fadeOut(1000);
+                    setTimeout(() => {
                         window.location.href = "/users/profile"
-                    }
+                    }, 1500);
                 },
                 error: function (error) {
-                    alert(`ERROR => ${error}`);
+                    toastr.error(error.responseJSON.message).delay(1500).fadeOut(1000);
                 }
             })
         }

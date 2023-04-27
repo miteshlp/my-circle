@@ -6,14 +6,29 @@ function getValue(page) {
 }
 $(document).ready(function () {
 
+    function debounce(func, wait, immediate) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    };
+
     $('.dropdown-menu a').click(function () {
         $(this).parent().parent().prev().text($(this).text());
         getValue(1);
     });
 
-    $(document).on('keyup', '#searchPost', function () {
+    $(document).on('keyup', '#searchPost',(debounce (function () {
         getValue(1);
-    });
+    },500)));
 
     window.filterdata = function(page, sort, match) {
         $.ajax({
@@ -55,22 +70,6 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.save-post', function () {
-        const id = $(this).data('id');
-        $.ajax({
-            type: "post",
-            url: `/posts/save`,
-            data: { post: id },
-            success: function (response) {
-                if (response.type == "error") {
-                    alert(`error message : ${response.messaage}`);
-                }
-                else {
-                    alert("Post Saved");
-                }
-            },
-            error: function (error) {
-                alert(`ERROR => ${error}`);
-            }
-        });
+        window.location.href = "http://127.0.0.1:3000/sign-in";        
     });
 })

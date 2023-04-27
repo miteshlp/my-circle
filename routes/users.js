@@ -16,14 +16,18 @@ var storage = multer.diskStorage(
   }
 );
 var upload = multer({
-  storage: storage, fileFilter: (req, file, cb) => {
-    if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
-      cb(null, true);
-    } else {
-      cb(null, false);
-      req.flash('info', 'Only .png, .jpg and .jpeg format allowed! ')
-      return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
+  storage: storage,
+
+  fileFilter: function (req, file, callback) {
+    var ext = path.extname(file.originalname);
+    if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
+      req.fileError = 'Only images are allowed (Max 2mb)';
+      return callback(null,false)
     }
+    callback(null, true)
+  },
+  limits: {
+    fileSize: 1024 * 2048
   }
 });
 
@@ -31,7 +35,7 @@ var upload = multer({
 /* GET users listing. */
 router.get('/', async function (req, res, next) {
   try {
-    const condition = { isDeleted: false };
+    const condition = { isDeleted: false, _id: { $ne: new ObjectId(req.user._id) } };
     const regex = req.query.search;
     const page = Number(req.query.page) || 1;
     const skip = (page - 1) * 5;
@@ -94,11 +98,17 @@ router.get('/profile', async function (req, res, next) {
 });
 router.put('/profile', upload.single('aavtar'), async function (req, res, next) {
   try {
+    if(req.fileError){
+      res.status(400).json({
+        "status": 400,
+        "message": req.fileError
+      });
+    }
     const update = {
       name: {
         first: req.body.firstName.trim(),
         last: req.body.lastName.trim(),
-        full: req.body.firstName +" "+ req.body.lastName
+        full: req.body.firstName + " " + req.body.lastName
       }
     }
     if (req.file) {
@@ -110,6 +120,10 @@ router.put('/profile', upload.single('aavtar'), async function (req, res, next) 
     res.render('./users/profile', { messages: req.flash('info') });
   } catch (error) {
     console.log("error in profile edit=> ", error);
+    res.status(500).json({
+      "status": 500,
+      "message": "Error while profile upadate"
+    });
   }
 });
 

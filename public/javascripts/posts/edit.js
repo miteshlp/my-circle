@@ -20,11 +20,15 @@ $(document).ready(function () {
                         alert(`error message : ${response}`);
                     }
                     else {
-                        window.location.href = "/posts"
+                        toastr.success('Post updated successfully !').delay(1000).fadeOut(1000);
+                        $("#edit-modal").modal("toggle");
+                        setTimeout(() => {
+                            getValue($(".active").text());
+                        }, 500);
                     }
                 },
                 error: function (error) {
-                    alert(`ERROR => ${error}`);
+                    toastr.error(error.responseJSON.message).delay(1500).fadeOut(1000);
                 }
             })
         }

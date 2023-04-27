@@ -13,6 +13,7 @@ $(document).ready(function () {
                 }
                 else {
                     element.closest("div.col-sm-6").remove();
+                    toastr.success('Post unsaved !').delay(1000).fadeOut(1000);
                 }
             },
             error: function (error) {
