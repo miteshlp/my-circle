@@ -20,6 +20,7 @@ module.exports = function (mongoose) {
         description: {
             type: String,
         },
+        likes : [mongoose.Schema.Types.ObjectId],
         isDeleted: {
             type: Boolean,
             default: false

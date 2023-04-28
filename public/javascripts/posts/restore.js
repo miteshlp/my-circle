@@ -6,18 +6,13 @@ $(document).ready(function () {
         $.ajax({
             type: "put",
             url: `/posts/restore`,
-            data: {id : id},
+            data: { id: id },
             success: function (response) {
-                if (response.type == "error") {
-                    alert(`error message : ${response.messaage}`);
-                }
-                else {
-                    element.closest("div.col-sm-6").remove();
-                    toastr.success('Post restored successfully !').delay(1000).fadeOut(1000);
-                }
+                element.closest("div.col-sm-6").remove();
+                toastr.success(response.message).delay(1000).fadeOut(1000);
             },
             error: function (error) {
-                alert(`ERROR => ${error}`);
+                toastr.error(error.responseJSON.message).delay(2000).fadeOut(1000);
             }
         });
     });

@@ -30,7 +30,7 @@ var upload = multer({
     fileSize: 1024 * 2048
   }
 });
-/* GET users listing. */
+/* GET Post listing. */
 router.get('/', async function (req, res, next) {
   try {
     var page = Number(req.query.page) || 1;
@@ -43,82 +43,102 @@ router.get('/', async function (req, res, next) {
     }
     const postCount = await db.models.post.find(result.condition);
     const obj = pagination(postCount.length, result.page, 5);
+    console.log(result.postList);
     if (req.xhr) {
       return res.render('./posts/filter', { postList: result.postList, layout: "blank", total: postCount.length, obj: obj });
     }
     res.render('./posts/list', { postList: result.postList, total: postCount.length, obj: obj });
   } catch (err) {
     console.log("error in data get ", err);
+    res.status(500).json({
+      "status": 500,
+      "message": "Error while getting data !"
+    })
   }
 });
 
+/* GET saved post listing. */
 router.get('/saved', async function (req, res, next) {
   try {
     const saved = await postsController.savedPosts(req.user);
+    console.log("saved", saved);
     res.render('./posts/saved-post', { saved: saved });
   } catch (err) {
 
     console.log("error in saved post ", err);
+    res.status(500).json({
+      "status": 500,
+      "message": "Error while geting saved post !"
+    })
   }
 });
 
+/* POST  Save Unsave Post Toggle. */
 router.post('/save', async function (req, res, next) {
   try {
     if (await db.models.saved_post.findOne({ post: req.body.post, user: req.user._id })) {
       await db.models.saved_post.deleteOne({ post: req.body.post, user: req.user._id })
-      return res.send({
-        "type": "unSaved"
-      });
+      return res.status(202).json({
+        "status": 202,
+        "message": "Post unsaved !"
+      })
     }
     req.body.user = req.user._id;
     await db.models.saved_post.create(req.body);
-    res.send({
-      "type": "saved"
-    });
+    res.status(201).json({
+      "status": 201,
+      "message": "Post saved !"
+    })
   } catch (err) {
     console.log("error in save ", err);
+    res.status(400).json({
+      "status": 400,
+      "message": "Error while saving or unsaving post !"
+    })
   }
 });
 
-router.post('/unsave', async function (req, res, next) {
-  try {
-    await db.models.saved_post.deleteOne({ _id: req.body.id });
-    res.send({
-      "type": "success"
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
-
+/* GET archived post listing. */
 router.get('/archived', async function (req, res, next) {
   try {
     const archived = await postsController.archived(req.user._id);
     res.render('./posts/archived', { archived: archived });
   } catch (err) {
-    console.log(err);
+    res.status(400).json({
+      "status": 400,
+      "message": "Error while rendering archive post page !"
+    });
   }
 });
 
+/* POST archive post. */
 router.post('/archive', async function (req, res, next) {
   try {
     await db.models.post.updateOne({ _id: req.body.post, postby: req.user._id }, { $set: { isDeleted: true } });
-    res.send({
-      "type": "success"
+    return res.status(202).json({
+      "status": 202,
+      "message": "Post archived successfully !"
     });
   } catch (err) {
-    console.log(err);
+    res.status(400).json({
+      "status": 400,
+      "message": "Error while post archive !"
+    });
   }
 });
 
 router.put('/restore', async function (req, res, next) {
   try {
     await db.models.post.updateOne({ _id: req.body.id }, { $set: { isDeleted: false } });
-    res.send({
-      "type": "success"
+    res.status(202).json({
+      "status": 202,
+      "message": "Post restored successfully !"
     });
   } catch (err) {
-    console.log(err);
+    res.status(400).json({
+      "status": 400,
+      "message": "Error while restoring post !"
+    });
   }
 });
 
@@ -127,22 +147,33 @@ router.get('/view/:id', async function (req, res, next) {
     const postList = await postsController.viewPost(req.params.id);
     res.render('./posts/view', { postList: postList, layout: "blank" });
   } catch (err) {
-    console.log("error in view", err);
+    res.status(400).json({
+      "status": 400,
+      "message": "Error while viewing post !"
+    });
   }
 });
 
 router.get('/create', function (req, res, next) {
-  res.render('./posts/create-post');
+  try {
+    res.render('./posts/create-post');
+  } catch (err) {
+    res.status(400).json({
+      "status": 400,
+      "message": "Error while loading create post page !"
+    });
+  }
 });
 
 router.post('/create', upload.single('aavtar'), async function (req, res, next) {
   try {
-    if(req.fileError){
+    if (req.fileError) {
       return res.status(400).json({
         "status": 400,
         "message": req.fileError
       });
     }
+    console.log(req.body, req.file);
     const create = {
       path: req.file.path.replace("public", ""),
       title: req.body.title.trim(),
@@ -150,21 +181,33 @@ router.post('/create', upload.single('aavtar'), async function (req, res, next) 
       postby: req.user._id
     }
     await db.models.post.create(create);
-    res.redirect('/posts/');
+    res.status(201).json({
+      "status": 201,
+      "message": "Post created successfully !"
+    });
   } catch (error) {
-    res.redirect('/create');
-    console.log("error in post create=> ", error);
+    res.status(400).json({
+      "status": 400,
+      "message": "Error while creating post !"
+    });
   }
 });
 
 router.get('/edit/:id', async function (req, res, next) {
-  const postList = await db.models.post.findOne({ _id: req.params.id }).lean();
-  res.render('./posts/edit', { postList: postList, layout: "blank" });
+  try {
+    const postList = await db.models.post.findOne({ _id: req.params.id }).lean();
+    res.render('./posts/edit', { postList: postList, layout: "blank" });
+  } catch (err) {
+    return res.status(400).json({
+      "status": 400,
+      "message": "Error while page loading !"
+    });
+  }
 });
 
 router.put('/edit', upload.single('aavtar'), async function (req, res, next) {
   try {
-    if(req.fileError){
+    if (req.fileError) {
       return res.status(400).json({
         "status": 400,
         "message": req.fileError
@@ -179,7 +222,10 @@ router.put('/edit', upload.single('aavtar'), async function (req, res, next) {
       update.path = req.file.path.replace("public", "");
     }
     await db.models.post.updateOne({ _id: new ObjectId(id), postby: new ObjectId(req.user._id) }, { $set: update })
-    res.send({ "type": "success" });
+    return res.status(202).json({
+      "status": 202,
+      "message": "Post updated successfully !"
+    });
   } catch (err) {
     res.status(400).json({
       "status": 400,
@@ -188,5 +234,69 @@ router.put('/edit', upload.single('aavtar'), async function (req, res, next) {
   }
 });
 
+
+router.put('/likes', async function (req, res, next) {
+  try {
+    if (await db.models.post.findOne({ _id: new ObjectId(req.body.id), likes: { $in: [req.user._id] } })) {
+      console.log("aleady liked");
+      await db.models.post.updateOne({ _id: req.body.id }, { $pull: { likes: req.user._id } })
+      return res.status(202).json({
+        "status": 202,
+        "message": "Post Unliked !"
+      })
+    }
+    console.log("not found", req.user._id, req.body.id);
+    await db.models.post.updateOne({ _id: req.body.id }, { $push: { likes: req.user._id } });
+    res.status(201).json({
+      "status": 201,
+      "message": "Post Liked !"
+    })
+  } catch (err) {
+    console.log("error in save ", err);
+    res.status(400).json({
+      "status": 400,
+      "message": "Error while saving or unsaving post !"
+    })
+  }
+});
+
+
+router.get('/liked-by/:id', async function (req, res, next) {
+  try {
+    const val = await db.models.post.aggregate([
+      {
+        $match: { _id: new ObjectId(req.params.id) }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "likes",
+          foreignField: "_id",
+          pipeline : [
+            {
+              $project : {name : "$name.full" }
+            }
+          ],
+          as: "postby"
+        }
+      },
+      {
+        $project: { user: { $arrayElemAt: ["$postby", 0] } }
+      }
+    ]);
+    console.log(val);
+    return res.status(202).json({
+      "status": 200,
+      "message": "all people !",
+      "data" : val
+    })
+  } catch (err) {
+    console.log("error in save ", err);
+    res.status(400).json({
+      "status": 400,
+      "message": "Error while saving or unsaving post !"
+    })
+  }
+});
 
 module.exports = router;

@@ -86,6 +86,10 @@ router.get('/', async function (req, res, next) {
     res.render('./users/list', { userList: userList, total: userCount.length, obj: obj });
   } catch (err) {
     console.log("err in user get---", err);
+    res.status(400).json({
+      "status": 400,
+      "message": "Error while listing users"
+    });
   }
 });
 

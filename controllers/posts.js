@@ -67,7 +67,8 @@ module.exports = {
                     as: "isSaved"
                 }
             }, {
-                $project: { savedPosts: { $size: "$isSaved" }, title: 1, description: 1, path: 1, createdOn: 1, postBy: { $arrayElemAt: ["$postby", 0] } }
+                $project: { savedPosts: { $size: "$isSaved" }, title: 1, description: 1, path: 1, createdOn: 1, postBy: { $arrayElemAt: ["$postby", 0] },
+                likes : { $size : "$likes" } ,  isLiked : { $size :   { $setIntersection : [ [user._id], "$likes" ] } } }
             }
         ]);
         return {
@@ -109,7 +110,7 @@ module.exports = {
                 }
             },
             {
-                $project: { post: { $arrayElemAt: ["$postDetails", 0] } }
+                $project: { post: { $arrayElemAt: ["$postDetails", 0] }  }
             },
         ]);
         return saved;

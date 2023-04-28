@@ -8,9 +8,9 @@ $(document).ready(function () {
 
     function debounce(func, wait, immediate) {
         var timeout;
-        return function() {
+        return function () {
             var context = this, args = arguments;
-            var later = function() {
+            var later = function () {
                 timeout = null;
                 if (!immediate) func.apply(context, args);
             };
@@ -26,11 +26,11 @@ $(document).ready(function () {
         getValue(1);
     });
 
-    $(document).on('keyup', '#searchPost',(debounce (function () {
+    $(document).on('keyup', '#searchPost', (debounce(function () {
         getValue(1);
-    },500)));
+    }, 500)));
 
-    window.filterdata = function(page, sort, match) {
+    window.filterdata = function (page, sort, match) {
         $.ajax({
             type: "get",
             url: `/?page=${page}&sort=${sort}&search=${match}`,
@@ -44,7 +44,7 @@ $(document).ready(function () {
                 }
             },
             error: function (error) {
-                alert(`ERROR => ${error}`);
+                toastr.error(error.responseJSON.message).delay(2000).fadeOut(1000);
             }
         });
     }
@@ -56,20 +56,15 @@ $(document).ready(function () {
             url: `/view/${id}`,
             data: {},
             success: function (response) {
-                if (response.type == "error") {
-                    alert(`error message : ${response.messaage}`);
-                }
-                else {
-                    $("#view-loader").html(response);
-                }
+                $("#view-loader").html(response);
             },
             error: function (error) {
-                alert(`ERROR => ${error}`);
+                toastr.error(error.responseJSON.message).delay(2000).fadeOut(1000);
             }
         });
     });
 
     $(document).on('click', '.save-post', function () {
-        window.location.href = "http://127.0.0.1:3000/sign-in";        
+        window.location.href = "http://127.0.0.1:3000/sign-in";
     });
 })

@@ -89,6 +89,34 @@
                             <div class="h3 mb-1">{{capital title}}</div>
                             <div class="text-muted">{{capital description}}</div>
                         </div>
+                        <div class="ms-auto">
+                            <a class="text-muted likedBy" data-id="{{_id}}" title="Liked by">
+                                <span class="text-muted">{{likes}}</span>
+                            </a>
+                            {{#if isLiked}}
+                            <a class="ms-2 text-muted like-post" data-id="{{_id}}" title="Unlike post">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="icon icon-filled text-red lg:mr-2 icon-tabler icon-tabler-heart" width="24"
+                                    height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M19.5 12.572l-7.5 7.428-7.5-7.428a5 5 0 1 1 7.5-6.566 5 5 0 1 1 7.5 6.572">
+                                    </path>
+                                </svg>
+                            </a>
+                            {{else}}
+                            <a class="ms-2 text-muted like-post" data-id="{{_id}}" title="Like post">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon text-pink" width="24" height="24"
+                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path
+                                        d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572">
+                                    </path>
+                                </svg>
+                            </a>
+                            {{/if}}
+                        </div>
                     </div>
                 </div>
             </div>

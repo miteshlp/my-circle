@@ -1,5 +1,6 @@
 <script src="/dist/js/demo-theme.min.js?1674944402"></script>
-<form action="/posts/create" method="post" enctype="multipart/form-data">
+
+<form id="createPostForm" enctype="multipart/form-data">
     <div class="page-body">
         <div class="container-xl">
             <div class="card">
@@ -10,7 +11,7 @@
                             <div class="row align-items-center">
                                 <div class="col-auto"><a href="#" class="btn">
                                         <div class="mb-3">
-                                            <input class="form-control" name="aavtar" type="file" id="formFile">
+                                            <input class="form-control" name="aavtar" id="aavtar" type="file" id="formFile">
                                         </div>
                                     </a></div>
                             </div>
@@ -19,7 +20,7 @@
                             <div>
                                 <div class="row g-2">
                                     <div class="col-auto">
-                                        <input size="50" type="text" class="form-control" name="title">
+                                        <input size="50" type="text" class="form-control" id="title" name="title">
                                     </div>
                                 </div>
                             </div>
@@ -27,7 +28,7 @@
                             <div>
                                 <div class="row g-2">
                                     <div class="col-auto">
-                                        <textarea rows="3" cols="100" type="text" class="form-control w-auto"
+                                        <textarea rows="3" cols="100" id="description" type="text" class="form-control w-auto"
                                             name="description"></textarea>
                                     </div>
                                 </div>
@@ -38,7 +39,7 @@
                                 <a href="#" class="btn" onclick="history.back()">
                                     Cancel
                                 </a>
-                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="submit" class="btn btn-primary" id="save">Save</button>
                             </div>
                         </div>
                     </div>
