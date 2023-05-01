@@ -11,7 +11,8 @@
                             <div class="row align-items-center">
                                 <div class="col-auto"><a href="#" class="btn">
                                         <div class="mb-3">
-                                            <input class="form-control" name="aavtar" id="aavtar" type="file" id="formFile">
+                                            <input class="form-control" name="aavtar" id="aavtar" type="file"
+                                                id="formFile">
                                         </div>
                                     </a></div>
                             </div>
@@ -21,15 +22,19 @@
                                 <div class="row g-2">
                                     <div class="col-auto">
                                         <input size="50" type="text" class="form-control" id="title" name="title">
+                                        <span class="float-end">/ 30</span>
+                                        <span id="titleCount" class="float-end">0</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-label mt-4">Description</div>
                             <div>
-                                <div class="row g-2">
+                                <div class="row g-2 d-flex">
                                     <div class="col-auto">
-                                        <textarea rows="3" cols="100" id="description" type="text" class="form-control w-auto"
-                                            name="description"></textarea>
+                                        <textarea rows="3" cols="100" id="description" type="text"
+                                            class="form-control w-auto" name="description"></textarea>
+                                        <span class="float-end">/ 300</span>
+                                        <span id="descriptionCount" class="float-end">0</span>
                                     </div>
                                 </div>
                             </div>

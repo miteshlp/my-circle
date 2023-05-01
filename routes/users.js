@@ -21,7 +21,7 @@ var upload = multer({
   fileFilter: function (req, file, callback) {
     var ext = path.extname(file.originalname);
     if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
-      req.fileError = 'Only images are allowed (Max 2mb)';
+      req.fileError = `Only jpg, jpeg ,gif and png files are allowed.`;
       return callback(null,false)
     }
     callback(null, true)

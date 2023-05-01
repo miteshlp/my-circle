@@ -1,7 +1,27 @@
 $(document).ready(function () {
+
+    $("#descriptionCount").text($("#description").val().length);
+    $("#titleCount").text($("#title").val().length);
+
+    $("#description").on("keyup", function () {
+        var value = $(this).val()?.trim().length;
+        $("#descriptionCount").text(value);
+    })
+
+    $("#title").on("keyup", function () {
+        var value = $(this).val()?.trim().length;
+        $("#titleCount").text(value);
+    })
+
     $("#editPostForm").validate({
         rules: {
-            title: "required",
+            title: {
+                required: true,
+                maxlength: 30
+            },
+        },
+        description: {
+            maxlength: 300
         },
         submitHandler: function (form) {
             const data = new FormData(form);

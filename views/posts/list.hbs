@@ -142,7 +142,8 @@
                                         <div class="text-muted">{{capital description}}</div>
                                     </div>
                                     <div class="ms-auto">
-                                        <a class="text-muted pe-auto likedBy text-decoration-none" data-id="{{_id}}" title="Liked by">
+                                        <a class="text-muted pe-auto likedBy text-decoration-none" data-id="{{_id}}"
+                                            title="Liked by">
                                             <span class="text-muted">{{likes}}</span>
                                             <ul class="dropdown-menu liked_menu">
                                             </ul>
@@ -172,6 +173,20 @@
                                             </svg>
                                         </a>
                                         {{/if}}
+                                        <a class="ms-2 text-muted comment" data-id="{{_id}}" data-bs-toggle="modal"
+                                            data-bs-target="#edit-modal" title="comment">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="icon icon-tabler icon-tabler-message" width="24" height="24"
+                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path d="M8 9h8"></path>
+                                                <path d="M8 13h6"></path>
+                                                <path
+                                                    d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z">
+                                                </path>
+                                            </svg>
+                                        </a>
                                     </div>
                                 </div>
                             </div>

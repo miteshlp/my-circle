@@ -2,7 +2,7 @@ module.exports = {
     getPosts: async function (query, user, isXhr, page) {
         const condition = { isDeleted: false };
         const regex = query.search;
-        const skip = (page - 1) * 5;
+        const skip = (page - 1) * 6;
         const sort = { createdOn: -1 };
         if (isXhr) {
             if (query.filter == "Mine") condition.postby = new ObjectId(user?._id);
@@ -24,7 +24,7 @@ module.exports = {
                 $sort: sort
             },
             { "$skip": skip },
-            { "$limit": 5 },
+            { "$limit": 6 },
             {
                 $lookup: {
                     from: "users",

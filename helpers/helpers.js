@@ -14,26 +14,10 @@ module.exports = {
         // return Math.round(number*100)/100;
         return number.toFixed(2);
     },
-    // isSaved: function (user_id, post_id) {
-    //     console.log("issaved", user_id, post_id);
-    //     const promise = (db.models.saved_post.findOne({ user: new ObjectId(user_id), post: new ObjectId(post_id) }))
-        
-    //     // (`<a class="ms-3 text-muted save-post" data-id="{{_id}}" title="Save Post">
-    //     //     {/* <!-- Download SVG icon from http://tabler-icons.io/i/heart --> */}
-    //     //     <svg xmlns="http://www.w3.org/2000/svg"
-    //     //         class="icon icon-tabler icon-tabler-bookmark" width="24" height="24"
-    //     //         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-    //     //         stroke-linecap="round" stroke-linejoin="round">
-    //     //         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-    //     //         <path d="M9 4h6a2 2 0 0 1 2 2v14l-5 -3l-5 3v-14a2 2 0 0 1 2 -2"></path>
-    //     //     </svg>
-    //     // </a>`);
-
-    // },
     capital: function (str) {
         let str1, str2;
-        if (str.length > 50) {
-            str1 = str.slice(0, 50).concat(" ...");
+        if (str.length > 30) {
+            str1 = str.slice(0, 30).concat(" ...");
             str2 = str1.charAt(0).toUpperCase() + str1.slice(1);
             return str2;
         }

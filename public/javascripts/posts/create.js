@@ -1,4 +1,16 @@
 $(document).ready(function () {
+
+    $("#description").on("keyup" ,function () {
+        var value = $(this).val()?.trim().length;
+        $("#descriptionCount").text(value);
+    })
+
+    $("#title").on("keyup" ,function () {
+        var value = $(this).val()?.trim().length;
+        $("#titleCount").text(value);
+    })
+
+    
     $("#createPostForm").validate({
         rules: {
             aavtar: "required",

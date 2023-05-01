@@ -21,7 +21,7 @@ var upload = multer({
   fileFilter: function (req, file, callback) {
     var ext = path.extname(file.originalname);
     if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg' && ext !== '.gif') {
-      req.fileError = 'Only images are allowed (Max 2mb)';
+      req.fileError = `Only jpg, jpeg ,gif and png files are allowed.`;
       return callback(null, false)
     }
     callback(null, true)
@@ -42,7 +42,7 @@ router.get('/', async function (req, res, next) {
       result = await postsController.getPosts(req.query, req.user, status, page);
     }
     const postCount = await db.models.post.find(result.condition);
-    const obj = pagination(postCount.length, result.page, 5);
+    const obj = pagination(postCount.length, result.page, 6);
     if (req.xhr) {
       return res.render('./posts/filter', { postList: result.postList, layout: "blank", total: postCount.length, obj: obj });
     }
@@ -59,7 +59,7 @@ router.get('/', async function (req, res, next) {
 /* GET saved post listing. */
 router.get('/saved', async function (req, res, next) {
   try {
-    const saved = await postsController.savedPosts(req.user,"save");
+    const saved = await postsController.savedPosts(req.user, "save");
     console.log("saved", saved);
     res.render('./posts/saved-post', { saved: saved });
   } catch (err) {
@@ -74,7 +74,7 @@ router.get('/saved', async function (req, res, next) {
 
 router.get('/liked', async function (req, res, next) {
   try {
-    const liked = await postsController.likedPosts(req.user,"like");
+    const liked = await postsController.likedPosts(req.user, "like");
     console.log("liked", liked);
     res.render('./posts/liked-post', { liked: liked });
   } catch (err) {
@@ -275,20 +275,20 @@ router.post('/likes', async function (req, res, next) {
 router.get('/liked-by/:id', async function (req, res, next) {
   try {
     const likedBy = await db.models.liked_post.aggregate([
-        {
-            $match: { post: new ObjectId(req.params.id) }
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "user",
-                foreignField: "_id",
-                as: "postDetails"
-            }
-        },
-        {
-            $project: { users: { $arrayElemAt: ["$postDetails", 0] }  }
-        },
+      {
+        $match: { post: new ObjectId(req.params.id) }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user",
+          foreignField: "_id",
+          as: "postDetails"
+        }
+      },
+      {
+        $project: { users: { $arrayElemAt: ["$postDetails", 0] } }
+      },
     ]);
     return res.render('./posts/liked_by', { likedBy: likedBy, layout: "blank" });
 
@@ -298,6 +298,18 @@ router.get('/liked-by/:id', async function (req, res, next) {
       "status": 400,
       "message": "Error while saving or unsaving post !"
     })
+  }
+});
+
+router.get('/comments/:id', async function (req, res, next) {
+  try {
+    // const postList = await db.models.post.findOne({ _id: req.params.id }).lean();
+    res.render('./posts/comments', { layout: "blank" });
+  } catch (err) {
+    return res.status(400).json({
+      "status": 400,
+      "message": "Error while page loading !"
+    });
   }
 });
 

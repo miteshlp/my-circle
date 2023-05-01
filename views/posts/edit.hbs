@@ -13,8 +13,9 @@
                         <div class="card-body">
 
                             <div class="row align-items-center">
-                                <div class="col-auto"><img src="{{postList.path}}" alt="no-image" height="200px" width="350px"><br><br><a href="#" class="btn">
-                                    
+                                <div class="col-auto"><img src="{{postList.path}}" alt="no-image" height="200px"
+                                        width="350px"><br><br><a href="#" class="btn">
+
                                         <div class="mb-3">
                                             <input class="form-control" name="aavtar" type="file" id="formFile">
                                         </div>
@@ -25,7 +26,9 @@
                                 <div class="row g-2">
                                     <div class="col-auto">
                                         <input size="50" type="text" class="form-control" name="title"
-                                            value="{{postList.title}}">
+                                            value="{{postList.title}}" id="title">
+                                        <span class="float-end">/ 30</span>
+                                        <span id="titleCount" class="float-end">0</span>
                                     </div>
                                 </div>
                             </div>
@@ -33,17 +36,20 @@
                             <div>
                                 <div class="row g-2">
                                     <div class="col-auto">
-                                        <textarea rows="3" cols="70" type="text" class="form-control w-auto"
+                                        <textarea rows="3" cols="70" type="text" id="description" class="form-control w-auto"
                                             name="description">{{postList.description}}</textarea>
+                                        <span class="float-end">/ 300</span>
+                                        <span id="descriptionCount" class="float-end">0</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="card-footer bg-transparent mt-auto">
                             <div class="btn-list justify-content-end">
-                                <button type="submit" class="btn btn-primary" id="save" data-id="{{postList._id}}">Save</button>
+                                <button type="submit" class="btn btn-primary" id="save"
+                                    data-id="{{postList._id}}">Save</button>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>

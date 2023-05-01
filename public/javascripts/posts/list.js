@@ -193,7 +193,7 @@ $(document).ready(function () {
             data: {},
             success: function (response) {
                 element.find(".liked_menu").html(response);
-                if(element.find("span").text() != "0"){
+                if (element.find("span").text() != "0") {
                     element.find(".liked_menu").toggle();;
                 }
             },
@@ -203,7 +203,24 @@ $(document).ready(function () {
         });
     });
 
-    $(document).click(function(){
+    $(document).on('click', '.comment', function () {
+        const id = $(this).data('id');
+        const element = $(this);
+        console.log(id, "comment");
+        $.ajax({
+            type: "get",
+            url: `/posts/comments/${id}`,
+            data: {},
+            success: function (response) {
+                $("#edit-loader").html(response);
+            },
+            error: function (error) {
+                toastr.error(error.responseJSON.message).delay(1500).fadeOut(1000);
+            }
+        });
+    });
+
+    $(document).click(function () {
         $(".liked_menu").hide();
-      });
+    });
 })
