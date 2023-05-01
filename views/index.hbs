@@ -26,8 +26,8 @@
                                     <li><a class="dropdown-item" href="#">Title</a></li>
                                 </ul>
                             </div>
-                            <input type="search" id="searchPost" title="Search post by title or description" class="form-control d-inline-block w-9"
-                                placeholder="Search post…" />
+                            <input type="search" id="searchPost" title="Search post by title or description"
+                                class="form-control d-inline-block w-9" placeholder="Search post…" />
                         </div>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
                                                     d="M22 12c-2.667 4.667 -6 7 -10 7s-7.333 -2.333 -10 -7c2.667 -4.667 6 -7 10 -7s7.333 2.333 10 7" />
                                             </svg>
                                         </a>
-                                        <a class="ms-3 text-muted save-post" data-id="{{_id}}">
+                                        <a class="ms-3 text-muted save-post" href="/sign-in" data-id="{{_id}}">
                                             <!-- Download SVG icon from http://tabler-icons.io/i/heart -->
                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                 class="icon icon-tabler icon-tabler-bookmark" width="24" height="24"
@@ -83,6 +83,24 @@
                                     <div>
                                         <div class="h3 mb-1">{{capital title}}</div>
                                         <div class="text-muted">{{capital description}}</div>
+                                    </div>
+                                    <div class="ms-auto">
+                                        <a class="text-muted pe-auto likedBy text-decoration-none" data-id="{{_id}}"
+                                            title="Liked by">
+                                            <span class="text-muted">{{likes}}</span>
+                                            <ul class="dropdown-menu liked_menu">
+                                            </ul>
+                                        </a>
+                                        <a class="ms-2 text-muted like-post" href="/sign-in" data-id="{{_id}}" title="Like post">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon text-pink" width="24"
+                                                height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path
+                                                    d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572">
+                                                </path>
+                                            </svg>
+                                        </a>
                                     </div>
                                 </div>
                             </div>

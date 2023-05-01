@@ -142,9 +142,10 @@
                                         <div class="text-muted">{{capital description}}</div>
                                     </div>
                                     <div class="ms-auto">
-                                        <a class="text-muted likedBy" data-toggle="modal" data-bs-target="#scrollable"
-                                            data-id="{{_id}}" title="Liked by">
+                                        <a class="text-muted pe-auto likedBy text-decoration-none" data-id="{{_id}}" title="Liked by">
                                             <span class="text-muted">{{likes}}</span>
+                                            <ul class="dropdown-menu liked_menu">
+                                            </ul>
                                         </a>
                                         {{#if isLiked}}
                                         <a class="ms-2 text-muted like-post" data-id="{{_id}}" title="Unlike post">

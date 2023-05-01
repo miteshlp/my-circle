@@ -66,9 +66,50 @@ module.exports = {
                     ],
                     as: "isSaved"
                 }
-            }, {
-                $project: { savedPosts: { $size: "$isSaved" }, title: 1, description: 1, path: 1, createdOn: 1, postBy: { $arrayElemAt: ["$postby", 0] },
-                likes : { $size : "$likes" } ,  isLiked : { $size :   { $setIntersection : [ [user._id], "$likes" ] } } }
+            },
+            {
+                $lookup: {
+                    from: "liked_posts",
+                    let: {
+                        postId: "$_id",
+                    },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        {
+                                            $eq: [
+                                                "$user",
+                                                new ObjectId(user?._id)
+                                            ]
+                                        },
+                                        {
+                                            $eq: [
+                                                "$post",
+                                                "$$postId"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: "isLiked"
+                }
+            },
+            {
+                $lookup: {
+                    from: "liked_posts",
+                    localField: "_id",
+                    foreignField: "post",
+                    as: "total"
+                }
+            },
+            {
+                $project: {
+                    savedPosts: { $size: "$isSaved" }, isLiked: { $size: "$isLiked" }, title: 1, description: 1, path: 1, createdOn: 1, postBy: { $arrayElemAt: ["$postby", 0] }, likes: { $size: "$total" },
+                }
             }
         ]);
         return {
@@ -77,7 +118,7 @@ module.exports = {
             condition: condition
         };
     },
-    savedPosts: async function (user) {
+    savedPosts: async function (user, modal) {
         const sort = { createdOn: -1 };
         const saved = await db.models.saved_post.aggregate([
             {
@@ -110,10 +151,48 @@ module.exports = {
                 }
             },
             {
-                $project: { post: { $arrayElemAt: ["$postDetails", 0] }  }
+                $project: { post: { $arrayElemAt: ["$postDetails", 0] } }
             },
         ]);
         return saved;
+    },
+    likedPosts: async function (user, modal) {
+        const sort = { createdOn: -1 };
+        const liked = await db.models.liked_post.aggregate([
+            {
+                $match: { user: new ObjectId(user._id) }
+            },
+            {
+                $sort: sort
+            },
+            {
+                $lookup: {
+                    from: "posts",
+                    localField: "post",
+                    foreignField: "_id",
+                    pipeline: [{
+                        $project: { description: 1, path: 1, title: 1, postby: 1 }
+                    },
+                    {
+                        $lookup: {
+                            from: "users",
+                            localField: "postby",
+                            foreignField: "_id",
+                            as: "User"
+                        }
+                    },
+                    {
+                        $project: { user: { $arrayElemAt: ["$User", 0] }, title: 1, description: 1, path: 1 }
+                    }
+                    ],
+                    as: "postDetails"
+                }
+            },
+            {
+                $project: { post: { $arrayElemAt: ["$postDetails", 0] } }
+            },
+        ]);
+        return liked;
     },
     viewPost: async function (id) {
         const postList = await db.models.post.aggregate([

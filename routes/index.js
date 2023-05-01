@@ -25,6 +25,7 @@ router.get('/', async function (req, res) {
     }
     res.render('index', { title: 'Landing Page', postList: result.postList, total: postCount.length, menu: "sign-in", layout: 'public', obj: obj });
   } catch (err) {
+    console.log(err);
     res.status(500).json({
       "status": 500,
       "message": "Error while getting post"

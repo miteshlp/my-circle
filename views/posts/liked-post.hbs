@@ -1,0 +1,76 @@
+<script src="/dist/js/demo-theme.min.js?1674944402"></script>
+
+<div class="page">
+    <!-- Navbar -->
+    <div class="page-wrapper">
+        <!-- Page header -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <h2 class="page-title">
+                            Liked Posts
+                        </h2>
+                    </div>
+                    <!-- Page title actions -->
+                    {{!-- <div class="col-auto ms-auto d-print-none">
+                        <div class="d-flex">
+
+                            <input type="search" class="form-control d-inline-block w-9 me-3"
+                                placeholder="Search user…" />
+                        </div>
+                    </div> --}}
+                </div>
+            </div>
+        </div>
+        <!-- Page body -->
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="text-muted mt-1 mb-2">{{liked.length}} Posts</div>
+                <div class="row row-cards">
+                    {{#each liked}}
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="card card-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <span class="avatar me-3 rounded"
+                                        style="background-image: url({{post.user.path}})"></span>
+                                    <div>
+                                        <div>{{post.user.name.full}}</div>
+                                        <div class="text-muted">{{format createdOn}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#" class="d-block"><img src="{{post.path}}" class="card-img-top" height="280"></a>
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <div class="h3 mb-1">{{capital post.title}}</div>
+                                        <div class="text-muted">{{capital post.description}}</div>
+                                    </div>
+                                    <div class="ms-auto">
+                                        <a class="ms-2 text-muted like-post" data-id="{{post._id}}" title="Unlike post">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="icon icon-filled text-red lg:mr-2 icon-tabler icon-tabler-heart"
+                                                width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                stroke="currentColor" fill="none" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <path
+                                                    d="M19.5 12.572l-7.5 7.428-7.5-7.428a5 5 0 1 1 7.5-6.566 5 5 0 1 1 7.5 6.572">
+                                                </path>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/javascripts/posts/liked.js" defer></script>

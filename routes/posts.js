@@ -43,7 +43,6 @@ router.get('/', async function (req, res, next) {
     }
     const postCount = await db.models.post.find(result.condition);
     const obj = pagination(postCount.length, result.page, 5);
-    console.log(result.postList);
     if (req.xhr) {
       return res.render('./posts/filter', { postList: result.postList, layout: "blank", total: postCount.length, obj: obj });
     }
@@ -60,9 +59,24 @@ router.get('/', async function (req, res, next) {
 /* GET saved post listing. */
 router.get('/saved', async function (req, res, next) {
   try {
-    const saved = await postsController.savedPosts(req.user);
+    const saved = await postsController.savedPosts(req.user,"save");
     console.log("saved", saved);
     res.render('./posts/saved-post', { saved: saved });
+  } catch (err) {
+
+    console.log("error in saved post ", err);
+    res.status(500).json({
+      "status": 500,
+      "message": "Error while geting saved post !"
+    })
+  }
+});
+
+router.get('/liked', async function (req, res, next) {
+  try {
+    const liked = await postsController.likedPosts(req.user,"like");
+    console.log("liked", liked);
+    res.render('./posts/liked-post', { liked: liked });
   } catch (err) {
 
     console.log("error in saved post ", err);
@@ -234,62 +248,50 @@ router.put('/edit', upload.single('aavtar'), async function (req, res, next) {
   }
 });
 
-
-router.put('/likes', async function (req, res, next) {
+router.post('/likes', async function (req, res, next) {
   try {
-    if (await db.models.post.findOne({ _id: new ObjectId(req.body.id), likes: { $in: [req.user._id] } })) {
-      console.log("aleady liked");
-      await db.models.post.updateOne({ _id: req.body.id }, { $pull: { likes: req.user._id } })
+    if (await db.models.liked_post.findOne({ post: req.body.post, user: req.user._id })) {
+      await db.models.liked_post.deleteOne({ post: req.body.post, user: req.user._id })
       return res.status(202).json({
         "status": 202,
-        "message": "Post Unliked !"
+        "message": "Post unLiked !"
       })
     }
-    console.log("not found", req.user._id, req.body.id);
-    await db.models.post.updateOne({ _id: req.body.id }, { $push: { likes: req.user._id } });
+    req.body.user = req.user._id;
+    await db.models.liked_post.create(req.body);
     res.status(201).json({
       "status": 201,
-      "message": "Post Liked !"
+      "message": "Post liked !"
     })
   } catch (err) {
     console.log("error in save ", err);
     res.status(400).json({
       "status": 400,
-      "message": "Error while saving or unsaving post !"
+      "message": "Error while post like !"
     })
   }
 });
 
-
 router.get('/liked-by/:id', async function (req, res, next) {
   try {
-    const val = await db.models.post.aggregate([
-      {
-        $match: { _id: new ObjectId(req.params.id) }
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "likes",
-          foreignField: "_id",
-          pipeline : [
-            {
-              $project : {name : "$name.full" }
+    const likedBy = await db.models.liked_post.aggregate([
+        {
+            $match: { post: new ObjectId(req.params.id) }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "postDetails"
             }
-          ],
-          as: "postby"
-        }
-      },
-      {
-        $project: { user: { $arrayElemAt: ["$postby", 0] } }
-      }
+        },
+        {
+            $project: { users: { $arrayElemAt: ["$postDetails", 0] }  }
+        },
     ]);
-    console.log(val);
-    return res.status(202).json({
-      "status": 200,
-      "message": "all people !",
-      "data" : val
-    })
+    return res.render('./posts/liked_by', { likedBy: likedBy, layout: "blank" });
+
   } catch (err) {
     console.log("error in save ", err);
     res.status(400).json({

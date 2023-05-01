@@ -145,11 +145,11 @@ $(document).ready(function () {
     $(document).on('click', '.like-post', function () {
         const id = $(this).data('id');
         const element = $(this);
-        totalLikes = $(this).prev().children();
+        totalLikes = $(this).prev().children("span");
         $.ajax({
-            type: "put",
+            type: "post",
             url: `/posts/likes`,
-            data: { id: id },
+            data: { post: id },
             success: function (response) {
                 if (response.status == 201) {
                     element.html(`<svg xmlns="http://www.w3.org/2000/svg"
@@ -187,25 +187,23 @@ $(document).ready(function () {
     $(document).on('click', '.likedBy', function () {
         const id = $(this).data('id');
         const element = $(this);
-        console.log(id , element);
         $.ajax({
             type: "get",
             url: `/posts/liked-by/${id}`,
             data: {},
             success: function (response) {
-                // getValue($(".active").text());
-                // $("#edit-loader").html(response);
-                $("#scrollable").modal("toggle");
-                console.log(response.data);
-                $("#croll-loader").text(response.data)
-                for(let i = 0 ; i < response.data.length ; i++){
-                    console.log(response.data[i].user.name);
+                element.find(".liked_menu").html(response);
+                if(element.find("span").text() != "0"){
+                    element.find(".liked_menu").toggle();;
                 }
-                toastr.success(response.message).delay(1000).fadeOut(1000);
             },
             error: function (error) {
                 toastr.error(error.responseJSON.message).delay(1500).fadeOut(1000);
             }
         });
     });
+
+    $(document).click(function(){
+        $(".liked_menu").hide();
+      });
 })
