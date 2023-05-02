@@ -2,13 +2,14 @@ const moment = require("moment");
 
 module.exports = {
     format: function (element) {
-        const val = moment(element).format('MMMM Do, YYYY');
-        return val;
+        return moment(element).format('MMMM Do, YYYY');
+    },
+    ago: function (element) {
+        return moment(element).fromNow();
     },
     now: function () {
-        const val = (moment().format('LLLL'));
+        return (moment().format('LLLL'));
         // const val = moment(Date.now()).format('MMMM Do, YYYY');
-        return val;
     },
     afterPoint: function (number) {
         // return Math.round(number*100)/100;

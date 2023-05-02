@@ -19,7 +19,7 @@ router.get('/', async function (req, res) {
       result = await postsController.getPosts(req.query, req.user, status, page);
     }
     const postCount = await db.models.post.find(result.condition);
-    const obj = pagination(postCount.length, result.page, 5);
+    const obj = pagination(postCount.length, result.page, 6);
     if (req.xhr) {
       return res.render('./posts/filter', { postList: result.postList, layout: "blank", obj: obj });
     }

@@ -5,6 +5,7 @@ const multer = require('multer')
 var path = require('path');
 const pagination = require('../controllers/pagination');
 const postsController = require('../controllers/posts');
+const comments = require('../controllers/comments');
 
 var storage = multer.diskStorage(
   {
@@ -303,13 +304,39 @@ router.get('/liked-by/:id', async function (req, res, next) {
 
 router.get('/comments/:id', async function (req, res, next) {
   try {
-    // const postList = await db.models.post.findOne({ _id: req.params.id }).lean();
-    res.render('./posts/comments', { layout: "blank" });
+    const allComments = await comments.getComments(req.params.id);
+    console.log("comments", comments);
+    res.render('./posts/comments', { layout: "blank", comments: allComments, id: req.params.id });
   } catch (err) {
+    console.log(err);
     return res.status(400).json({
       "status": 400,
-      "message": "Error while page loading !"
+      "message": "Error while getting comments !"
     });
+  }
+});
+
+router.post('/comments/:commentId?', async function (req, res, next) {
+  try {
+    console.log("here");
+    if (req.params.commentId) {
+      await db.models.comments.deleteOne({ _id: req.params.commentId, userId: req.user._id });
+      return res.status(202).json({
+        "status": 201,
+        "message": "Comment deleted !"
+      })
+    }
+    req.body.userId = req.user._id;
+    console.log("comment", req.body);
+    await db.models.comments.create(req.body);
+    const allComments = await comments.getComments(req.body.postId);
+    return res.render('./posts/comments', { layout: "blank", comments: allComments, id: req.body.postId });
+  } catch (err) {
+    console.log("error in save ", err);
+    res.status(400).json({
+      "status": 400,
+      "message": err
+    })
   }
 });
 

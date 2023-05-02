@@ -61,7 +61,7 @@
                             {{/compare}}
                             {{#compare postBy._id "!=" ../user._id}}
                             {{#if savedPosts}}
-                            <a class="ms-3 text-muted save-post" data-id="{{_id}}" title="Unsave Post">
+                            <a class="ms-3 text-muted save-post" data-id="{{_id}}" title="Unsave">
                                 <!-- Download SVG icon from http://tabler-icons.io/i/heart -->
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                                     <path d="M0 0h24v24H0z" fill="none" />
@@ -69,7 +69,7 @@
                                 </svg>&nbsp;
                             </a>
                             {{else}}
-                            <a class="ms-3 text-muted save-post" data-id="{{_id}}" title="Save Post">
+                            <a class="ms-3 text-muted save-post" data-id="{{_id}}" title="Save">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-bookmark"
                                     width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
                                     fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -96,7 +96,7 @@
                                 </ul>
                             </a>
                             {{#if isLiked}}
-                            <a class="ms-2 text-muted like-post" data-id="{{_id}}" title="Unlike post">
+                            <a class="ms-2 text-muted like-post" data-id="{{_id}}" title="Unlike">
                                 <svg xmlns="http://www.w3.org/2000/svg"
                                     class="icon icon-filled text-red lg:mr-2 icon-tabler icon-tabler-heart" width="24"
                                     height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
@@ -107,7 +107,7 @@
                                 </svg>
                             </a>
                             {{else}}
-                            <a class="ms-2 text-muted like-post" data-id="{{_id}}" title="Like post">
+                            <a class="ms-2 text-muted like-post" data-id="{{_id}}" title="Like">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon text-pink" width="24" height="24"
                                     viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                                     stroke-linecap="round" stroke-linejoin="round">
@@ -118,7 +118,8 @@
                                 </svg>
                             </a>
                             {{/if}}
-                            <a class="ms-2 text-muted comment" data-id="{{_id}}" title="comment">
+                            <a class="ms-2 text-muted comment-btn" data-id="{{_id}}" data-bs-toggle="modal"
+                                data-bs-target="#edit-modal" title="comment">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-message"
                                     width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
                                     fill="none" stroke-linecap="round" stroke-linejoin="round">

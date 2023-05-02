@@ -102,6 +102,7 @@ $(document).ready(function () {
                     <path d="M0 0h24v24H0z" fill="none" />
                     <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z" />
                 </svg>`);
+                element.attr("title" , "Unsave")
                 }
                 else {
                     element.html(`<svg xmlns="http://www.w3.org/2000/svg"
@@ -111,6 +112,7 @@ $(document).ready(function () {
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                     <path d="M9 4h6a2 2 0 0 1 2 2v14l-5 -3l-5 3v-14a2 2 0 0 1 2 -2"></path>
                 </svg>`);
+                element.attr("title" , "Save")
                 };
                 toastr.success(response.message).delay(1000).fadeOut(1000);
             },
@@ -163,6 +165,7 @@ $(document).ready(function () {
                     </path>
                 </svg>`)
                     totalLikes.text(parseInt(totalLikes.text()) + 1);
+                    element.attr("title" ,"Unlike")
                 }
                 else {
                     // getValue($(".active").text());
@@ -175,6 +178,7 @@ $(document).ready(function () {
                     </path>
                 </svg>`)
                     totalLikes.text(parseInt(totalLikes.text()) - 1);
+                    element.attr("title" ,"Like")
                 }
                 toastr.success(response.message).delay(1000).fadeOut(1000);
             },
@@ -194,7 +198,7 @@ $(document).ready(function () {
             success: function (response) {
                 element.find(".liked_menu").html(response);
                 if (element.find("span").text() != "0") {
-                    element.find(".liked_menu").toggle();;
+                    element.find(".liked_menu").toggle();
                 }
             },
             error: function (error) {
@@ -203,7 +207,7 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on('click', '.comment', function () {
+    $(document).on('click', '.comment-btn', function () {
         const id = $(this).data('id');
         const element = $(this);
         console.log(id, "comment");

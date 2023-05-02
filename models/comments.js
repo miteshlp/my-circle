@@ -6,11 +6,11 @@ module.exports = function (mongoose) {
         }
     }
     const schema = {
-        user: {
+        userId: {
             type: mongoose.Schema.Types.ObjectId,
             required: true
         },
-        post: {
+        postId: {
             type: mongoose.Schema.Types.ObjectId,
             required: true
         },
