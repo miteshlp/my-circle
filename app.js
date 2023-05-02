@@ -22,10 +22,7 @@ global.ObjectId = mongoose.Types.ObjectId;
 global.db = require('./models/index')(mongoose);
 // console.log(db.models.user);
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var postsRouter = require('./routes/posts');
-var reportsRouter = require('./routes/reports');
+
 
 var app = express();
 
@@ -102,7 +99,7 @@ passport.deserializeUser(function (user, done) {
   }
 });
 
-app.use('/', indexRouter);
+app.use('/', require('./routes/index'));
 
 app.use(function (req, res,next) {
   if (req.isAuthenticated()) {
@@ -112,10 +109,11 @@ app.use(function (req, res,next) {
   res.redirect('/');
 })
 
-
-app.use('/users', usersRouter);
-app.use('/posts', postsRouter);
-app.use('/reports', reportsRouter);
+app.use('/users', require('./routes/users'));
+app.use('/posts', require('./routes/posts'));
+app.use('/posts', require('./routes//likes'));
+app.use('/posts', require('./routes/comments'));
+app.use('/reports', require('./routes/reports'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

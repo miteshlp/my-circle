@@ -22,7 +22,7 @@
                         </div>
                         <div class="col-auto align-self-center">
                             {{#compare users._id "==" ../user._id}}
-                            <a class="text-muted delete" data-id="{{_id}}" title="Delete">
+                            <a class="text-muted delete" data-id="{{_id}}" data-postid="{{postId}}" title="Delete">
                                 <svg xmlns="http://www.w3.org/2000/svg"
                                     class="icon icon-tabler icon-tabler-trash-x-filled" width="24" height="24"
                                     viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
@@ -53,7 +53,7 @@
         <input size="59" type="text" class="form-control " id="comment">
     </div>
     <div class="justify-content-end">
-        <a class="btn btn-primary add" id="add" data-id="{{id}}" >
+        <a class="btn btn-primary add" id="add" data-id="{{id}}">
             Add
         </a>
         <a class="btn btn-primary" data-bs-dismiss="modal">

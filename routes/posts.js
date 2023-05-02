@@ -61,7 +61,6 @@ router.get('/', async function (req, res, next) {
 router.get('/saved', async function (req, res, next) {
   try {
     const saved = await postsController.savedPosts(req.user, "save");
-    console.log("saved", saved);
     res.render('./posts/saved-post', { saved: saved });
   } catch (err) {
 
@@ -73,20 +72,7 @@ router.get('/saved', async function (req, res, next) {
   }
 });
 
-router.get('/liked', async function (req, res, next) {
-  try {
-    const liked = await postsController.likedPosts(req.user, "like");
-    console.log("liked", liked);
-    res.render('./posts/liked-post', { liked: liked });
-  } catch (err) {
 
-    console.log("error in saved post ", err);
-    res.status(500).json({
-      "status": 500,
-      "message": "Error while geting saved post !"
-    })
-  }
-});
 
 /* POST  Save Unsave Post Toggle. */
 router.post('/save', async function (req, res, next) {
@@ -188,7 +174,6 @@ router.post('/create', upload.single('aavtar'), async function (req, res, next) 
         "message": req.fileError
       });
     }
-    console.log(req.body, req.file);
     const create = {
       path: req.file.path.replace("public", ""),
       title: req.body.title.trim(),
@@ -246,97 +231,6 @@ router.put('/edit', upload.single('aavtar'), async function (req, res, next) {
       "status": 400,
       "message": "error while post edit"
     });
-  }
-});
-
-router.post('/likes', async function (req, res, next) {
-  try {
-    if (await db.models.liked_post.findOne({ post: req.body.post, user: req.user._id })) {
-      await db.models.liked_post.deleteOne({ post: req.body.post, user: req.user._id })
-      return res.status(202).json({
-        "status": 202,
-        "message": "Post unLiked !"
-      })
-    }
-    req.body.user = req.user._id;
-    await db.models.liked_post.create(req.body);
-    res.status(201).json({
-      "status": 201,
-      "message": "Post liked !"
-    })
-  } catch (err) {
-    console.log("error in save ", err);
-    res.status(400).json({
-      "status": 400,
-      "message": "Error while post like !"
-    })
-  }
-});
-
-router.get('/liked-by/:id', async function (req, res, next) {
-  try {
-    const likedBy = await db.models.liked_post.aggregate([
-      {
-        $match: { post: new ObjectId(req.params.id) }
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "user",
-          foreignField: "_id",
-          as: "postDetails"
-        }
-      },
-      {
-        $project: { users: { $arrayElemAt: ["$postDetails", 0] } }
-      },
-    ]);
-    return res.render('./posts/liked_by', { likedBy: likedBy, layout: "blank" });
-
-  } catch (err) {
-    console.log("error in save ", err);
-    res.status(400).json({
-      "status": 400,
-      "message": "Error while saving or unsaving post !"
-    })
-  }
-});
-
-router.get('/comments/:id', async function (req, res, next) {
-  try {
-    const allComments = await comments.getComments(req.params.id);
-    console.log("comments", comments);
-    res.render('./posts/comments', { layout: "blank", comments: allComments, id: req.params.id });
-  } catch (err) {
-    console.log(err);
-    return res.status(400).json({
-      "status": 400,
-      "message": "Error while getting comments !"
-    });
-  }
-});
-
-router.post('/comments/:commentId?', async function (req, res, next) {
-  try {
-    console.log("here");
-    if (req.params.commentId) {
-      await db.models.comments.deleteOne({ _id: req.params.commentId, userId: req.user._id });
-      return res.status(202).json({
-        "status": 201,
-        "message": "Comment deleted !"
-      })
-    }
-    req.body.userId = req.user._id;
-    console.log("comment", req.body);
-    await db.models.comments.create(req.body);
-    const allComments = await comments.getComments(req.body.postId);
-    return res.render('./posts/comments', { layout: "blank", comments: allComments, id: req.body.postId });
-  } catch (err) {
-    console.log("error in save ", err);
-    res.status(400).json({
-      "status": 400,
-      "message": err
-    })
   }
 });
 

@@ -145,13 +145,13 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.like-post', function () {
-        const id = $(this).data('id');
+        const postId = $(this).data('id');
         const element = $(this);
         totalLikes = $(this).prev().children("span");
         $.ajax({
             type: "post",
-            url: `/posts/likes`,
-            data: { post: id },
+            url: `/posts/${postId}/likes`,
+            data: {},
             success: function (response) {
                 if (response.status == 201) {
                     element.html(`<svg xmlns="http://www.w3.org/2000/svg"
@@ -189,11 +189,11 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.likedBy', function () {
-        const id = $(this).data('id');
+        const postId = $(this).data('id');
         const element = $(this);
         $.ajax({
             type: "get",
-            url: `/posts/liked-by/${id}`,
+            url: `/posts/${postId}/likes`,
             data: {},
             success: function (response) {
                 element.find(".liked_menu").html(response);
@@ -213,7 +213,7 @@ $(document).ready(function () {
         console.log(id, "comment");
         $.ajax({
             type: "get",
-            url: `/posts/comments/${id}`,
+            url: `/posts/${id}/comments`,
             data: {},
             success: function (response) {
                 $("#edit-loader").html(response);
