@@ -1,0 +1,56 @@
+<div class="page-body">
+    <div class="container-xl">
+        <div class="card">
+            <div class="row g-0">
+                <div class="col d-flex flex-column">
+                    <div class="card-body">
+                        <h4 class="card-title">Follow requests</h4>
+                        <br>
+                        <div class="row g-3">
+                            <div class="col-md">
+                                <div class="form-label">First Name</div>
+                                <input type="text" class="form-control" name="firstName" value="{{user.name.first}}">
+                            </div>
+                            <div class="col-md">
+                                <div class="form-label">Last Name</div>
+                                <input type="text" class="form-control" name="lastName" value="{{user.name.last}}">
+                            </div>
+                            <div class="col-md">
+                                <div class="form-label">Account Privacy</div>
+                                <div class="dropdown" name="account_privacy">
+                                    <button id="privacy" class="btn btn-secondary dropdown-toggle btn-md" type="button"
+                                        id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                                        aria-expanded="false">{{user.account_privacy}}</button>
+                                    <ul class="dropdown-menu" id="account_privacy"
+                                        aria-labelledby="dropdownMenuButton1">
+                                        <li><a class="dropdown-item" href="#">public</a></li>
+                                        <li><a class="dropdown-item" href="#">private</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-label mt-4">Email</div>
+                        <div>
+                            <div class="row g-2">
+                                <div class="col-auto">
+                                    <input type="text" class="form-control w-auto" name="email" value="{{user.email}}"
+                                        disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent mt-auto">
+                        <div class="btn-list justify-content-end">
+                            <a href="#" class="btn" onclick="history.back()">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{!--
+<script src="/javascripts/users/profile.js" defer></script> --}}

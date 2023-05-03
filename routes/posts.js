@@ -1,13 +1,12 @@
-const { match } = require('assert');
-var express = require('express');
-var router = express.Router();
+// const { match } = require('assert');
+const express = require('express');
+const router = express.Router();
 const multer = require('multer')
-var path = require('path');
+const path = require('path');
 const pagination = require('../controllers/pagination');
 const postsController = require('../controllers/posts');
-const comments = require('../controllers/comments');
 
-var storage = multer.diskStorage(
+const storage = multer.diskStorage(
   {
     destination: function (req, file, cb) {
       cb(null, './public/uploads/posts')
@@ -17,10 +16,10 @@ var storage = multer.diskStorage(
     }
   }
 );
-var upload = multer({
+const upload = multer({
   storage: storage,
   fileFilter: function (req, file, callback) {
-    var ext = path.extname(file.originalname);
+    const ext = path.extname(file.originalname);
     if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg' && ext !== '.gif') {
       req.fileError = `Only jpg, jpeg ,gif and png files are allowed.`;
       return callback(null, false)
@@ -34,7 +33,7 @@ var upload = multer({
 /* GET Post listing. */
 router.get('/', async function (req, res, next) {
   try {
-    var page = Number(req.query.page) || 1;
+    let page = Number(req.query.page) || 1;
     let status = false;
     if (req.xhr) status = true;
     let result = await postsController.getPosts(req.query, req.user, status, page);
@@ -47,6 +46,7 @@ router.get('/', async function (req, res, next) {
     if (req.xhr) {
       return res.render('./posts/filter', { postList: result.postList, layout: "blank", total: postCount.length, obj: obj });
     }
+    console.log(result.postList);
     res.render('./posts/list', { postList: result.postList, total: postCount.length, obj: obj });
   } catch (err) {
     console.log("error in data get ", err);

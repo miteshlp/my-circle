@@ -1,5 +1,9 @@
 $(document).ready(function () {
 
+    $('#account_privacy a').click(function () {
+        $(this).parent().parent().prev().text($(this).text());
+    });
+
     $.validator.addMethod("pwcheck", function (value) {
         return /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%&])(.{4,20}$)/.test(value);
     });
@@ -15,7 +19,9 @@ $(document).ready(function () {
         },
         submitHandler: function (form) {
             const data = new FormData(form);
+            data.append( "account_privacy",$("#privacy").text());
             console.log($("form").serialize())
+            console.log(data);
             $.ajax({
                 method: "PUT",
                 url: "/users/profile",

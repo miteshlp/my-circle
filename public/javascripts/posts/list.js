@@ -3,6 +3,7 @@ function getValue(page) {
     const sort = $('#sort').text();
     let match = $("#searchPost").val().concat(" ").trim();
     if (match.length == 0) match = "empty";
+    console.log(sort);
     filterdata(page, filter, sort, match);
 }
 
@@ -25,8 +26,6 @@ $(document).ready(function () {
 
     $('.filterize a').click(function () {
         $(this).parent().parent().prev().text($(this).text());
-        console.log("called");
-
         getValue();
     });
 

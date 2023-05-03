@@ -5,12 +5,11 @@ module.exports = {
         const skip = (page - 1) * 6;
         const sort = { createdOn: -1 };
         if (isXhr) {
+            delete sort.createdOn;
             if (query.filter == "Mine") condition.postby = new ObjectId(user?._id);
             if (query.filter == "Others") condition.postby = { $ne: new ObjectId(user?._id) };
-            if (query.sort == "Title") {
-                sort.title = 1;
-                delete sort.createdOn;
-            }
+            if (query.sort == "Title") sort.title = 1;
+            else if (query.sort == "Populer") sort.likes = -1;
             else sort.createdOn = -1;
             if (regex != "empty") {
                 condition["$or"] = [{ title: { $regex: regex, $options: 'i' } }, { description: { $regex: regex, $options: 'i' } }]
@@ -20,20 +19,18 @@ module.exports = {
             {
                 $match: condition
             },
-            {
-                $sort: sort
-            },
-            { "$skip": skip },
-            { "$limit": 6 },
+
             {
                 $lookup: {
                     from: "users",
                     localField: "postby",
                     foreignField: "_id",
-                    pipeline: [{
-                        $project: { name: 1, path: 1 }
-                    }],
-                    as: "postby"
+                    pipeline: [
+                        // {
+                        //     $project: { name: 1, path: 1 }
+                        // }
+                    ],
+                    as: "postUser"
                 }
             },
             {
@@ -108,9 +105,17 @@ module.exports = {
             },
             {
                 $project: {
-                    savedPosts: { $size: "$isSaved" }, isLiked: { $size: "$isLiked" }, title: 1, description: 1, path: 1, createdOn: 1, postBy: { $arrayElemAt: ["$postby", 0] }, likes: { $size: "$total" },
+                    savedPosts: { $size: "$isSaved" }, isLiked: { $size: "$isLiked" }, title: 1, description: 1, path: 1, createdOn: 1, postBy: { $arrayElemAt: ["$postUser", 0] }, likes: { $size: "$total" }, postby: 1
                 }
-            }
+            },
+            {
+                $match: { $expr: { $or: [{ $eq: ["$postBy.account_privacy", "public"] }, { $eq: ["$postby",new ObjectId(user._id)] }] } }
+            },
+            {
+                $sort: sort
+            },
+            { "$skip": skip },
+            { "$limit": 6 },
         ]);
         return {
             postList: data,

@@ -8,9 +8,9 @@ $(document).ready(function () {
 
     function debounce(func, wait, immediate) {
         var timeout;
-        return function() {
+        return function () {
             var context = this, args = arguments;
-            var later = function() {
+            var later = function () {
                 timeout = null;
                 if (!immediate) func.apply(context, args);
             };
@@ -21,11 +21,11 @@ $(document).ready(function () {
         };
     };
 
-    $(document).on('keyup', '#searchUser',(debounce( function () {
+    $(document).on('keyup', '#searchUser', (debounce(function () {
         let match = $(this).val().concat(" ").trim();
         if (match.length == 0) match = "empty";
         filterdata(1, match);
-    },500)));
+    }, 500)));
 
     window.filterdata = function (page, match) {
         $.ajax({
@@ -45,4 +45,23 @@ $(document).ready(function () {
             }
         });
     }
+
+    $(document).on('click', '.follow', function () {
+        const userId = $(this).data('id');
+        const element = $(this);
+        $.ajax({
+            type: "post",
+            url: `/users/${userId}/followers/requested`,
+            data: {},
+            success: function (response) {
+                element.text("Requested");
+                element.removeClass("bg-info-lt follow");
+                element.addClass("bg-success-lt")
+                toastr.success(response.message).delay(2000).fadeOut(1000);
+            },
+            error: function (error) {
+                toastr.error(error.responseJSON.message).delay(2000).fadeOut(1000);
+            }
+        });
+    });
 })

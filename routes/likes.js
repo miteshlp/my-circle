@@ -38,7 +38,6 @@ router.get('/:postId/likes', async function (req, res, next) {
         return res.render('./posts/liked_by', { likedBy: likedBy, layout: "blank" });
 
     } catch (err) {
-        console.log("error in save ", err);
         res.status(400).json({
             "status": 400,
             "message": "Error while saving or unsaving post !"
@@ -64,7 +63,6 @@ router.post('/:postId/likes', async function (req, res, next) {
             "message": "Post liked !"
         })
     } catch (err) {
-        console.log("error in like ", err);
         res.status(400).json({
             "status": 400,
             "message": "Error while post like !"

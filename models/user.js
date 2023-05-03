@@ -29,6 +29,11 @@ const schema = {
         type: String,
         required: true
     },
+    account_privacy:{
+        type : String,
+        enum: ["public", "private"],
+        default : "private"
+    },
     isDeleted: {
         type: Boolean,
         default: false

@@ -13,13 +13,22 @@
                         <span class="badge bg-purple-lt">Total Posts : {{posts}}</span>
                         <span class="badge bg-purple-lt">Saved Posts :{{savedPosts}}</span>
                     </div>
+                    <div class="mt-3">
+                        <span class="badge bg-purple-lt">{{account_privacy}}</span>
+                        {{#if isFollowed}}
+                        <span class="badge bg-success-lt">{{capitalize isFollowed.status}}</span>
+                        {{else}}
+                        <span class="badge bg-info-lt follow" data-id="{{_id}}">follow</span>
+                        {{/if}}
+                    </div>
                 </div>
             </div>
         </div>
         {{/each}}
     </div>
     {{!-- Pagination --}}
-    <br><br><div class="d-flex">
+    <br><br>
+    <div class="d-flex">
         <ul class="pagination ms-auto">
             {{{pagination "getValue" obj}}}
         </ul>

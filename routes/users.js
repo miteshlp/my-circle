@@ -22,7 +22,7 @@ var upload = multer({
     var ext = path.extname(file.originalname);
     if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
       req.fileError = `Only jpg, jpeg ,gif and png files are allowed.`;
-      return callback(null,false)
+      return callback(null, false)
     }
     callback(null, true)
   },
@@ -40,6 +40,7 @@ router.get('/', async function (req, res, next) {
     const page = Number(req.query.page) || 1;
     const skip = (page - 1) * 5;
     const sort = { createdOn: -1 };
+    console.log("id================",req.user._id);
     if (req.xhr) {
       if (regex != "empty") {
         condition["$or"] = [{ email: { $regex: regex, $options: 'i' } }, { "name.full": { $regex: regex, $options: 'i' } }]
@@ -67,18 +68,51 @@ router.get('/', async function (req, res, next) {
         }
       },
       {
-        $project: { savedPosts: { $size: "$TotalSaved" }, posts: { $size: "$TotalPosts" }, name: 1, eamil: 1, path: 1, createdOn: 1, }
+        $lookup: {
+          from: "followers",
+          let: {
+            user: "$_id",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    {
+                      $eq: [
+                        "$followerId",
+                        new ObjectId(req.user._id)
+                      ]
+                    },
+                    {
+                      $eq: [
+                        "$userId",
+                        "$$user"
+                      ]
+                    }
+                  ]
+                }
+              }
+            },{
+              $project : { status : 1}
+            }
+          ],
+          as: "isFollowed"
+        }
+      },
+      {
+        $project: { isFollowed : {$arrayElemAt : ["$isFollowed" ,0]}, savedPosts: { $size: "$TotalSaved" }, posts: { $size: "$TotalPosts" }, name: 1, eamil: 1, path: 1, createdOn: 1, account_privacy: 1 }
       },
       {
         $sort: { createdOn: -1 }
       },
       { "$skip": skip },
-      { "$limit": 5 }
+      { "$limit": 6 }
     ]);
 
     const userCount = await db.models.user.find(condition);
-
-    const obj = pagination(userCount.length, page, 5);
+    console.log(userList);
+    const obj = pagination(userCount.length, page, 6);
 
     if (req.xhr) {
       return res.render('./users/filter', { userList: userList, layout: "blank", total: userCount.length, obj: obj });
@@ -95,6 +129,7 @@ router.get('/', async function (req, res, next) {
 
 router.get('/profile', async function (req, res, next) {
   try {
+    console.log(req.user);
     res.render('./users/profile', { path: (req.user.path) ? req.user.path : "/images/no-image.png" });
   } catch (error) {
     console.log("error in profile => ", error);
@@ -102,18 +137,20 @@ router.get('/profile', async function (req, res, next) {
 });
 router.put('/profile', upload.single('aavtar'), async function (req, res, next) {
   try {
-    if(req.fileError){
+    if (req.fileError) {
       res.status(400).json({
         "status": 400,
         "message": req.fileError
       });
     }
+    console.log(req.body);
     const update = {
       name: {
         first: req.body.firstName.trim(),
         last: req.body.lastName.trim(),
-        full: req.body.firstName + " " + req.body.lastName
-      }
+        full: req.body.firstName + " " + req.body.lastName,
+      },
+      account_privacy: req.body.account_privacy
     }
     if (req.file) {
       update.path = req.file.path.replace("public", "");
