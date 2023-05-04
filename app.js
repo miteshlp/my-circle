@@ -13,22 +13,18 @@ const flash = require('connect-flash');
 const md5 = require('md5');
 const mongoose = require('mongoose');
 const helpers = require('./helpers/helpers');
-var handlebarHelpers = require('handlebars-helpers')();
-
-
+const handlebarHelpers = require('handlebars-helpers')();
 
 // Database connection...
 global.ObjectId = mongoose.Types.ObjectId;
 global.db = require('./models/index')(mongoose);
 // console.log(db.models.user);
 
-
-
 var app = express();
 
 const hbs = create({
   extname: '.hbs',
-  helpers: {...helpers,...handlebarHelpers}
+  helpers: { ...helpers, ...handlebarHelpers }
 });
 // view engine setup
 app.engine('hbs', hbs.engine);
@@ -90,9 +86,12 @@ passport.serializeUser(function (user, done) {
   done(null, user);
 });
 
-passport.deserializeUser(function (user, done) {
+passport.deserializeUser(async function (user, done) {
   try {
     console.log("in deserialization");
+    // getting followers and following count
+    user.followers = await db.models.follower.find({ userId: new ObjectId(user._id), status: "following" }).count();
+    user.following = await db.models.follower.find({ followerId: new ObjectId(user._id), status: "following" }).count();
     done(null, user);
   } catch (err) {
     console.log(err);
@@ -101,7 +100,7 @@ passport.deserializeUser(function (user, done) {
 
 app.use('/', require('./routes/index'));
 
-app.use(function (req, res,next) {
+app.use(function (req, res, next) {
   if (req.isAuthenticated()) {
     res.locals.user = req.user;
     return next();

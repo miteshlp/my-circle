@@ -1,56 +1,52 @@
 <div class="page-body">
     <div class="container-xl">
-        <div class="card">
-            <div class="row g-0">
-                <div class="col d-flex flex-column">
-                    <div class="card-body">
-                        <h4 class="card-title">Follow requests</h4>
-                        <br>
-                        <div class="row g-3">
-                            <div class="col-md">
-                                <div class="form-label">First Name</div>
-                                <input type="text" class="form-control" name="firstName" value="{{user.name.first}}">
+        <div class="card" style="height: 28rem">
+            <div class="card-body card-body-scrollable card-body-scrollable-shadow">
+                <div class="divide-y">
+                    <h4 class="card-title">Follow Requests</h4>
+                    {{!-- Request list --}}
+                    {{#each requests}}
+                    <div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <span class="avatar rounded" style="background-image: url({{follower.path}})"></span>
                             </div>
-                            <div class="col-md">
-                                <div class="form-label">Last Name</div>
-                                <input type="text" class="form-control" name="lastName" value="{{user.name.last}}">
+                            <div class="col">
+                                <div class="text-truncate">
+                                    <strong>{{follower.name.full}}</strong><span> requested to follow you.</span>
+                                </div>
+                                <div class="text-muted">{{ago createdOn}}</div>
                             </div>
-                            <div class="col-md">
-                                <div class="form-label">Account Privacy</div>
-                                <div class="dropdown" name="account_privacy">
-                                    <button id="privacy" class="btn btn-secondary dropdown-toggle btn-md" type="button"
-                                        id="dropdownMenuButton1" data-bs-toggle="dropdown"
-                                        aria-expanded="false">{{user.account_privacy}}</button>
-                                    <ul class="dropdown-menu" id="account_privacy"
-                                        aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">public</a></li>
-                                        <li><a class="dropdown-item" href="#">private</a></li>
-                                    </ul>
+                            {{#compare status "==" "requested"}}
+                            <div class="col-auto">
+                                <a class="btn btn-primary confirm" data-id="{{_id}}">
+                                    Confirm
+                                </a>
+                                <a class="btn btn-outline-dark mx-1 reject" data-id="{{_id}}">
+                                    Reject
+                                </a>
+                            </div>
+                            {{else}}
+                            <div class="col-auto">
+                                <div class="p-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon text-green" width="24"
+                                        height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                        fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M5 12l5 5l10 -10"></path>
+                                    </svg>
+                                    Request accepted.
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-label mt-4">Email</div>
-                        <div>
-                            <div class="row g-2">
-                                <div class="col-auto">
-                                    <input type="text" class="form-control w-auto" name="email" value="{{user.email}}"
-                                        disabled>
-                                </div>
-                            </div>
+                            {{/compare}}
                         </div>
                     </div>
-                    <div class="card-footer bg-transparent mt-auto">
-                        <div class="btn-list justify-content-end">
-                            <a href="#" class="btn" onclick="history.back()">
-                                Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </div>
-                    </div>
+                    {{/each}}
+                    {{!-- Request list --}}
                 </div>
             </div>
         </div>
     </div>
 </div>
-{{!--
-<script src="/javascripts/users/profile.js" defer></script> --}}
+
+<script src="/javascripts/users/request.js" defer></script>

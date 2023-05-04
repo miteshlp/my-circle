@@ -41,15 +41,12 @@ router.get('/', async function (req, res, next) {
       page -= 1;
       result = await postsController.getPosts(req.query, req.user, status, page);
     }
-    const postCount = await db.models.post.find(result.condition);
-    const obj = pagination(postCount.length, result.page, 6);
+    const obj = pagination(result.postCount, result.page, 6);
     if (req.xhr) {
-      return res.render('./posts/filter', { postList: result.postList, layout: "blank", total: postCount.length, obj: obj });
+      return res.render('./posts/filter', { postList: result.postList, layout: "blank", total: result.postCount, obj: obj });
     }
-    console.log(result.postList);
-    res.render('./posts/list', { postList: result.postList, total: postCount.length, obj: obj });
+    res.render('./posts/list', { postList: result.postList, total: result.postCount, obj: obj });
   } catch (err) {
-    console.log("error in data get ", err);
     res.status(500).json({
       "status": 500,
       "message": "Error while getting data !"

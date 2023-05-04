@@ -15,7 +15,9 @@ module.exports = {
                 condition["$or"] = [{ title: { $regex: regex, $options: 'i' } }, { description: { $regex: regex, $options: 'i' } }]
             }
         }
-        const data = await db.models.post.aggregate([
+        const followingUsers = await db.models.follower.find({followerId : new ObjectId(user?._id) , status : "following"} , {userId : 1 , _id :0});
+        const userIds = followingUsers.map(function(x) { return x.userId } );
+        const posts = await db.models.post.aggregate([
             {
                 $match: condition
             },
@@ -109,7 +111,7 @@ module.exports = {
                 }
             },
             {
-                $match: { $expr: { $or: [{ $eq: ["$postBy.account_privacy", "public"] }, { $eq: ["$postby",new ObjectId(user._id)] }] } }
+                $match: { $expr: { $or: [{ $eq: ["$postBy.account_privacy", "public"] }, { $eq: ["$postby",new ObjectId(user?._id)] } ,{ $in :  [ "$postby", userIds ]}] } }
             },
             {
                 $sort: sort
@@ -117,8 +119,110 @@ module.exports = {
             { "$skip": skip },
             { "$limit": 6 },
         ]);
+        const postCount = await db.models.post.aggregate([
+            {
+                $match: condition
+            },
+
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "postby",
+                    foreignField: "_id",
+                    pipeline: [
+                        // {
+                        //     $project: { name: 1, path: 1 }
+                        // }
+                    ],
+                    as: "postUser"
+                }
+            },
+            {
+                $lookup: {
+                    from: "saved_posts",
+                    let: {
+                        postId: "$_id",
+                    },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        {
+                                            $eq: [
+                                                "$user",
+                                                new ObjectId(user?._id)
+                                            ]
+                                        },
+                                        {
+                                            $eq: [
+                                                "$post",
+                                                "$$postId"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: "isSaved"
+                }
+            },
+            {
+                $lookup: {
+                    from: "liked_posts",
+                    let: {
+                        postId: "$_id",
+                    },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        {
+                                            $eq: [
+                                                "$user",
+                                                new ObjectId(user?._id)
+                                            ]
+                                        },
+                                        {
+                                            $eq: [
+                                                "$post",
+                                                "$$postId"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: "isLiked"
+                }
+            },
+            {
+                $lookup: {
+                    from: "liked_posts",
+                    localField: "_id",
+                    foreignField: "post",
+                    as: "total"
+                }
+            },
+            {
+                $project: {
+                    savedPosts: { $size: "$isSaved" }, isLiked: { $size: "$isLiked" }, title: 1, description: 1, path: 1, createdOn: 1, postBy: { $arrayElemAt: ["$postUser", 0] }, likes: { $size: "$total" }, postby: 1
+                }
+            },
+            {
+                $match: { $expr: { $or: [{ $eq: ["$postBy.account_privacy", "public"] }, { $eq: ["$postby",new ObjectId(user?._id)] } ,{ $in :  [ "$postby", userIds ]}] } }
+            },
+            {
+                $count : "totalPost"
+            }
+        ]);
+        console.log(postCount);
         return {
-            postList: data,
+            postList: posts,
+            postCount: postCount[0]?.totalPost,
             page: page,
             condition: condition
         };

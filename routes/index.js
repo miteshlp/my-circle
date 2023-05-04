@@ -18,12 +18,11 @@ router.get('/', async function (req, res) {
       page -= 1;
       result = await postsController.getPosts(req.query, req.user, status, page);
     }
-    const postCount = await db.models.post.find(result.condition);
-    const obj = pagination(postCount.length, result.page, 6);
+    const obj = pagination(result.postCount, result.page, 6);
     if (req.xhr) {
-      return res.render('./posts/filter', { postList: result.postList, layout: "blank", obj: obj });
+      return res.render('./posts/filter', { postList: result.postList, layout: "blank", obj: obj,total: result.postCount });
     }
-    res.render('index', { title: 'Landing Page', postList: result.postList, total: postCount.length, menu: "sign-in", layout: 'public', obj: obj });
+    res.render('index', { title: 'Landing Page', postList: result.postList, total: result.postCount, menu: "sign-in", layout: 'public', obj: obj });
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -57,7 +56,7 @@ router.post('/sign-in', function (req, res, next) {
       if (!user) {
         return res.redirect('/sign-in');
       }
-      req.logIn(user, function (err) {
+      req.logIn(user,async function (err) {
         res.redirect('/posts');
       });
     })(req, res, next);

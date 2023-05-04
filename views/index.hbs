@@ -123,11 +123,14 @@
                     </div>
                     {{/each}}
                 </div>
+                {{#if postList}}
+                <br><br>
                 <div class="d-flex">
                     <ul class="pagination ms-auto">
                         {{{pagination "getValue" obj}}}
                     </ul>
                 </div>
+                {{/if}}
             </div>
         </div>
     </div>
