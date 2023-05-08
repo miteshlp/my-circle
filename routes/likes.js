@@ -9,7 +9,6 @@ router.get('/liked', async function (req, res, next) {
       res.render('./posts/liked-post', { liked: liked });
     } catch (err) {
   
-      console.log("error in saved post ", err);
       res.status(500).json({
         "status": 500,
         "message": "Error while geting liked post !"
@@ -47,7 +46,6 @@ router.get('/:postId/likes', async function (req, res, next) {
 
 router.post('/:postId/likes', async function (req, res, next) {
     try {
-        console.log("postid", req.params.postId);
         if (await db.models.liked_post.findOne({ post: req.params.postId, user: req.user._id })) {
             await db.models.liked_post.deleteOne({ post: req.params.postId, user: req.user._id })
             return res.status(202).json({

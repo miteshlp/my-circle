@@ -54,7 +54,12 @@ $(document).ready(function () {
             url: `/users/${userId}/followers/requested`,
             data: {},
             success: function (response) {
-                element.text("Requested");
+                if (response.status == "201") {
+                    element.text("Following");
+                }
+                else {
+                    element.text("Requested");
+                }
                 element.removeClass("bg-info-lt follow");
                 element.addClass("bg-success-lt")
                 toastr.success(response.message).delay(2000).fadeOut(1000);

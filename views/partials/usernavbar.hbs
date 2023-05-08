@@ -11,7 +11,7 @@
                         aria-label="Open user menu">
                         <span class="avatar me-1 rounded" style="background-image: url({{user.path}})"></span>
                         <div class="d-none d-xl-block ps-2">
-                            <div>{{user.name.full}}</div>
+                            <div id="userId" class="{{user._id}}">{{user.name.full}}</div>
                             <div class="mt-1 small text-muted">PC Gamer</div>
                         </div>
                     </a>
@@ -187,12 +187,9 @@
                     </ul>
                 </div>
             </div>
-            <div class="navbar-nav flex-row order-md-last">
-                <div class="mt-3">
-                    <span class="badge bg-info-lt">Followers : {{user.followers}}</span>
-                    <span class="badge bg-info-lt">Following :{{user.following}}</span>
-                </div>
-            </div>
         </div>
     </header>
 </div>
+{{#if user.login}}
+
+{{/if}}

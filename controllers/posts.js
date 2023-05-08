@@ -219,7 +219,6 @@ module.exports = {
                 $count : "totalPost"
             }
         ]);
-        console.log(postCount);
         return {
             postList: posts,
             postCount: postCount[0]?.totalPost,

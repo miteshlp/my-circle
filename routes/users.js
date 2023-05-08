@@ -3,7 +3,7 @@ var router = express.Router();
 const multer = require('multer')
 var path = require('path');
 const pagination = require('../controllers/pagination');
-
+const usersController = require('../controllers/users');
 
 var storage = multer.diskStorage(
   {
@@ -40,7 +40,6 @@ router.get('/', async function (req, res, next) {
     const page = Number(req.query.page) || 1;
     const skip = (page - 1) * 5;
     const sort = { createdOn: -1 };
-    console.log("id================",req.user._id);
     if (req.xhr) {
       if (regex != "empty") {
         condition["$or"] = [{ email: { $regex: regex, $options: 'i' } }, { "name.full": { $regex: regex, $options: 'i' } }]
@@ -111,7 +110,6 @@ router.get('/', async function (req, res, next) {
     ]);
 
     const userCount = await db.models.user.find(condition);
-    console.log(userList);
     const obj = pagination(userCount.length, page, 6);
 
     if (req.xhr) {
@@ -119,7 +117,6 @@ router.get('/', async function (req, res, next) {
     }
     res.render('./users/list', { userList: userList, total: userCount.length, obj: obj });
   } catch (err) {
-    console.log("err in user get---", err);
     res.status(400).json({
       "status": 400,
       "message": "Error while listing users"
@@ -129,10 +126,9 @@ router.get('/', async function (req, res, next) {
 
 router.get('/profile', async function (req, res, next) {
   try {
-    console.log(req.user);
-    res.render('./users/profile', { path: (req.user.path) ? req.user.path : "/images/no-image.png" });
+    const followCount = await usersController(req.user._id);
+    res.render('./users/profile', { path: (req.user.path) ? req.user.path : "/images/no-image.png" ,followCount :followCount });
   } catch (error) {
-    console.log("error in profile => ", error);
   }
 });
 router.put('/profile', upload.single('aavtar'), async function (req, res, next) {
@@ -143,7 +139,6 @@ router.put('/profile', upload.single('aavtar'), async function (req, res, next) 
         "message": req.fileError
       });
     }
-    console.log(req.body);
     const update = {
       name: {
         first: req.body.firstName.trim(),
@@ -160,7 +155,6 @@ router.put('/profile', upload.single('aavtar'), async function (req, res, next) 
 
     res.render('./users/profile', { messages: req.flash('info') });
   } catch (error) {
-    console.log("error in profile edit=> ", error);
     res.status(500).json({
       "status": 500,
       "message": "Error while profile upadate"

@@ -5,7 +5,17 @@
                 <div class="row g-0">
                     <div class="col d-flex flex-column">
                         <div class="card-body">
-                            <h4 class="card-title">Profile Details</h4>
+                            <div class="d-flex">
+                                <h4 class="card-title">Profile Details</h4>
+                                <div class="ms-auto">
+                                    <span class="badge bg-info-lt ms-auto" id="followers">Followers :
+                                        {{followCount.followers}}</span>
+                                    <span class="badge bg-info-lt ms-auto" id="following">Following :
+                                        {{followCount.following}}</span>
+                                </div>
+                            </div>
+
+
                             <div class="row align-items-center">
                                 <div class="col-auto"><img src="{{path}}" alt="no image" height="100px" width="100px">
                                 </div>
@@ -14,7 +24,8 @@
                                         <div class="mb-3">
                                             <input class="form-control" name="aavtar" type="file" id="formFile">
                                         </div>
-                                    {{!-- </a> --}}
+                                        {{!--
+                                    </a> --}}
                                 </div>
                             </div>
                             <br>

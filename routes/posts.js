@@ -5,6 +5,7 @@ const multer = require('multer')
 const path = require('path');
 const pagination = require('../controllers/pagination');
 const postsController = require('../controllers/posts');
+const { session } = require('passport');
 
 const storage = multer.diskStorage(
   {
@@ -60,8 +61,6 @@ router.get('/saved', async function (req, res, next) {
     const saved = await postsController.savedPosts(req.user, "save");
     res.render('./posts/saved-post', { saved: saved });
   } catch (err) {
-
-    console.log("error in saved post ", err);
     res.status(500).json({
       "status": 500,
       "message": "Error while geting saved post !"
@@ -88,7 +87,6 @@ router.post('/save', async function (req, res, next) {
       "message": "Post saved !"
     })
   } catch (err) {
-    console.log("error in save ", err);
     res.status(400).json({
       "status": 400,
       "message": "Error while saving or unsaving post !"

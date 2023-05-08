@@ -20,11 +20,10 @@ router.get('/', async function (req, res) {
     }
     const obj = pagination(result.postCount, result.page, 6);
     if (req.xhr) {
-      return res.render('./posts/filter', { postList: result.postList, layout: "blank", obj: obj,total: result.postCount });
+      return res.render('./posts/filter', { postList: result.postList, layout: "blank", obj: obj, total: result.postCount });
     }
     res.render('index', { title: 'Landing Page', postList: result.postList, total: result.postCount, menu: "sign-in", layout: 'public', obj: obj });
   } catch (err) {
-    console.log(err);
     res.status(500).json({
       "status": 500,
       "message": "Error while getting post"
@@ -56,7 +55,7 @@ router.post('/sign-in', function (req, res, next) {
       if (!user) {
         return res.redirect('/sign-in');
       }
-      req.logIn(user,async function (err) {
+      req.logIn(user, async function (err) {
         res.redirect('/posts');
       });
     })(req, res, next);
@@ -70,13 +69,13 @@ router.post('/sign-in', function (req, res, next) {
 });
 
 router.get('/sign-up', function (req, res) {
-  try{
+  try {
 
     if (req.isAuthenticated()) {
       return res.redirect('/posts');
     }
     res.render('sign-up', { title: 'Sign up Page', layout: 'public', messages: req.flash('info') });
-  }catch(err){
+  } catch (err) {
     res.status(400).json({
       "status": 400,
       "message": "Error while rendering sign-up page !"
@@ -91,7 +90,6 @@ router.get('/email-validation', async function (req, res) {
     }
     res.send(true);
   } catch (err) {
-    console.log("error in email validate", err);
     res.status(409).json({
       "status": 409,
       "message": "Error while email validate !"
@@ -133,7 +131,6 @@ router.get('/view/:id', async function (req, res, next) {
     const postList = await postsController.viewPost(req.params.id);
     res.render('./posts/view', { postList: postList, layout: "blank" });
   } catch (err) {
-    console.log("error in view", err);
     res.status(400).json({
       "status": 400,
       "message": "Error while view post!"

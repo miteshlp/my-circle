@@ -23,6 +23,10 @@
   <link href="/dist/css/tabler-flags.min.css?1674944402" rel="stylesheet" />
   <link href="/dist/css/tabler-payments.min.css?1674944402" rel="stylesheet" />
 
+  {{!-- web socket --}}
+  <script src="/socket.io/socket.io.js"></script>
+
+
   {{!-- toster cdn --}}
   <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css">
@@ -45,13 +49,18 @@
   <div class="body">
     {{{body}}}
   </div>
-
-  {{!-- client side socket  --}}
-  <script src="/socket.io/socket.io.js"></script>
   <script>
-    var socket = io();
+    window.socket = io.connect('http://localhost:3000', {
+      query: {
+        "userId": $("#userId").attr("class")
+      }
+    });
+    socket.on("requestNotify", () => {
+      console.log("notify called to you");
+      alert("request recived !");
+    })
   </script>
-
 </body>
+<script src="/javascripts/localSocket.js"></script>
 
 </html>

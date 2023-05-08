@@ -89,9 +89,6 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(async function (user, done) {
   try {
     console.log("in deserialization");
-    // getting followers and following count
-    user.followers = await db.models.follower.find({ userId: new ObjectId(user._id), status: "following" }).count();
-    user.following = await db.models.follower.find({ followerId: new ObjectId(user._id), status: "following" }).count();
     done(null, user);
   } catch (err) {
     console.log(err);

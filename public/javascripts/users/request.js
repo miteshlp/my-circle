@@ -19,6 +19,7 @@ $(document).ready(function () {
                 </svg>
                 Request accepted.
             </div>`);
+                
             },
             error: function (error) {
                 toastr.error(error.responseJSON.message).delay(1500).fadeOut(1000);
