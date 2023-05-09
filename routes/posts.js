@@ -82,6 +82,19 @@ router.post('/save', async function (req, res, next) {
     }
     req.body.user = req.user._id;
     await db.models.saved_post.create(req.body);
+
+    // prepare object for notification create
+    const postDetails = await db.models.post.findOne({ _id: new ObjectId(req.body.post) }, { postby: 1, _id: 0 });
+    const notificationObject = {
+      receiverId: postDetails.postby,
+      notifireId: req.user._id,
+      postId: req.body.post,
+      message: "Saved your post !"
+    }
+    await db.models.notification.create(notificationObject);
+    const notificationCount = await db.models.notification.find({ receiverId: postDetails.postby, isSeen : false }).count();
+    io.to((postDetails.postby).toString()).emit("unseenNotification", notificationCount);
+
     res.status(201).json({
       "status": 201,
       "message": "Post saved !"

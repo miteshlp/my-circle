@@ -6,17 +6,20 @@ const comments = require('../controllers/comments');
 router.post('/:userId/followers/requested', async function (req, res, next) {
     try {
         const userId = req.params.userId;
-        const isPublic = await db.models.user.find({ _id: new ObjectId(req.params.userId), account_privacy: "public" });
+        const isPublic = await db.models.user.find({ _id: new ObjectId(userId), account_privacy: "public" });
         if (isPublic.length) {
-            await db.models.follower.create({ userId: req.params.userId, followerId: req.user._id, status: "following" });
+            await db.models.follower.create({ userId: userId, followerId: req.user._id, status: "following" });
             return res.status(201).json({
                 "status": 201,
                 "message": "Following !"
             })
         }
-        // console.log(io.ioSocket.manager.roomClients);
-        io.sockets.in(ioSocket[userId]).emit("requestNotify");
-        await db.models.follower.create({ userId: req.params.userId, followerId: req.user._id });
+        await db.models.follower.create({ userId: userId, followerId: req.user._id });
+
+        // get request count to show in requestnotify badge
+        const requestCount = await db.models.follower.find({userId : userId , status : "requested"}).count();
+        io.to(userId).emit("requestNotify" ,requestCount);
+        
         res.status(201).json({
             "status": 202,
             "message": "follow request sent !"

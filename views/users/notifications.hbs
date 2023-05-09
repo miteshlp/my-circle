@@ -1,0 +1,36 @@
+<style>
+    .unSeen {
+        background: #f4f1f1;
+    }
+</style>
+<div class="page-body">
+    <div class="container-xl">
+        <div class="card" style="height: 28rem">
+            <div class="card-body card-body-scrollable card-body-scrollable-shadow">
+                <div class="divide-y">
+                    <h4 class="card-title">Notifications</h4>
+                    {{!-- Request list --}}
+                    {{#each allNotifications}}
+                    <div class="p-3 specificNotification{{#unless isSeen}} unSeen {{/unless}}" data-postid="{{postId}}" data-notifyid="{{_id}}"
+                        data-bs-toggle="modal" data-bs-target="#view-modal">
+                        <div class="row">
+                            <div class="col-auto">
+                                <span class="avatar rounded" style="background-image: url({{notifire.path}})"></span>
+                            </div>
+                            <div class="col">
+                                <div class="text-truncate">
+                                    <strong>{{notifire.name.full}}</strong><span class="mx-2">{{message}}</span>
+                                </div>
+                                <div class="text-muted">{{ago createdOn}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                    {{!-- Request list --}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/javascripts/users/notifications.js" defer></script>
+{{> modals}}
