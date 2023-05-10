@@ -1,0 +1,35 @@
+<div class="card">
+    <div class="d-flex p-4 pb-0 pt-3">
+        <h4 class="card-title total-notify" data-total="{{unSeen.length}}">{{#if unSeen.length}}Notifications {{else}}No
+            new notifications{{/if}}</h4>
+        <div class="ms-auto">
+            <a class="badge bg-info-lt h5 view-all-notifications" href="/users/notifications">View All</a>
+        </div>
+    </div>
+    <hr class="hr m-0">
+    </hr>
+    <div class="list-group list-group-flush list-group-hoverable">
+
+        {{!-- specificNotification --}}
+        {{#each unSeen}}
+        <div class="list-group-item">
+            <div class=" specificNotification{{#unless isSeen}} unSeen {{/unless}}" data-postid="{{postId}}"
+                data-notifyid="{{_id}}" data-bs-toggle="modal" data-bs-target="#view-modal">
+                <div class="row">
+                    <div class="col-auto">
+                        <span class="avatar rounded" style="background-image: url({{notifire.path}})"></span>
+                    </div>
+                    <div class="col">
+                        <div class="text-truncate">
+                            <strong>{{notifire.name.full}}</strong><span class="mx-2">{{message}}</span>
+                        </div>
+                        <div class="text-muted">{{ago createdOn}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
+
+<script src="/javascripts/users/notifications.js" defer></script>

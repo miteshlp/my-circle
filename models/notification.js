@@ -16,7 +16,6 @@ module.exports = function (mongoose) {
         },
         postId: {
             type: mongoose.Schema.Types.ObjectId,
-            required: true
         },
         message: {
             type: String,

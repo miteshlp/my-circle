@@ -1,14 +1,9 @@
-<style>
-    .unSeen {
-        background: #f4f1f1;
-    }
-</style>
 <div class="page-body">
     <div class="container-xl">
         <div class="card" style="height: 28rem">
             <div class="card-body card-body-scrollable card-body-scrollable-shadow">
                 <div class="divide-y">
-                    <h4 class="card-title">Notifications</h4>
+                    <h4 class="card-title m-2">Notifications ({{allNotifications.length}})</h4>
                     {{!-- Request list --}}
                     {{#each allNotifications}}
                     <div class="p-3 specificNotification{{#unless isSeen}} unSeen {{/unless}}" data-postid="{{postId}}" data-notifyid="{{_id}}"
@@ -33,4 +28,3 @@
     </div>
 </div>
 <script src="/javascripts/users/notifications.js" defer></script>
-{{> modals}}

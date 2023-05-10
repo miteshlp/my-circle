@@ -4,7 +4,7 @@ module.exports =  function (mongoose) {
     mongoose.connect(process.env.url);
     const db = mongoose.connection;
     db.once('open', function () {
-        console.log("Connection Successful!");
+        console.log("Databse Connection Successful!");
     });
     
     const files = fs.readdirSync('./models');

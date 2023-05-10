@@ -106,11 +106,11 @@ router.get('/', async function (req, res, next) {
         $sort: { createdOn: -1 }
       },
       { "$skip": skip },
-      { "$limit": 6 }
+      { "$limit": 8 }
     ]);
 
     const userCount = await db.models.user.find(condition);
-    const obj = pagination(userCount.length, page, 6);
+    const obj = pagination(userCount.length, page, 8);
 
     if (req.xhr) {
       return res.render('./users/filter', { userList: userList, layout: "blank", total: userCount.length, obj: obj });

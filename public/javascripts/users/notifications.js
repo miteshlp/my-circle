@@ -2,7 +2,8 @@ $(document).ready(function () {
 
     $(document).on('click', '.specificNotification', function () {
         const postId = $(this).data('postid');
-        $(this).removeClass("unSeen")
+        console.log("from herrer",postId);
+        $(this).removeClass("unSeen");
         $.ajax({
             type: "get",
             url: `/posts/view/${postId}`,

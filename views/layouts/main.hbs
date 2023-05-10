@@ -36,14 +36,22 @@
       color: red;
     }
 
-    .dropdown-menu {
+    .liked_menu {
       max-height: 180px;
       overflow-y: auto;
       overflow-x: hidden;
     }
 
-    .badge {
+    .badge-notification {
       font-size: 10px;
+    }
+
+    .notification-menu {
+      width: 400px !important;
+    }
+
+    .unSeen {
+      background: #f4f1f1;
     }
   </style>
 </head>
@@ -60,6 +68,25 @@
         "userId": userId
       }
     });
+
+    function getNotifyCount() {
+      $.ajax({
+        type: "get",
+        url: `/users/notifications/unSeen`,
+        success: function (response) {
+          $(".notification-menu").html(response);
+          const totalCount = $(".total-notify").data("total");
+          if (totalCount > 0) {
+            $("#notifications").html(`<span class="badge bg-danger badge-notification badge-pill">${totalCount}</span>`);
+          }
+        },
+        error: function (error) {
+          console.log(error);
+        }
+      });
+    }
+    getNotifyCount();
+
     socket.emit("getRequestCount", userId)
     socket.on("totalRequests", (RequestCount) => {
       if (RequestCount > 0) {
@@ -73,23 +100,19 @@
       $("#requests").html(`<span class="badge bg-danger badge-notification badge-pill">${RequestCount}</span>`);
     });
 
-    socket.emit("getNotificationCount", userId)
-    socket.on("unseenNotification", (notificationCount) => {
-      if (notificationCount > 0) {
-        $("#notifications").html(`<span class="badge bg-danger badge-notification badge-pill">${notificationCount}</span>`);
-      }
-      else {
-        $("#notifications").html("");
-      }
-    });
-
     $(document).on('click', '.unSeen', function () {
       const notifyId = $(this).data("notifyid");
       socket.emit("updateNotification", notifyId)
-      socket.emit("getNotificationCount", userId)
+    });
+
+    socket.on("newNotification", (newNotification) => {
+      getNotifyCount();
+      toastr.info(newNotification).delay(1500).fadeOut(1000);
+
     });
   </script>
+
+{{> modals}}
 </body>
-<script src="/javascripts/localSocket.js"></script>
 
 </html>
