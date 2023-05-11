@@ -1,6 +1,4 @@
-const notificationController = require("./controllers/notifications");
-
-module.exports = function (server,) {
+module.exports = function (server) {
     global.io = require("socket.io")(server, {
         cors: {
             origin: '*',

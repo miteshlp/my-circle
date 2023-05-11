@@ -35,88 +35,21 @@ var upload = multer({
 /* GET users listing. */
 router.get('/', async function (req, res, next) {
   try {
-    const condition = { isDeleted: false, _id: { $ne: new ObjectId(req.user._id) } };
-    const regex = req.query.search;
     const page = Number(req.query.page) || 1;
-    const skip = (page - 1) * 5;
-    const sort = { createdOn: -1 };
-    if (req.xhr) {
-      if (regex != "empty") {
-        condition["$or"] = [{ email: { $regex: regex, $options: 'i' } }, { "name.full": { $regex: regex, $options: 'i' } }]
-      }
-    }
-    const userList = await db.models.user.aggregate([
-      {
-        $match: condition
-      },
-      {
-        $lookup: {
-          from: "posts",
-          localField: "_id",
-          foreignField: "postby",
-          pipeline: [{ $match: { isDeleted: false } }],
-          as: "TotalPosts"
-        }
-      },
-      {
-        $lookup: {
-          from: "saved_posts",
-          localField: "_id",
-          foreignField: "user",
-          as: "TotalSaved"
-        }
-      },
-      {
-        $lookup: {
-          from: "followers",
-          let: {
-            user: "$_id",
-          },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    {
-                      $eq: [
-                        "$followerId",
-                        new ObjectId(req.user._id)
-                      ]
-                    },
-                    {
-                      $eq: [
-                        "$userId",
-                        "$$user"
-                      ]
-                    }
-                  ]
-                }
-              }
-            },{
-              $project : { status : 1}
-            }
-          ],
-          as: "isFollowed"
-        }
-      },
-      {
-        $project: { isFollowed : {$arrayElemAt : ["$isFollowed" ,0]}, savedPosts: { $size: "$TotalSaved" }, posts: { $size: "$TotalPosts" }, name: 1, eamil: 1, path: 1, createdOn: 1, account_privacy: 1 }
-      },
-      {
-        $sort: { createdOn: -1 }
-      },
-      { "$skip": skip },
-      { "$limit": 8 }
-    ]);
+    let status = false;
+    if (req.xhr) status = true;
+    const limit = 8
+    const result = await usersController.get(req.query, req.user, status, page, limit);
 
-    const userCount = await db.models.user.find(condition);
-    const obj = pagination(userCount.length, page, 8);
+    const obj = pagination(result.userCount, page, limit);
+    console.log(obj);
 
     if (req.xhr) {
-      return res.render('./users/filter', { userList: userList, layout: "blank", total: userCount.length, obj: obj });
+      return res.render('./users/filter', { userList: result.userList, layout: "blank", total: result.userCount, obj: obj, range: result.fromTo });
     }
-    res.render('./users/list', { userList: userList, total: userCount.length, obj: obj });
+    res.render('./users/list', { userList: result.userList, total: result.userCount, obj: obj, range: result.fromTo });
   } catch (err) {
+    console.log(err);
     res.status(400).json({
       "status": 400,
       "message": "Error while listing users"
@@ -126,8 +59,8 @@ router.get('/', async function (req, res, next) {
 
 router.get('/profile', async function (req, res, next) {
   try {
-    const followCount = await usersController(req.user._id);
-    res.render('./users/profile', { path: (req.user.path) ? req.user.path : "/images/no-image.png" ,followCount :followCount });
+    const followCount = await usersController.getFollowCount(req.user._id);
+    res.render('./users/profile', { path: (req.user.path) ? req.user.path : "/images/no-image.png", followCount: followCount });
   } catch (error) {
   }
 });

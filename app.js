@@ -107,9 +107,9 @@ app.use(function (req, res, next) {
 
 app.use('/users', require('./routes/users'));
 app.use('/users', require('./routes/followers'));
-app.use('/users', require('./routes//notifications'));
+app.use('/users', require('./routes/notifications'));
 app.use('/posts', require('./routes/posts'));
-app.use('/posts', require('./routes//likes'));
+app.use('/posts', require('./routes/likes'));
 app.use('/posts', require('./routes/comments'));
 app.use('/reports', require('./routes/reports'));
 

@@ -53,6 +53,11 @@
     .unSeen {
       background: #f4f1f1;
     }
+
+    a {
+      cursor: pointer !important;
+      text-decoration: none !important;
+    }
   </style>
 </head>
 
@@ -107,12 +112,12 @@
 
     socket.on("newNotification", (newNotification) => {
       getNotifyCount();
-      toastr.info(newNotification).delay(1500).fadeOut(1000);
+      toastr.info(newNotification).delay(2000).fadeOut(1000);
 
     });
   </script>
 
-{{> modals}}
+  {{> modals}}
 </body>
 
 </html>

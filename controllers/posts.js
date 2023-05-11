@@ -1,8 +1,8 @@
 module.exports = {
-    getPosts: async function (query, user, isXhr, page) {
+    getPosts: async function (query, user, isXhr, page, limit) {
         const condition = { isDeleted: false };
         const regex = query.search;
-        const skip = (page - 1) * 6;
+        const skip = (page - 1) * limit;
         const sort = { createdOn: -1 };
         if (isXhr) {
             delete sort.createdOn;
@@ -15,9 +15,9 @@ module.exports = {
                 condition["$or"] = [{ title: { $regex: regex, $options: 'i' } }, { description: { $regex: regex, $options: 'i' } }]
             }
         }
-        const followingUsers = await db.models.follower.find({followerId : new ObjectId(user?._id) , status : "following"} , {userId : 1 , _id :0});
-        const userIds = followingUsers.map(function(x) { return x.userId } );
-        const posts = await db.models.post.aggregate([
+        const followingUsers = await db.models.follower.find({ followerId: new ObjectId(user?._id), status: "following" }, { userId: 1, _id: 0 });
+        const userIds = followingUsers.map(function (x) { return x.userId });
+        const postList = await db.models.post.aggregate([
             {
                 $match: condition
             },
@@ -111,13 +111,13 @@ module.exports = {
                 }
             },
             {
-                $match: { $expr: { $or: [{ $eq: ["$postBy.account_privacy", "public"] }, { $eq: ["$postby",new ObjectId(user?._id)] } ,{ $in :  [ "$postby", userIds ]}] } }
+                $match: { $expr: { $or: [{ $eq: ["$postBy.account_privacy", "public"] }, { $eq: ["$postby", new ObjectId(user?._id)] }, { $in: ["$postby", userIds] }] } }
             },
             {
                 $sort: sort
             },
             { "$skip": skip },
-            { "$limit": 6 },
+            { "$limit": limit },
         ]);
         const postCount = await db.models.post.aggregate([
             {
@@ -213,17 +213,32 @@ module.exports = {
                 }
             },
             {
-                $match: { $expr: { $or: [{ $eq: ["$postBy.account_privacy", "public"] }, { $eq: ["$postby",new ObjectId(user?._id)] } ,{ $in :  [ "$postby", userIds ]}] } }
+                $match: { $expr: { $or: [{ $eq: ["$postBy.account_privacy", "public"] }, { $eq: ["$postby", new ObjectId(user?._id)] }, { $in: ["$postby", userIds] }] } }
             },
             {
-                $count : "totalPost"
+                $count: "totalPost"
             }
         ]);
+        // count page wise from / to 
+        const total = postCount[0]?.totalPost
+        let to, fromTo;
+        if (page * limit > total) {
+            to = total;
+        }
+        else {
+            to = page * limit;
+        }
+        if ((skip + 1) == to) {
+            fromTo = to + "th"
+        }
+        else {
+            fromTo = skip + 1 + " to " + to
+        }
         return {
-            postList: posts,
-            postCount: postCount[0]?.totalPost,
+            postList: postList,
+            postCount: total,
             page: page,
-            condition: condition
+            fromTo: fromTo
         };
     },
     savedPosts: async function (user, modal) {
@@ -346,5 +361,5 @@ module.exports = {
         ]);
         return archived;
     },
-    
+
 } 

@@ -1,0 +1,38 @@
+<div class="page-body">
+    <div class="container-xl">
+        <div class="card" style="height: 28rem">
+            <div class="card-body card-body-scrollable card-body-scrollable-shadow">
+                <div class="divide-y">
+                    <h4 class="card-title m-2">Following</h4>
+                    {{!-- FollowerList list --}}
+                    {{#each following}}
+                    <div class="p-3 specificFollower">
+                        <div class="row">
+                            <div class="col-auto">
+                                <span class="avatar rounded" style="background-image: url({{follower.path}})"></span>
+                            </div>
+                            <div class="col">
+                                <div class="text-truncate">
+                                    <strong>{{follower.name.full}}</strong>
+                                </div>
+                                <div class="text-muted">{{ago createdOn}}</div>
+                            </div>
+                            <div class="col-auto">
+                                <a class="btn btn-outline-dark mx-1 remove" data-id="{{_id}}">Unfollow</a>
+                            </div>
+                        </div>
+                    </div>
+                    {{else}}
+                    <div class="p-3 specificFollower">
+                        <div class="row">
+                           <div class="text-muted">No following.</div>
+                        </div>
+                    </div>
+                    {{/each}}
+                    {{!-- Request list --}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/javascripts/users/followers.js" defer></script>

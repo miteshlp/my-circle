@@ -13,12 +13,13 @@ router.get('/', async function (req, res) {
     var page = Number(req.query.page) || 1;
     let status = false;
     if (req.xhr) status = true;
-    let result = await postsController.getPosts(req.query, req.user, status, page);
+    const limit = 6;
+    let result = await postsController.getPosts(req.query, req.user, status, page,limit);
     if (result.postList.length == 0 && page > 1) {
       page -= 1;
       result = await postsController.getPosts(req.query, req.user, status, page);
     }
-    const obj = pagination(result.postCount, result.page, 6);
+    const obj = pagination(result.postCount, result.page, limit);
     if (req.xhr) {
       return res.render('./posts/filter', { postList: result.postList, layout: "blank", obj: obj, total: result.postCount });
     }

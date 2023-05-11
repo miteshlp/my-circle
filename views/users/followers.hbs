@@ -1,0 +1,47 @@
+<div class="page-body">
+    <div class="container-xl">
+        <div class="card" style="height: 28rem">
+            <div class="card-body card-body-scrollable card-body-scrollable-shadow">
+                <div class="divide-y">
+                    <h4 class="card-title m-2">Followes</h4>
+                    {{!-- FollowerList list --}}
+                    {{#each followers}}
+                    <div class="p-3 specificFollower">
+                        <div class="row">
+                            <div class="col-auto">
+                                <span class="avatar rounded" style="background-image: url({{follower.path}})"></span>
+                            </div>
+                            <div class="col">
+                                <div class="text-truncate">
+                                    <strong>{{follower.name.full}}</strong>
+                                </div>
+                                <div class="text-muted">{{ago createdOn}}</div>
+                            </div>
+                            <div class="col-auto">
+                                {{#unless follower.isFollowing}}
+                                <a class="btn btn-outline-primary follow" data-id="{{follower._id}}">
+                                    Follow
+                                </a>
+                                {{else}}
+                                <a class="btn btn-outline-primary disabled">
+                                    {{capitalize follower.isFollowing.[0].status}}
+                                </a>
+                                {{/unless}}
+                                <a class="btn btn-outline-dark mx-1 remove" data-id="{{_id}}">Remove</a>
+                            </div>
+                        </div>
+                    </div>
+                    {{else}}
+                    <div class="p-3 specificFollower">
+                        <div class="row">
+                            <div class="text-muted">No followers.</div>
+                        </div>
+                    </div>
+                    {{/each}}
+                    {{!-- Request list --}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/javascripts/users/followers.js" defer></script>

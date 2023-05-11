@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
-const postsController = require('../controllers/posts');
-const comments = require('../controllers/comments');
+const followController = require("../controllers/followers"); 
 
+// insert follow request entry into followers collection
 router.post('/:userId/followers/requested', async function (req, res, next) {
     try {
         const userId = req.params.userId;
@@ -44,6 +44,7 @@ router.post('/:userId/followers/requested', async function (req, res, next) {
     }
 });
 
+// get list of follow requests
 router.get('/followers/requests', async function (req, res, next) {
     try {
         const requests = await db.models.follower.aggregate([
@@ -74,6 +75,34 @@ router.get('/followers/requests', async function (req, res, next) {
     }
 });
 
+// get list of followers
+router.get('/followers', async function (req, res, next) {
+    try {
+        const followersList = await followController.getFollowers(req.user._id);
+        res.render('./users/followers', { followers: followersList });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            "status": 500,
+            "message": "Error while sending follow request !"
+        })
+    }
+});
+
+// get list of following
+router.get('/following', async function (req, res, next) {
+    try {
+        const followingList = await followController.getFollowing(req.user._id);
+        res.render('./users/following', { following: followingList });
+    } catch (err) {
+        res.status(500).json({
+            "status": 500,
+            "message": "Error while sending follow request !"
+        })
+    }
+});
+
+// action on follow request (accept / reject)
 router.put('/followers/requests/:requestId/:status', async function (req, res, next) {
     try {
         if (req.params.status == "true") {

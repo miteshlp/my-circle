@@ -8,14 +8,12 @@
                             <div class="d-flex">
                                 <h4 class="card-title">Profile Details</h4>
                                 <div class="ms-auto">
-                                    <span class="badge bg-info-lt ms-auto" id="followers">Followers :
-                                        {{followCount.followers}}</span>
-                                    <span class="badge bg-info-lt ms-auto" id="following">Following :
-                                        {{followCount.following}}</span>
+                                    <a class="badge bg-info-lt ms-auto" href="/users/followers" id="followers">Followers :
+                                        {{followCount.followers}}</a>
+                                    <a class="badge bg-info-lt ms-auto" href="/users/following" id="following">Following :
+                                        {{followCount.following}}</a>
                                 </div>
                             </div>
-
-
                             <div class="row align-items-center">
                                 <div class="col-auto"><img src="{{path}}" alt="no image" height="100px" width="100px">
                                 </div>

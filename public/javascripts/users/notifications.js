@@ -2,6 +2,10 @@ $(document).ready(function () {
 
     $(document).on('click', '.specificNotification', function () {
         const postId = $(this).data('postid');
+        if(!postId){
+            console.log("in this");
+            window.location.href = "/users/followers/requests";
+        }
         console.log("from herrer",postId);
         $(this).removeClass("unSeen");
         $.ajax({

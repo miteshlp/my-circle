@@ -1,7 +1,5 @@
 <div class="container-xl">
-    <div class="text-muted mt-1 mb-2">{{postList.length}} Posts</div>
     <div class="row row-cards">
-
         {{#each postList}}
         <div class="col-sm-6 col-lg-4">
             <div class="card card-sm">
@@ -142,6 +140,7 @@
     {{#if postList}}
     <br><br>
     <div class="d-flex">
+        <div class="badge bg-white-lt text-info mt-1 mb-2">Showing {{range}} of {{total}} posts</div>
         <ul class="pagination ms-auto">
             {{{pagination "getValue" obj}}}
         </ul>

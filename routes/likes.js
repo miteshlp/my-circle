@@ -62,17 +62,17 @@ router.post('/:postId/likes', async function (req, res, next) {
 
         // prepare object for notification create
         const postDetails = await db.models.post.findOne({ _id: new ObjectId(req.body.post) }, { postby: 1, _id: 0 });
-        const notifire = await db.models.user.findOne({ _id: postDetails.postby , isDeleted : false },{name : "$name.full"});
-        const notificationObject = {
-            receiverId: postDetails.postby,
-            notifireId: req.user._id,
-            postId: req.body.post,
-            message: "liked your post !"
+        if (!(postDetails.postby.toString() === req.user._id)) {
+            const notifire = await db.models.user.findOne({ _id: postDetails.postby, isDeleted: false }, { name: "$name.full" });
+            const notificationObject = {
+                receiverId: postDetails.postby,
+                notifireId: req.user._id,
+                postId: req.body.post,
+                message: "liked your post !"
+            }
+            await db.models.notification.create(notificationObject);
+            io.to((postDetails.postby).toString()).emit("newNotification", notifire.name + " " + notificationObject.message);
         }
-        await db.models.notification.create(notificationObject);
-        io.to((postDetails.postby).toString()).emit("newNotification" , notifire.name + " " + notificationObject.message);
-
-
         res.status(201).json({
             "status": 201,
             "message": "Post liked !"

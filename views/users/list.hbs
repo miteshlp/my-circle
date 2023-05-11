@@ -10,13 +10,12 @@
                         <h2 class="page-title">
                             Users
                         </h2>
-                        <div class="text-muted mt-1">{{userList.length}} people</div>
                     </div>
                     <!-- Page title actions -->
                     <div class="col-auto ms-auto d-print-none">
                         <div class="d-flex">
-                            <input type="search" id="searchUser" title="Search user by name or email" class="form-control d-inline-block w-9"
-                                placeholder="Search user…" />
+                            <input type="search" id="searchUser" title="Search user by name or email"
+                                class="form-control d-inline-block w-9" placeholder="Search user…" />
                         </div>
                     </div>
                 </div>
@@ -53,7 +52,9 @@
                     {{/each}}
                 </div>
                 {{!-- Pagination --}}
-                <br><br><div class="d-flex">
+                <br><br>
+                <div class="d-flex">
+                    <div class="badge bg-white-lt text-info mt-1 mb-2">Showing {{range}} of {{total}} users</div>
                     <ul class="pagination ms-auto">
                         {{{pagination "getValue" obj}}}
                     </ul>
