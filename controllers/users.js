@@ -258,7 +258,7 @@ module.exports = {
                     as: "isFollowed"
                 }
             },
-            {
+            {   //TODO following status is true
                 $project: {
                     allPosts: "$TotalPosts", isFollowed: { $arrayElemAt: ["$isFollowed", 0] }, posts: { $size: "$TotalPosts" }, name: 1, eamil: 1, path: 1, createdOn: 1, account_privacy: 1
                     ,isVisible : { $or: [{ $eq: ["$account_privacy", "public"] },{ $eq: ["$isFollowed.status", "following"] }] }
