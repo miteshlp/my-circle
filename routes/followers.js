@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const followController = require("../controllers/followers"); 
+const followController = require("../controllers/followers");
 
 // insert follow request entry into followers collection
 router.post('/:userId/followers/requested', async function (req, res, next) {
@@ -11,7 +11,9 @@ router.post('/:userId/followers/requested', async function (req, res, next) {
             receiverId: userId,
             notifireId: req.user._id
         };
-        const notifire = await db.models.user.findOne({ _id: new ObjectId(userId) , isDeleted : false },{name : "$name.full"});
+
+        const notifire = await db.models.user.findOne({ _id: new ObjectId(userId), isDeleted: false }, { name: "$name.full" });
+        // checking user account is public or not
         if (isPublic.length) {
             await db.models.follower.create({ userId: userId, followerId: req.user._id, status: "following" });
             notificationObject.message = "following you !"
@@ -22,6 +24,8 @@ router.post('/:userId/followers/requested', async function (req, res, next) {
                 "message": "Following !"
             })
         }
+
+        // if user account is not public
         await db.models.follower.create({ userId: userId, followerId: req.user._id });
         notificationObject.message = "sent you follow request. !"
         await db.models.notification.create(notificationObject);
@@ -66,6 +70,7 @@ router.get('/followers/requests', async function (req, res, next) {
                 $project: { follower: { $arrayElemAt: ["$followerDetails", 0] }, createdOn: 1, status: 1 }
             }
         ]);
+        console.log(requests);
         res.render('./users/requests', { requests: requests });
     } catch (err) {
         res.status(500).json({
@@ -106,11 +111,19 @@ router.get('/following', async function (req, res, next) {
 router.put('/followers/requests/:requestId/:status', async function (req, res, next) {
     try {
         if (req.params.status == "true") {
-            await db.models.follower.updateOne({ _id: new ObjectId(req.params.requestId) }, { $set: { status: "following" } });
+            const request = await db.models.follower.findOneAndUpdate({ _id: new ObjectId(req.params.requestId) }, { $set: { status: "following" } });
+            console.log("request" ,request);
+            const notificationObject = {
+                receiverId: request.followerId,
+                notifireId: req.user._id
+            };
+            notificationObject.message = "accepted your follow request !"
+            await db.models.notification.create(notificationObject);
+            io.to(request.followerId.toString()).emit("newNotification", req.user.name.full + " " + notificationObject.message);
             return res.status(201).json({
                 "status": 201,
                 "message": "follow request accepted !",
-            })
+            });
         }
         else {
             await db.models.follower.deleteOne({ _id: new ObjectId(req.params.requestId) });
@@ -120,6 +133,7 @@ router.put('/followers/requests/:requestId/:status', async function (req, res, n
             })
         }
     } catch (err) {
+        console.log(err);
         res.status(500).json({
             "status": 500,
             "message": "Error while request action !"

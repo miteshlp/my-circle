@@ -9,7 +9,7 @@ module.exports = function (server) {
     io.on("connection", async function (socket) {
         console.log("Socket connection successfull !");
         const userId = socket.handshake.query.userId
-
+        // console.log(io.sockets.adapter.rooms);
         // join socket.id to specific user room , room name is _id of user
         socket.join(userId);
 

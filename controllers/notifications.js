@@ -16,7 +16,7 @@ module.exports = {
                 }
             },
             {
-                $project: {notifire: { $arrayElemAt: ["$notifire", 0] },createdOn :1 , postId :1, message :1 ,isSeen:1}
+                $project: {notifireId : 1,notifire: { $arrayElemAt: ["$notifire", 0] },createdOn :1 , postId :1, message :1 ,isSeen:1}
             },
             {
                 $sort : {createdOn : -1}

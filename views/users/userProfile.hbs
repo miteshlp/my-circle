@@ -1,0 +1,184 @@
+{{#each userProfile}}
+<section class="h-100 gradient-custom-2">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col col-lg-9 col-xl-9">
+                <div class="card">
+                    <div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
+                        <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
+                                alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
+                                style="width: 150px; z-index: 1">
+                            {{#if isFollowed}}
+                            <button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
+                                style="z-index: 1;" disabled>
+                                {{capitalize isFollowed.status}}
+                            </button>
+                            {{else}}
+                            <button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
+                                style="z-index: 1;" data-id="{{_id}}">
+                                Follow
+                            </button>
+                            {{/if}}
+                        </div>
+                        <div class="ms-3" style="margin-top: 130px;">
+                            <h3>{{name.full}}</h3>
+                            <div>
+                                <p class="mb-1 h5">{{capitalize account_privacy}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 text-black" style="background-color: #f8f9fa;">
+                        <div class="d-flex justify-content-end text-center py-1">
+                            <div>
+                                <p class="mb-1 h5">{{posts}}</p>
+                                <p class="small text-muted mb-0">Posts</p>
+                            </div>
+                            <div class="px-3">
+                                <p class="mb-1 h5">{{../followCount.followers}}</p>
+                                <p class="small text-muted mb-0">Followers</p>
+                            </div>
+                            <div>
+                                <p class="mb-1 h5">{{../followCount.following}}</p>
+                                <p class="small text-muted mb-0">Following</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4 text-black">
+                        {{#compare isVisible "==" true}}
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <p class="lead fw-normal mb-0">Recent Posts</p>
+                            <p class="mb-0"><a href="#!" class="text-muted">Show all</a></p>
+                        </div>
+                        <div class="row g-2">
+                            {{#each allPosts}}
+                            <div class="col-sm-6 col-lg-6">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <span class="avatar me-3 rounded"
+                                                style="background-image: url({{../path}})"></span>
+                                            <div>
+                                                <div>{{postBy.name.full}}</div>
+                                                <div class="text-muted">{{format createdOn}}</div>
+                                            </div>
+                                            <div class="ms-auto">
+                                                <a class="text-muted view" data-id="{{_id}}" data-bs-toggle="modal"
+                                                    data-bs-target="#view-modal" title="View Post">
+                                                    <!-- Download SVG icon from http://tabler-icons.io/i/eye -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24"
+                                                        height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                        stroke="currentColor" fill="none" stroke-linecap="round"
+                                                        stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                        <path d="M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                                                        <path
+                                                            d="M22 12c-2.667 4.667 -6 7 -10 7s-7.333 -2.333 -10 -7c2.667 -4.667 6 -7 10 -7s7.333 2.333 10 7" />
+                                                    </svg>
+                                                </a>
+                                                {{#compare postBy._id "!=" ../user._id}}
+                                                {{#if savedPosts}}
+                                                <a class="ms-3 text-muted save-post" data-id="{{_id}}" title="Unsave">
+                                                    <!-- Download SVG icon from http://tabler-icons.io/i/heart -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" height="24"
+                                                        viewBox="0 0 24 24" width="24">
+                                                        <path d="M0 0h24v24H0z" fill="none" />
+                                                        <path
+                                                            d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z" />
+                                                    </svg>&nbsp;
+                                                </a>
+                                                {{else}}
+                                                <a class="ms-3 text-muted save-post" data-id="{{_id}}" title="Save">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="icon icon-tabler icon-tabler-bookmark" width="24"
+                                                        height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                        stroke="currentColor" fill="none" stroke-linecap="round"
+                                                        stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M9 4h6a2 2 0 0 1 2 2v14l-5 -3l-5 3v-14a2 2 0 0 1 2 -2">
+                                                        </path>
+                                                    </svg>
+                                                </a>
+                                                {{/if}}
+                                                {{/compare}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a href="#" class="d-block"><img src="{{path}}" class="card-img-top"
+                                            height="280"></a>
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <div class="h3 mb-1">{{capital title}}</div>
+                                                <div class="text-muted">{{capital description}}</div>
+                                            </div>
+                                            <div class="ms-auto">
+                                                <a class="text-muted pe-auto likedBy text-decoration-none"
+                                                    data-id="{{_id}}" title="Liked by">
+                                                    <span class="text-muted">{{likes}}</span>
+                                                    <ul class="dropdown-menu liked_menu">
+                                                    </ul>
+                                                </a>
+                                                {{#if isLiked}}
+                                                <a class="ms-2 text-muted like-post" data-id="{{_id}}" title="Unlike">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="icon icon-filled text-red lg:mr-2 icon-tabler icon-tabler-heart"
+                                                        width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                        stroke="currentColor" fill="none" stroke-linecap="round"
+                                                        stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path
+                                                            d="M19.5 12.572l-7.5 7.428-7.5-7.428a5 5 0 1 1 7.5-6.566 5 5 0 1 1 7.5 6.572">
+                                                        </path>
+                                                    </svg>
+                                                </a>
+                                                {{else}}
+                                                <a class="ms-2 text-muted like-post" data-id="{{_id}}" title="Like">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon text-pink"
+                                                        width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                        stroke="currentColor" fill="none" stroke-linecap="round"
+                                                        stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path
+                                                            d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572">
+                                                        </path>
+                                                    </svg>
+                                                </a>
+                                                {{/if}}
+                                                <a class="ms-2 text-muted comment-btn" data-id="{{_id}}"
+                                                    data-bs-toggle="modal" data-bs-target="#edit-modal" title="comment">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="icon icon-tabler icon-tabler-message" width="24"
+                                                        height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                        stroke="currentColor" fill="none" stroke-linecap="round"
+                                                        stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M8 9h8"></path>
+                                                        <path d="M8 13h6"></path>
+                                                        <path
+                                                            d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z">
+                                                        </path>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/each}}
+                            {{else}}
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <p class="lead fw-normal mb-0">This account is private !</p>
+                            </div>
+                            {{/compare}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{{/each}}
+
+<script src="/javascripts/posts/list.js" defer></script>
+<script src="/javascripts/posts/comments.js" defer></script>

@@ -57,11 +57,21 @@ router.get('/', async function (req, res, next) {
   }
 });
 
-router.get('/profile', async function (req, res, next) {
+router.get('/profile/:userId?', async function (req, res, next) {
   try {
+    if (req.params.userId) {
+      const followCount = await usersController.getFollowCount(req.params.userId);
+      const userProfile = await usersController.userProfile(req.params.userId,req.user._id);
+      console.log( userProfile[0]);
+      return res.render('./users/userProfile', { userProfile: userProfile, followCount: followCount });
+    }
     const followCount = await usersController.getFollowCount(req.user._id);
+    console.log(req.params.userId);
     res.render('./users/profile', { path: (req.user.path) ? req.user.path : "/images/no-image.png", followCount: followCount });
-  } catch (error) {
+
+  }
+  catch (error) {
+    console.log(error);
   }
 });
 router.put('/profile', upload.single('aavtar'), async function (req, res, next) {

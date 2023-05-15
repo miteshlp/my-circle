@@ -5,6 +5,7 @@ const notificationController = require('../controllers/notifications');
 router.get('/notifications', async function (req, res, next) {
     try {
         const allNotifications = await notificationController.getNotifications(req.user._id);
+        console.log(allNotifications);
         res.render('./users/notifications', { allNotifications: allNotifications});
     } catch (err) {
 
