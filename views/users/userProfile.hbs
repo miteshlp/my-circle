@@ -1,6 +1,6 @@
 {{#each userProfile}}
 <section class="h-100 gradient-custom-2">
-    <div class="container py-5 h-100">
+    <div class="py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col col-lg-9 col-xl-9">
                 <div class="card">
@@ -15,7 +15,8 @@
                                 {{capitalize isFollowed.status}}
                             </button>
                             {{else}}
-                            <button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
+                            {{!-- TODO --}}
+                            <button type="button" class="btn btn-outline-dark follow" data-mdb-ripple-color="dark"
                                 style="z-index: 1;" data-id="{{_id}}">
                                 Follow
                             </button>
@@ -182,3 +183,4 @@
 
 <script src="/javascripts/posts/list.js" defer></script>
 <script src="/javascripts/posts/comments.js" defer></script>
+<script src="/javascripts/users/followers.js" defer></script>

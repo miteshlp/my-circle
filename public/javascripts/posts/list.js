@@ -101,7 +101,8 @@ $(document).ready(function () {
                     <path d="M0 0h24v24H0z" fill="none" />
                     <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z" />
                 </svg>`);
-                element.attr("title" , "Unsave")
+                    element.attr("title", "Unsave")
+                    toastr.success(response.message).delay(1000).fadeOut(1000);
                 }
                 else {
                     element.html(`<svg xmlns="http://www.w3.org/2000/svg"
@@ -111,9 +112,8 @@ $(document).ready(function () {
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                     <path d="M9 4h6a2 2 0 0 1 2 2v14l-5 -3l-5 3v-14a2 2 0 0 1 2 -2"></path>
                 </svg>`);
-                element.attr("title" , "Save")
+                    element.attr("title", "Save")
                 };
-                toastr.success(response.message).delay(1000).fadeOut(1000);
             },
             error: function (error) {
                 toastr.error(error.responseJSON.message).delay(2000).fadeOut(1000);
@@ -164,7 +164,8 @@ $(document).ready(function () {
                     </path>
                 </svg>`)
                     totalLikes.text(parseInt(totalLikes.text()) + 1);
-                    element.attr("title" ,"Unlike")
+                    element.attr("title", "Unlike");
+                    toastr.success(response.message).delay(1000).fadeOut(1000);
                 }
                 else {
                     element.html(`<svg xmlns="http://www.w3.org/2000/svg" class="icon text-pink" width="24"
@@ -176,9 +177,9 @@ $(document).ready(function () {
                     </path>
                 </svg>`)
                     totalLikes.text(parseInt(totalLikes.text()) - 1);
-                    element.attr("title" ,"Like")
+                    element.attr("title", "Like")
                 }
-                toastr.success(response.message).delay(1000).fadeOut(1000);
+
             },
             error: function (error) {
                 toastr.error(error.responseJSON.message).delay(1500).fadeOut(1000);

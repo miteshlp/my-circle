@@ -14,7 +14,7 @@
         {{#each unSeen}}
         <div class="list-group-item">
             <div class=" specificNotification{{#unless isSeen}} unSeen {{/unless}}" data-postid="{{postId}}"
-                data-notifyid="{{_id}}" data-bs-toggle="modal" data-bs-target="#view-modal">
+               data-senderid="{{notifire._id}}" data-notifyid="{{_id}}" {{#if postId}} data-bs-toggle="modal" data-bs-target="#view-modal" {{/if}}>
                 <div class="row">
                     <div class="col-auto">
                         <span class="avatar rounded" style="background-image: url({{notifire.path}})"></span>

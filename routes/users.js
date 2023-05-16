@@ -42,14 +42,12 @@ router.get('/', async function (req, res, next) {
     const result = await usersController.get(req.query, req.user, status, page, limit);
 
     const obj = pagination(result.userCount, page, limit);
-    console.log(obj);
 
     if (req.xhr) {
       return res.render('./users/filter', { userList: result.userList, layout: "blank", total: result.userCount, obj: obj, range: result.fromTo });
     }
     res.render('./users/list', { userList: result.userList, total: result.userCount, obj: obj, range: result.fromTo });
   } catch (err) {
-    console.log(err);
     res.status(400).json({
       "status": 400,
       "message": "Error while listing users"
@@ -58,20 +56,18 @@ router.get('/', async function (req, res, next) {
 });
 
 router.get('/profile/:userId?', async function (req, res, next) {
+
   try {
     if (req.params.userId) {
       const followCount = await usersController.getFollowCount(req.params.userId);
       const userProfile = await usersController.userProfile(req.params.userId,req.user._id);
-      console.log( userProfile[0]);
       return res.render('./users/userProfile', { userProfile: userProfile, followCount: followCount });
     }
     const followCount = await usersController.getFollowCount(req.user._id);
-    console.log(req.params.userId);
     res.render('./users/profile', { path: (req.user.path) ? req.user.path : "/images/no-image.png", followCount: followCount });
 
   }
   catch (error) {
-    console.log(error);
   }
 });
 router.put('/profile', upload.single('aavtar'), async function (req, res, next) {

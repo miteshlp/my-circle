@@ -6,8 +6,8 @@
                     <h4 class="card-title m-2">Notifications ({{allNotifications.length}})</h4>
                     {{!-- Request list --}}
                     {{#each allNotifications}}
-                    <div class="p-3 specificNotification{{#unless isSeen}} unSeen {{/unless}}" data-postid="{{postId}}" data-notifyid="{{notifireId}}"
-                        {{#if postId}} data-bs-toggle="modal" data-bs-target="#view-modal" {{/if}}>
+                    <div class="p-3 cursor-pointer specificNotification{{#unless isSeen}} unSeen {{/unless}}" data-postid="{{postId}}" data-notifyid="{{_id}}"
+                       data-senderid="{{notifireId}}" {{#if postId}} data-bs-toggle="modal" data-bs-target="#view-modal" {{/if}}>
                         <div class="row">
                             <div class="col-auto">
                                 <span class="avatar rounded" style="background-image: url({{notifire.path}})"></span>

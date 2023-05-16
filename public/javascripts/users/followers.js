@@ -3,24 +3,9 @@ $(document).ready(function () {
     $(document).on('click', '.follow', function () {
         const userId = $(this).data('id');
         const element = $(this);
-        console.log(userId);
-        $.ajax({
-            type: "post",
-            url: `/users/${userId}/followers/requested`,
-            success: function (response) {
-                if (response.status == "201") {
-                    element.text("Following");
-                }
-                else {
-                    element.text("Requested");
-                }
-                element.addClass("disabled");
-                toastr.success(response.message).delay(1500).fadeOut(1000);
-            },
-            error: function (error) {
-                toastr.error(error.responseJSON.message).delay(1500).fadeOut(1000);
-            }
-        });
+        const response = sendFollowRequest(userId)
+        element.text(response);
+        element.addClass("disabled");
     });
 
     $(document).on('click', '.remove', function () {

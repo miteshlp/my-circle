@@ -4,6 +4,9 @@ module.exports = {
     format: function (element) {
         return moment(element).format('MMMM Do, YYYY');
     },
+    tostring : function (element) {
+        return element.toString();
+    },
     ago: function (element) {
         return moment(element).fromNow();
     },
