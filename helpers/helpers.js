@@ -4,7 +4,7 @@ module.exports = {
     format: function (element) {
         return moment(element).format('MMMM Do, YYYY');
     },
-    tostring : function (element) {
+    tostring: function (element) {
         return element.toString();
     },
     ago: function (element) {
@@ -26,6 +26,14 @@ module.exports = {
             return str2;
         }
         return str.charAt(0).toUpperCase() + str.slice(1);
+    },
+    compareString: function (a, b, options) {
+        a = a.toString();
+        if (a.toString() === b) {
+            return options.fn(this);
+        } else {
+            return options.inverse(this);
+        }
     },
     pagination: function (func, obj) {
         let html = ``;

@@ -56,6 +56,11 @@
       width: 400px !important;
     }
 
+    #mycirclelogo {
+      width: 170px !important;
+      height: 70px !important;
+    }
+
     .unSeen {
       background: #f4f1f1;
     }
@@ -79,7 +84,7 @@
   </div>
   <script>
     const userId = $("#userId").attr("class");
-    window.socket = io.connect('http://192.168.1.171:3000', {
+    window.socket = io.connect('http://192.168.1.171:3001', {
       query: {
         "userId": userId
       }
@@ -130,7 +135,6 @@
     socket.on("newNotification", (newNotification) => {
       getNotifyCount();
       toastr.info(newNotification).delay(2000).fadeOut(1000);
-
     });
   </script>
 

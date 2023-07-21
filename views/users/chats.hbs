@@ -1,0 +1,44 @@
+<ul class="list-unstyled text-white scroll-chat">
+    <h5 class="font-weight-bold mb-3 text-center text-white">Chat</h5>
+    {{#each chat}}
+    {{#compareString senderId ../user._id}}
+    <div class="d-flex justify-content-end">
+        <li class="d-flex justify-content-between mb-2 w-75">
+            <div class="card mask-custom w-100">
+                <div class="card-header d-flex justify-content-between pt-2 pb-2"
+                    style="border-bottom: 1px solid rgba(255,255,255,.3);">
+                    <p class="fw-bold mb-0">{{../user.name.full}}</p>
+                    <p class="text-light small mb-0"><i class="far fa-clock"></i> {{ago createdOn}}</p>
+                </div>
+                <div class="card-body pt-2 pb-2">
+                    <p class="ml-2">{{message}}</p>
+                </div>
+            </div>
+            <img src={{../user.path}} alt="avatar" class="rounded-circle d-flex align-self-start ms-3 shadow-1-strong chat-user-icon">
+        </li>
+    </div>
+    {{else}}
+    <li class="d-flex justify-content-between mb-2 w-75">
+        <img src={{../chatPartner.path}} alt="avatar"
+            class="rounded-circle d-flex align-self-start me-3 shadow-1-strong chat-user-icon">
+        <div class="card mask-custom w-100">
+            <div class="card-header d-flex justify-content-between pt-2 pb-2"
+                style="border-bottom: 1px solid rgba(255,255,255,.3);">
+                <p class="fw-bold mb-0">{{../chatPartner.name}}</p>
+                <p class="text-light small mb-0"><i class="far fa-clock"></i> {{ago createdOn}}</p>
+            </div>
+            <div class="card-body pt-2 pb-2">
+                <p class="mb-0">{{message}}</p>
+            </div>
+        </div>
+    </li>
+    {{/compareString}}
+    {{/each}}
+</ul>
+<div id="messageBox">
+    <div class="card-footer text-muted d-flex justify-content-start align-items-center px-2">
+        <input type="text" class="form-control form-control-lg" id="chat-message-box" placeholder="Type message">
+        <a class="ms-3 text-muted" href="#!"><i class="fas fa-smile"></i></a>
+        <a class="ms-3" id="sendMessage" data-id="{{chatPartner._id}}"><i class="fas fa-paper-plane"></i></a>
+    </div>
+</div>
