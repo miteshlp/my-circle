@@ -20,6 +20,7 @@
     "handlebars-helpers": "^0.10.0",
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
+    "marked": "^2.0.3",
     "md5": "^2.3.0",
     "moment": "^2.29.4",
     "mongoose": "^7.0.3",

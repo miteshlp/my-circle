@@ -6,23 +6,31 @@ const chatsController = require('../controllers/chats');
 const { Configuration, OpenAIApi } = require("openai");
 
 const configuration = new Configuration({
-    apiKey: "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",
+    apiKey: "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",
 });
 const openai = new OpenAIApi(configuration);
+const promptObject = {};
 
-async function chatAPI(content) {
-    const response = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo-16k",
-        messages: [
-            {
-                "role": "user",
-                "content": content
-            },
-        ],
-        temperature: 0.5,
-        max_tokens: 15385,
-    });
-    return response.data.choices[0].message.content;
+async function chatAPI(content, user) {
+    try {
+        if (!promptObject[user]) {
+            promptObject[user] = [];
+        }
+        promptObject[user].push(content);
+        const response = await openai.createChatCompletion({
+            model: "gpt-3.5-turbo-16k",
+            messages: promptObject[user],
+            temperature: 0.5,
+            max_tokens: 15385,
+        });
+        promptObject[user].push({
+            role: 'assistant',
+            content: response.data.choices[0].message.content
+        });
+        return response.data.choices[0].message;
+    } catch (error) {
+        console.log(`error :>> `, error);
+    }
 }
 
 router.get('/chats', async function (req, res, next) {
@@ -52,29 +60,40 @@ router.get('/get-user-chat/:chatPartner', async function (req, res, next) {
     }
 });
 router.post('/chats/message', async function (req, res, next) {
+    let errorMessage;
     try {
         if (req.body.message?.length) {
             if (req.body.receiverId) {
                 await db.models.chat.create({ receiverId: req.body.receiverId, senderId: req.user._id, message: req.body.message });
                 io.to(req.body.receiverId).emit("newmessage", {
+                    id: req.user._id,
                     name: req.user.name.full,
                     path: req.user.path,
                     message: req.body.message
                 });
                 if (req.body.receiverId == "64ba6af81ebfa6cb3b079690") {
                     setTimeout(async () => {
-                        let answer = await chatAPI(req.body.message);
-                        await db.models.chat.create({ receiverId: req.user._id, senderId: "64ba6af81ebfa6cb3b079690", message: answer, isSeen: true });
-                        io.to(req.user._id).emit("newmessage", {
-                            name: "Chat AI",
-                            path: "/images/chatai.jpeg",
-                            message: answer
-                        });
+                        try {
+
+                            let answer = await chatAPI({
+                                "role": "user",
+                                "content": req.body.message
+                            }, req.user._id);
+                            await db.models.chat.create({ receiverId: req.user._id, senderId: "64ba6af81ebfa6cb3b079690", message: answer.content, isSeen: true });
+                            io.to(req.user._id).emit("newmessage", {
+                                id:"64ba6af81ebfa6cb3b079690",
+                                name: "Chat AI",
+                                path: "/images/chatai.jpeg",
+                                message: answer.content
+                            });
+                        } catch (error) {
+                            errorMessage = "Something wrong happend with provided promopt !";
+                        }
                     }, 500)
                 }
             }
         }
-        res.status(201).json({
+        return res.status(201).json({
             "status": 201,
             "message": "message sent !",
             "data": {
@@ -84,10 +103,13 @@ router.post('/chats/message', async function (req, res, next) {
             }
         })
     } catch (err) {
+        if (!errorMessage) {
+            errorMessage = "Error while sending message !"
+        }
         console.log(`err :>> `, err);
         res.status(500).json({
             "status": 500,
-            "message": "Error while sending message !"
+            "message": errorMessage
         })
     }
 });

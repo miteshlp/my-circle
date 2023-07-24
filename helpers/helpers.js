@@ -1,4 +1,48 @@
 const moment = require("moment");
+const marked = require('marked');
+
+function isMarkdownFormatted(str) {
+    // Regular expressions for common Markdown patterns
+    const headingPattern = /^\s*#+\s+/;
+    const unorderedListPattern = /^\s*[-+*]\s+/;
+    const orderedListPattern = /^\s*\d+\.\s+/;
+    const emphasisPattern = /(\*|_){1,2}.*?(\*|_){1,2}/;
+    const linkPattern = /\[.*?\]\(.*?\)/;
+    const imagePattern = /!\[.*?\]\(.*?\)/;
+    const codeBlockPattern = /^```[\s\S]*?^```/;
+    const inlineCodePattern = /`.*?`/;
+    const horizontalRulePattern = /^(\*\**)|(-{3,})|(_{3,})$/;
+    const blockquotePattern = /^\s*>\s+/;
+    const tablePattern = /(\|.*?)+\r?\n\s*\|?-+\|/;
+
+    // Check for each Markdown pattern in the string
+    const hasHeading = headingPattern.test(str);
+    const hasUnorderedList = unorderedListPattern.test(str);
+    const hasOrderedList = orderedListPattern.test(str);
+    const hasEmphasis = emphasisPattern.test(str);
+    const hasLink = linkPattern.test(str);
+    const hasImage = imagePattern.test(str);
+    const hasCodeBlock = codeBlockPattern.test(str);
+    const hasInlineCode = inlineCodePattern.test(str);
+    const hasHorizontalRule = horizontalRulePattern.test(str);
+    const hasBlockquote = blockquotePattern.test(str);
+    const hasTable = tablePattern.test(str);
+
+    // Return true if any of the Markdown patterns are detected
+    return (
+        hasHeading ||
+        hasUnorderedList ||
+        hasOrderedList ||
+        hasEmphasis ||
+        hasLink ||
+        hasImage ||
+        hasCodeBlock ||
+        hasInlineCode ||
+        hasHorizontalRule ||
+        hasBlockquote ||
+        hasTable
+    );
+}
 
 module.exports = {
     format: function (element) {
@@ -13,6 +57,17 @@ module.exports = {
     now: function () {
         return (moment().format('LLLL'));
         // const val = moment(Date.now()).format('MMMM Do, YYYY');
+    },
+    markDownFormater: function (mdString) {
+        try {
+            if (isMarkdownFormatted(mdString)) {
+                return marked(mdString);
+            }
+            return mdString;
+        }
+        catch (error) {
+            console.log(`error :>> `, error);
+        }
     },
     afterPoint: function (number) {
         // return Math.round(number*100)/100;
