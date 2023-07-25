@@ -23,12 +23,13 @@ const upload = multer({
     const ext = path.extname(file.originalname);
     if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg' && ext !== '.gif') {
       req.fileError = `Only jpg, jpeg ,gif and png files are allowed.`;
-      return callback(null, false)
+      return callback(null, false);
     }
+    if (parseInt(req.headers["content-length"]) > 2048000) {
+      req.fileError = `File size is too large. Maximum allowed size is 2 MB.`;
+      return callback(null, false);
+    };
     callback(null, true)
-  },
-  limits: {
-    fileSize: 1024 * 2048
   }
 });
 /* GET Post listing. */
@@ -38,16 +39,16 @@ router.get('/', async function (req, res, next) {
     let status = false;
     const limit = 6
     if (req.xhr) status = true;
-    let result = await postsController.getPosts(req.query, req.user, status, page ,limit);
+    let result = await postsController.getPosts(req.query, req.user, status, page, limit);
     if (result.postList.length == 0 && page > 1) {
       page -= 1;
       result = await postsController.getPosts(req.query, req.user, status, page);
     }
     const obj = pagination(result.postCount, result.page, limit);
     if (req.xhr) {
-      return res.render('./posts/filter', { postList: result.postList, layout: "blank", total: result.postCount, obj: obj,range: result.fromTo });
+      return res.render('./posts/filter', { postList: result.postList, layout: "blank", total: result.postCount, obj: obj, range: result.fromTo });
     }
-    res.render('./posts/list', { postList: result.postList, total: result.postCount, obj: obj,range: result.fromTo });
+    res.render('./posts/list', { postList: result.postList, total: result.postCount, obj: obj, range: result.fromTo });
   } catch (err) {
     res.status(500).json({
       "status": 500,
@@ -86,7 +87,7 @@ router.post('/save', async function (req, res, next) {
 
     // prepare object for notification create
     const postDetails = await db.models.post.findOne({ _id: new ObjectId(req.body.post) }, { postby: 1, _id: 0 });
-    const notifire = await db.models.user.findOne({ _id: postDetails.postby , isDeleted : false },{name : "$name.full"});
+    const notifire = await db.models.user.findOne({ _id: postDetails.postby, isDeleted: false }, { name: "$name.full" });
     const notificationObject = {
       receiverId: postDetails.postby,
       notifireId: req.user._id,
@@ -94,7 +95,7 @@ router.post('/save', async function (req, res, next) {
       message: "Saved your post !"
     }
     await db.models.notification.create(notificationObject);
-    io.to((postDetails.postby).toString()).emit("newNotification" , notifire.name + " " + notificationObject.message);
+    io.to((postDetails.postby).toString()).emit("newNotification", notifire.name + " " + notificationObject.message);
 
     res.status(201).json({
       "status": 201,

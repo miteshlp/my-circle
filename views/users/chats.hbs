@@ -1,3 +1,11 @@
+<div class="d-flex flex-row" onclick="window.location.href=&quot;/users/profile/{{chatPartner._id}}&quot;" style="cursor: pointer;">
+    <img src="{{chatPartner.path}}" alt="avatar" class="rounded-circle me-3 shadow-1-strong" width="60"
+        height="60">
+    <div class="d-flex align-self-center">
+        <p class="fw-bold mb-0">{{chatPartner.name}}</p>
+    </div>
+</div>
+
 <ul class="list-unstyled text-white scroll-chat">
     <h5 class="font-weight-bold mb-3 text-center text-white">Chat</h5>
     {{#each chat}}
@@ -14,13 +22,13 @@
                     <p class="ml-2">{{markDownFormater message}}</p>
                 </div>
             </div>
-            <img src={{../user.path}} alt="avatar" class="rounded-circle d-flex align-self-start ms-3 shadow-1-strong chat-user-icon">
+            <img src={{../user.path}} alt="avatar" class="rounded-circle ms-3 shadow-1-strong chat-user-icon">
         </li>
     </div>
     {{else}}
     <li class="d-flex justify-content-between mb-2 w-75">
         <img src={{../chatPartner.path}} alt="avatar"
-            class="rounded-circle d-flex align-self-start me-3 shadow-1-strong chat-user-icon">
+            class="rounded-circle me-3 shadow-1-strong chat-user-icon">
         <div class="card mask-custom w-100">
             <div class="card-header d-flex justify-content-between pt-2 pb-2"
                 style="border-bottom: 1px solid rgba(255,255,255,.3);">

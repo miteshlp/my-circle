@@ -29,7 +29,7 @@ $(document).ready(function () {
         if ($('#user-list li.selected').data("id") == data.id) {
             $(".scroll-chat").append(`<li class="d-flex justify-content-between mb-2 w-75">
             <img src=${data.path} alt="avatar"
-            class="rounded-circle d-flex align-self-start me-3 shadow-1-strong" width="60" height="60">
+            class="rounded-circle me-3 shadow-1-strong" width="60" height="60">
             <div class="card mask-custom w-100">
             <div class="card-header d-flex justify-content-between pt-2 pb-2"
             style="border-bottom: 1px solid rgba(255,255,255,.3);">
@@ -98,7 +98,7 @@ $(document).ready(function () {
                         <p class="mb-0">${marked(response.data.message)}</p>
                         </div>
                         </div>
-                        <img src=${response.data.path} alt="avatar" class="rounded-circle d-flex align-self-start ms-3 shadow-1-strong"
+                        <img src=${response.data.path} alt="avatar" class="rounded-circle ms-3 shadow-1-strong"
                         width="60" height="60">
                             </li></div>`)
                     $("#chat-message-box").val('');
