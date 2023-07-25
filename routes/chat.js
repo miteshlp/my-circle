@@ -1,12 +1,10 @@
 var express = require('express');
 var router = express.Router();
 const chatsController = require('../controllers/chats');
-"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"
 
 const { Configuration, OpenAIApi } = require("openai");
-
 const configuration = new Configuration({
-    apiKey: "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",
+    apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 const promptObject = {};

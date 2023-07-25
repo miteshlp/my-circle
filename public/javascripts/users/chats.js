@@ -50,8 +50,8 @@ $(document).ready(function () {
 
     $(document).on('click', '.chat-user', function () {
         const userId = $(this).data('id');
-        $('#user-list li.selected').removeClass('selected');
-        $(this).addClass("selected");
+        $('#user-list li.selected').removeClass('selected alert-info');
+        $(this).addClass("selected alert-info");
         let element = $(`*[data-id=${userId}] span`);
         element.text("");
         element.removeClass("badge bg-danger");
