@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+    $("#userNavbar").removeClass("bg-white");
+
     socket.on("newmessage", (data) => {
 
         // add or update badge and unseen count and time for new message  
@@ -50,8 +52,8 @@ $(document).ready(function () {
 
     $(document).on('click', '.chat-user', function () {
         const userId = $(this).data('id');
-        $('#user-list li.selected').removeClass('selected alert-info');
-        $(this).addClass("selected alert-info");
+        $('#user-list li.selected').removeClass('selected');
+        $(this).addClass("selected");
         let element = $(`*[data-id=${userId}] span`);
         element.text("");
         element.removeClass("badge bg-danger");

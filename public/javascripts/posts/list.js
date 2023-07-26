@@ -3,7 +3,6 @@ function getValue(page) {
     const sort = $('#sort').text();
     let match = $("#searchPost").val().concat(" ").trim();
     if (match.length == 0) match = "empty";
-    console.log(sort);
     filterdata(page, filter, sort, match);
 }
 
@@ -209,7 +208,6 @@ $(document).ready(function () {
     $(document).on('click', '.comment-btn', function () {
         const id = $(this).data('id');
         const element = $(this);
-        console.log(id, "comment");
         $.ajax({
             type: "get",
             url: `/posts/${id}/comments`,

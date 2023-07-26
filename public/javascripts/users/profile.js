@@ -8,6 +8,21 @@ $(document).ready(function () {
         return /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%&])(.{4,20}$)/.test(value);
     });
 
+    const imageInput = document.getElementById("formFile");
+    const imagePreviewContainer = document.getElementById("imagePreviewContainer");
+
+    // Function to handle image selection and show preview
+    imageInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreviewContainer.style.backgroundImage = `url(${e.target.result})`;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
     $("#editUserForm").validate({
         rules: {
             firstName: {
@@ -19,7 +34,7 @@ $(document).ready(function () {
         },
         submitHandler: function (form) {
             const data = new FormData(form);
-            data.append( "account_privacy",$("#privacy").text());
+            data.append("account_privacy", $("#privacy").text());
             console.log($("form").serialize())
             console.log(data);
             $.ajax({

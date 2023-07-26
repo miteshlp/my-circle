@@ -5,6 +5,7 @@ body,
 
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     background: linear-gradient(to bottom right, rgb(28, 52, 60), rgb(75, 80, 41));
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
 .gradient-custom-chat {
@@ -30,11 +31,22 @@ body,
 }
 
 .scroll-chat {
-    height: 569px;
+    height: 508px;
     overflow-y: auto;
 }
 
 .chat-user-icon {
     height: 60px;
     width: 60px;
+}
+
+.selected {
+    background: rgba(19, 18, 18, 0.2)
+}
+
+#userId,
+#chat-partner,
+.nav-link-icon,
+.nav-link-title {
+    color: white;
 }

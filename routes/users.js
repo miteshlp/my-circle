@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const multer = require('multer')
+const sharp = require('sharp');
+const fs = require('fs');
 var path = require('path');
 const pagination = require('../controllers/pagination');
 const usersController = require('../controllers/users');
@@ -8,7 +10,7 @@ const usersController = require('../controllers/users');
 var storage = multer.diskStorage(
   {
     destination: function (req, file, cb) {
-      cb(null, './public/uploads/users')
+      cb(null, './public/users')
     },
     filename: function (req, file, cb) {
       cb(null, req.user._id + ".jpg");
@@ -24,11 +26,12 @@ var upload = multer({
       req.fileError = `Only jpg, jpeg ,gif and png files are allowed.`;
       return callback(null, false)
     }
+    if (parseInt(req.headers["content-length"]) > 2048000) {
+      req.fileError = `File size is too large. Maximum allowed size is 2 MB.`;
+      return callback(null, false);
+    };
     callback(null, true)
   },
-  limits: {
-    fileSize: 1024 * 2048
-  }
 });
 
 
@@ -60,7 +63,7 @@ router.get('/profile/:userId?', async function (req, res, next) {
   try {
     if (req.params.userId) {
       const followCount = await usersController.getFollowCount(req.params.userId);
-      const userProfile = await usersController.userProfile(req.params.userId,req.user._id);
+      const userProfile = await usersController.userProfile(req.params.userId, req.user._id);
       return res.render('./users/userProfile', { userProfile: userProfile, followCount: followCount });
     }
     const followCount = await usersController.getFollowCount(req.user._id);
@@ -73,7 +76,7 @@ router.get('/profile/:userId?', async function (req, res, next) {
 router.put('/profile', upload.single('aavtar'), async function (req, res, next) {
   try {
     if (req.fileError) {
-      res.status(400).json({
+      return res.status(400).json({
         "status": 400,
         "message": req.fileError
       });
@@ -87,7 +90,20 @@ router.put('/profile', upload.single('aavtar'), async function (req, res, next) 
       account_privacy: req.body.account_privacy
     }
     if (req.file) {
-      update.path = req.file.path.replace("public", "");
+      try {
+        const squareSize = 1000; // You can set the desired size for the square image
+        const inputFilePath = req.file.path;
+        const imagePath = "/uploads" + req.file.path.replace("public", "");
+        const outputFilePath = `/home/mitesh.p/Desktop/final-project2/public/${imagePath}`;
+        await sharp(inputFilePath)
+          .resize(squareSize, squareSize, { fit: 'cover', position: 'center' })
+          .jpeg({ quality: 100, chromaSubsampling: '4:4:4' })
+          .toFile(outputFilePath);
+        update.path = imagePath;
+        fs.unlinkSync(`/home/mitesh.p/Desktop/final-project2/${req.file.path}`);
+      } catch (error) {
+        return res.status(500).send('Error processing image.');
+      }
     }
     await db.models.user.updateOne({ email: req.user.email, isDeleted: false }, { $set: update });
     req.session.passport.user = await db.models.user.findOne({ email: req.user.email });

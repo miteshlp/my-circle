@@ -1,6 +1,5 @@
 module.exports = {
     getFollowers: async (userId) => {
-        console.log("in follow controller");
         const followers = await db.models.follower.aggregate([
             {
                 $match: { userId: new ObjectId(userId), status: "following" }
@@ -56,11 +55,9 @@ module.exports = {
                 $project: {follower: { $arrayElemAt: ["$followerDetails", 0] }, createdOn: 1, status: 1}
             }
         ]);
-        console.log(followers);
         return followers;
     },
     getFollowing: async (userId) => {
-        console.log("in follow controller");
         const following = await db.models.follower.aggregate([
             {
                 $match: { followerId: new ObjectId(userId), status: "following" }

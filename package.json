@@ -30,6 +30,7 @@
     "openai": "^3.3.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "sharp": "^0.32.4",
     "socket.io": "^4.6.1"
   }
 }

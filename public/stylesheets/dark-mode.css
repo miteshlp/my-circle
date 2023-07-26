@@ -1,0 +1,129 @@
+* {
+    user-select: none;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background-color: #fff;
+}
+
+#toggle_checkbox {
+    display: none;
+}
+
+label {
+    display: block;
+    position: absolute;
+    top: 50%;
+    width: 67px;
+    height: 32px;
+    margin: 0 auto;
+    background-color: #77b5fe;
+    border-radius: 40px;
+    transform: translateY(-51%);
+    cursor: pointer;
+    transition: 0.3s ease background-color;
+    overflow: hidden;
+}
+
+#star {
+    position: absolute;
+    top: 7px;
+    /* Smaller top position */
+    left: 7px;
+    /* Smaller left position */
+    width: 20px;
+    /* Smaller width */
+    height: 20px;
+    /* Smaller height */
+    background-color: #fafd0f;
+    transform: scale(0.8);
+    /* Smaller scale */
+    border-radius: 50%;
+    transition: 0.3s ease top, 0.3s ease left, 0.3s ease transform, 0.3s ease background-color;
+    z-index: 1;
+}
+
+#star-1 {
+    position: relative;
+}
+
+#star-2 {
+    position: absolute;
+    transform: rotateZ(36deg);
+}
+
+.star {
+    top: 0;
+    left: -3.5px;
+    /* Smaller left position */
+    font-size: 30px;
+    /* Smaller font size */
+    line-height: 14px;
+    /* Smaller line height */
+    color: #fafd0f;
+    transition: 0.3s ease color;
+}
+
+#moon {
+    position: absolute;
+    bottom: -34px;
+    /* Smaller bottom position */
+    right: 5px;
+    /* Smaller right position */
+    width: 24px;
+    /* Smaller width */
+    height: 24px;
+    /* Smaller height */
+    background-color: #fff;
+    border-radius: 50%;
+    transition: 0.3s ease bottom;
+}
+
+#moon:before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    /* Smaller top position */
+    left: -8.5px;
+    /* Smaller left position */
+    width: 24px;
+    /* Smaller width */
+    height: 24px;
+    /* Smaller height */
+    background-color: #03a9f4;
+    border-radius: 50%;
+    transition: 0.3s ease background-color;
+}
+
+#toggle_checkbox:checked+label {
+    background-color: #000;
+}
+
+#toggle_checkbox:checked+label #star {
+    top: 1px;
+    /* Smaller top position */
+    left: 37px;
+    /* Smaller left position */
+    transform: scale(0.3);
+    /* Smaller scale */
+    background-color: yellow;
+}
+
+#toggle_checkbox:checked+label .star {
+    color: yellow;
+}
+
+#toggle_checkbox:checked+label #moon {
+    bottom: 4px;
+    /* Smaller bottom position */
+}
+
+#toggle_checkbox:checked+label #moon:before {
+    background-color: #000;
+}

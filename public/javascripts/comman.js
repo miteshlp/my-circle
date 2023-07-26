@@ -1,5 +1,10 @@
+if (localStorage.getItem("theme-mode")) {
+    $("body").addClass("theme-dark");
+    const darkModeToggle = document.getElementById('toggle_checkbox');
+    darkModeToggle.checked = true;
+}
+
 function getUserProfile(userId) {
-    console.log("in comman");
     return window.location.href = `/users/profile/${userId}`
 }
 
@@ -24,3 +29,12 @@ function sendFollowRequest(userId) {
     });
     return requestStatus;
 }
+
+$("#day-night-toggle").on("click" ,function () {
+    $("body").toggleClass("theme-dark");
+    if ($("body").hasClass("theme-dark")) {
+        localStorage.setItem("theme-mode", "theme-dark");
+    } else {
+        localStorage.setItem("theme-mode", "");
+    }
+})

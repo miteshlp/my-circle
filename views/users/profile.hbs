@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="/stylesheets/user-profile.css">
 <form id="editUserForm" enctype="multipart/form-data">
     <div class="page-body">
         <div class="container-xl">
@@ -15,8 +16,7 @@
                                 </div>
                             </div>
                             <div class="row align-items-center">
-                                <div class="col-auto"><img src="{{path}}" alt="no image" height="100px" width="100px">
-                                </div>
+                                <div id="imagePreviewContainer" style="background-image: url(/uploads/users/{{user._id}}.jpg);"></div>
                                 <div class="col-auto">
                                     {{!-- <a href="#" class="btn"> --}}
                                         <div class="mb-3">

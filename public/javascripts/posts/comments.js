@@ -7,7 +7,6 @@ $(document).ready(function () {
         if (!comment) {
             return toastr.error("Can not add empty comment !").delay(1500).fadeOut(1000);
         }
-        console.log(postId, comment);
         $.ajax({
             type: "post",
             url: `/posts/${postId}/comments`,

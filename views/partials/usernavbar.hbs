@@ -1,10 +1,31 @@
-<div class="container-xl bg-white">
+<link rel="stylesheet" href="/stylesheets/dark-mode.css">
+<div class="container-xl bg-white" id="userNavbar">
     <header class="navbar navbar-expand-md d-print-none">
-        <div class="container-xl bg-white">
+        <div class="container-xl">
             <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
                 <img src="/images/mycircle.png" id="mycirclelogo" alt="mycircle" class="navbar-brand-image mx-2">
             </h1>
-            <div class="navbar-nav flex-row order-md-last">
+            {{!-- <input type="checkbox" id="toggle_checkbox">
+
+            <label for="toggle_checkbox" id="day-night-toggle">
+                <div id="star">
+                    <div class="star" id="star-1">★</div>
+                    <div class="star" id="star-2">★</div>
+                </div>
+                <div id="moon"></div>
+            </label> --}}
+            <div class="navbar-nav flex-row order-md-last justify-content-between" style="width: 300px">
+                <div class="d-flex">
+                    <input type="checkbox" id="toggle_checkbox">
+                    <label for="toggle_checkbox" id="day-night-toggle" class="d-flex align-items-center">
+                        <div id="star">
+                            <div class="star" id="star-1">★</div>
+                            <div class="star" id="star-2">★</div>
+                        </div>
+                        <div id="moon"></div>
+                    </label>
+                </div>
+
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown"
                         aria-label="Open user menu">
@@ -21,11 +42,12 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </header>
 
     <header class="navbar navbar-expand-md d-print-none">
-        <div class="container-xl bg-white">
+        <div class="container-xl">
             <div class="navbar-nav flex-row order-md-last">
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
@@ -141,9 +163,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/users/chats">
-                            <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fas fa-paper-plane"></i>
-                            </span>
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <i class="fas fa-paper-plane"></i>
+                                </span>
                                 <span class="nav-link-title">
                                     Chats
                                 </span>

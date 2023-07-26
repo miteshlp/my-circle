@@ -71,7 +71,6 @@ module.exports = {
                     $sort: { "lastMessage._id": -1 }
                 }
             ]);
-            console.log(`allUsers :>> `, allUsers);
             return allUsers;
         } catch (error) {
             console.log(`error :>> `, error);

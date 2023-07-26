@@ -1,0 +1,7 @@
+#imagePreviewContainer {
+    width: 200px !important;
+    height: 200px !important;
+    border: 1px solid black;
+    background-size: cover;
+    background-position: center;
+}
