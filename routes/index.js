@@ -23,7 +23,7 @@ router.get('/', async function (req, res) {
     if (req.xhr) {
       return res.render('./posts/filter', { postList: result.postList, layout: "blank", obj: obj, total: result.postCount });
     }
-    res.render('index', { title: 'Landing Page', postList: result.postList, total: result.postCount, menu: "sign-in", layout: 'public', obj: obj });
+    res.render('index', { title: 'My circle', postList: result.postList, total: result.postCount, menu: "sign-in", layout: 'public', obj: obj });
   } catch (err) {
     res.status(500).json({
       "status": 500,
@@ -37,7 +37,7 @@ router.get('/sign-in', function (req, res) {
     if (req.isAuthenticated()) {
       return res.redirect('/posts');
     }
-    res.render('sign-in', { title: 'Sign in Page', menu: "sign-up", layout: 'public', messages: req.flash('info') });
+    res.render('sign-in', { title: 'Sign in | My circle', menu: "sign-up", layout: 'public', messages: req.flash('info') });
   } catch (err) {
     res.status(500).json({
       "status": 500,
@@ -75,7 +75,7 @@ router.get('/sign-up', function (req, res) {
     if (req.isAuthenticated()) {
       return res.redirect('/posts');
     }
-    res.render('sign-up', { title: 'Sign up Page', layout: 'public', messages: req.flash('info') });
+    res.render('sign-up', { title: 'Sign up | My circle', layout: 'public', messages: req.flash('info') });
   } catch (err) {
     res.status(400).json({
       "status": 400,

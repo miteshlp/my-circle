@@ -49,7 +49,7 @@ router.get('/', async function (req, res, next) {
     if (req.xhr) {
       return res.render('./users/filter', { userList: result.userList, layout: "blank", total: result.userCount, obj: obj, range: result.fromTo });
     }
-    res.render('./users/list', { userList: result.userList, total: result.userCount, obj: obj, range: result.fromTo });
+    res.render('./users/list', { title: "Users | My circle", userList: result.userList, total: result.userCount, obj: obj, range: result.fromTo });
   } catch (err) {
     res.status(400).json({
       "status": 400,
@@ -64,10 +64,10 @@ router.get('/profile/:userId?', async function (req, res, next) {
     if (req.params.userId) {
       const followCount = await usersController.getFollowCount(req.params.userId);
       const userProfile = await usersController.userProfile(req.params.userId, req.user._id);
-      return res.render('./users/userProfile', { userProfile: userProfile, followCount: followCount });
+      return res.render('./users/userProfile', { title: "Profile | My circle", userProfile: userProfile, followCount: followCount });
     }
     const followCount = await usersController.getFollowCount(req.user._id);
-    res.render('./users/profile', { path: (req.user.path) ? req.user.path : "/images/no-image.png", followCount: followCount });
+    res.render('./users/profile', { title: "Profile | My circle", path: (req.user.path) ? req.user.path : "/images/no-image.png", followCount: followCount });
 
   }
   catch (error) {

@@ -48,7 +48,7 @@ router.get('/', async function (req, res, next) {
     if (req.xhr) {
       return res.render('./posts/filter', { postList: result.postList, layout: "blank", total: result.postCount, obj: obj, range: result.fromTo });
     }
-    res.render('./posts/list', { postList: result.postList, total: result.postCount, obj: obj, range: result.fromTo });
+    res.render('./posts/list', {title:"Timeline | My circle" , postList: result.postList, total: result.postCount, obj: obj, range: result.fromTo });
   } catch (err) {
     res.status(500).json({
       "status": 500,
@@ -61,7 +61,7 @@ router.get('/', async function (req, res, next) {
 router.get('/saved', async function (req, res, next) {
   try {
     const saved = await postsController.savedPosts(req.user, "save");
-    res.render('./posts/saved-post', { saved: saved });
+    res.render('./posts/saved-post', { title: "Saved posts | My circle", saved: saved });
   } catch (err) {
     res.status(500).json({
       "status": 500,
