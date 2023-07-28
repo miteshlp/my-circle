@@ -1,13 +1,17 @@
 var express = require('express');
 var router = express.Router();
 const chatsController = require('../controllers/chats');
-
 const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 const promptObject = {};
+
+
+
+// peer connection for video call
+const { v4: uuidv4 } = require("uuid");
 
 async function chatAPI(content, user) {
     try {
@@ -79,7 +83,7 @@ router.post('/chats/message', async function (req, res, next) {
                             }, req.user._id);
                             await db.models.chat.create({ receiverId: req.user._id, senderId: "64ba6af81ebfa6cb3b079690", message: answer.content, isSeen: true });
                             io.to(req.user._id).emit("newmessage", {
-                                id:"64ba6af81ebfa6cb3b079690",
+                                id: "64ba6af81ebfa6cb3b079690",
                                 name: "Chat AI",
                                 path: "/images/chatai.jpeg",
                                 message: answer.content
@@ -108,6 +112,33 @@ router.post('/chats/message', async function (req, res, next) {
         res.status(500).json({
             "status": 500,
             "message": errorMessage
+        })
+    }
+});
+
+router.get('/P2P-video-call', async function (req, res, next) {
+    try {
+        const roomId = uuidv4();
+        console.log(`roomId :>> `, roomId);
+        res.render('./users/video-call', { title: "Video-call | My circle", roomId: roomId, layout: "blank" });
+    } catch (err) {
+        console.log(`err :>> `, err);
+        res.status(500).json({
+            "status": 500,
+            "message": "Error while connecting to video call !"
+        })
+    }
+});
+
+router.get('/P2P-video-call/:room', async function (req, res, next) {
+    try {
+        console.log("P2P-video-call recevier");
+        res.render('./users/video-call', { title: "Video-call | My circle", layout: "blank", roomId: req.params.room });
+    } catch (err) {
+        console.log(`err :>> `, err);
+        res.status(500).json({
+            "status": 500,
+            "message": "Error while connecting to video call !"
         })
     }
 });

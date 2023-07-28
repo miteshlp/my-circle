@@ -50,3 +50,9 @@ body,
 .nav-link-title {
     color: white;
 }
+
+/* Custom icon size */
+.custom-icon-size-video-call {
+    font-size: 1.3rem;
+    /* You can adjust the size as per your preference */
+}

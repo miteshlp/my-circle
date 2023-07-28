@@ -20,8 +20,16 @@ module.exports = function (server) {
         });
 
         socket.on("updateNotification", async (notifyId) => {
-            await db.models.notification.updateOne({ _id:new ObjectId(notifyId)}, { $set: { isSeen: true } });
-        })
+            await db.models.notification.updateOne({ _id: new ObjectId(notifyId) }, { $set: { isSeen: true } });
+        });
+
+        socket.on("join-room", (roomId, userId) => {
+            socket.join(roomId);
+            socket.to(roomId).emit("user-connected", userId);
+
+            socket.on("message", (message) => {
+                io.to(roomId).emit("createMessage", message);
+            });
+        });
     });
 }
-

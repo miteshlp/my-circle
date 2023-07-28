@@ -114,4 +114,7 @@ $(document).ready(function () {
         }
     });
 
+    $(document).on("click", "#P2P-video-call", function () {
+        window.open("/users/P2P-video-call", '_blank');
+    })
 })
