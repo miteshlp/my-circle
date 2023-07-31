@@ -35,9 +35,6 @@ app.set('view engine', 'hbs');
 // peer object for peer connection in peer to peer video calling
 var http = require('http');
 var server = http.createServer(app);
-const { PeerServer } = require("peer");
-const peerServer = PeerServer({ port: 3002, path: "/myapp" });
-app.use("/peerjs", peerServer);
 
 app.use(logger('dev'));
 app.use(express.json());

@@ -1,4 +1,7 @@
-const socket = io("/");
+const socket = io();
+socket.on("connect", function () {
+    console.log("connected");
+});
 const chatInputBox = document.getElementById("chat_message");
 const all_messages = document.getElementById("all_messages");
 const main__chat__window = document.getElementById("main__chat__window");
@@ -6,11 +9,7 @@ const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
 myVideo.muted = true;
 
-var peer = new Peer(undefined, {
-    host: "192.168.1.171",
-    port: "3002",
-    path: '/myapp',
-});
+const peer = new Peer();
 
 let myVideoStream;
 
@@ -86,7 +85,6 @@ const connectToNewUser = (userId, streams) => {
     console.log(call);
     var video = document.createElement("video");
     call.on("stream", (userVideoStream) => {
-        console.log(userVideoStream);
         addVideoStream(video, userVideoStream);
     });
 };
