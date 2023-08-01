@@ -2,6 +2,13 @@ $(document).ready(function () {
 
     $("#userNavbar").removeClass("bg-white");
 
+    socket.on("incoming-call", (data) => {
+        if ($('#user-list li.selected').data("id") == data.caller) {
+            $("#P2P-video-call").attr("data-roomid", data.roomId);
+            $("#P2P-video-call").addClass("text-success");
+        }
+    })
+
     socket.on("newmessage", (data) => {
 
         // add or update badge and unseen count and time for new message  
@@ -115,6 +122,26 @@ $(document).ready(function () {
     });
 
     $(document).on("click", "#P2P-video-call", function () {
-        window.open("/users/P2P-video-call", '_blank');
-    })
+        let url = `/users/P2P-video-call/`;
+        const roomId = $(this).data("roomid");
+        if (roomId) {
+            url = url + roomId;
+        }
+        $(this).addClass("text-success");
+        const receiver = $(this).data("id");
+        $.ajax({
+            type: "get",
+            url: url,
+            data: {
+                receiver: receiver
+            },
+            success: function (response) {
+                $("#video-call-loader").html(response);
+                $("#video-call-modal").modal('show');
+            },
+            error: function (error) {
+                toastr.error(error.responseJSON.message).delay(3000).fadeOut(1000);
+            }
+        });
+    });
 })

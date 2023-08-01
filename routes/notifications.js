@@ -5,7 +5,6 @@ const notificationController = require('../controllers/notifications');
 router.get('/notifications', async function (req, res, next) {
     try {
         const allNotifications = await notificationController.getNotifications(req.user._id);
-        console.log(allNotifications);
         res.render('./users/notifications', { allNotifications: allNotifications});
     } catch (err) {
 
@@ -19,7 +18,6 @@ router.get('/notifications', async function (req, res, next) {
 router.get('/notifications/unSeen', async function (req, res, next) {
     try {
         const unSeen = await notificationController.getUnseen(req.user._id);
-        console.log(unSeen);
         res.render('./users/unSeen', { unSeen: unSeen, layout: "blank" });
     } catch (err) {
 

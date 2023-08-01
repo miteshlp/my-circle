@@ -27,7 +27,7 @@ $(document).ready(function () {
             const data = new FormData(form);
             const id = $("#save").data('id')
             data.append("id", id);
-            console.log($("form").serialize())
+            $("form").serialize()
             $.ajax({
                 method: "PUT",
                 url: `/posts/edit`,

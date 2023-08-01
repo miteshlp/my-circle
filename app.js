@@ -77,7 +77,6 @@ passport.use(new localStrategy({
         req.flash('info', 'The email or password entered is invalid !');
         return done(null, false);
       }
-      console.log("authenticated");
       return done(null, user);
     }).catch(function (err) {
       console.log(err);
@@ -87,13 +86,11 @@ passport.use(new localStrategy({
 ));
 
 passport.serializeUser(function (user, done) {
-  console.log("in serialization");
   done(null, user);
 });
 
 passport.deserializeUser(async function (user, done) {
   try {
-    console.log("in deserialization");
     done(null, user);
   } catch (err) {
     console.log(err);

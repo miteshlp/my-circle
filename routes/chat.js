@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const chatsController = require('../controllers/chats');
+const chat_controller = require('../controllers/chats');
+const video_call_controller = require('../controllers/video_call');
 const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
@@ -37,7 +38,7 @@ async function chatAPI(content, user) {
 
 router.get('/chats', async function (req, res, next) {
     try {
-        const allUsers = await chatsController.getChatUsers(req.user._id);
+        const allUsers = await chat_controller.getChatUsers(req.user._id);
         res.render('./users/chatBox', { allUsers: allUsers });
     } catch (err) {
         console.log(`err :>> `, err);
@@ -50,9 +51,11 @@ router.get('/chats', async function (req, res, next) {
 
 router.get('/get-user-chat/:chatPartner', async function (req, res, next) {
     try {
-        const otherUser = await db.models.user.findOne({ _id: req.params.chatPartner }, { name: "$name.full", path: 1 }).lean();
-        const chat = await chatsController.getChats(req.user._id, req.params.chatPartner);
-        res.render('./users/chats', { chat: chat, chatPartner: otherUser, layout: "blank" });
+        const chatPartner = req.params.chatPartner;
+        const otherUser = await db.models.user.findOne({ _id: chatPartner }, { name: "$name.full", path: 1 }).lean();
+        const chat = await chat_controller.getChats(req.user._id, chatPartner);
+        const result = await video_call_controller.is_call_in_progress(req.user._id, chatPartner);
+        res.render('./users/chats', { chat: chat, chatPartner: otherUser, running_call: result[0], layout: "blank" });
     } catch (err) {
         console.log(`err :>> `, err);
         res.status(500).json({
@@ -118,9 +121,33 @@ router.post('/chats/message', async function (req, res, next) {
 
 router.get('/P2P-video-call', async function (req, res, next) {
     try {
-        const roomId = uuidv4();
-        console.log(`roomId :>> `, roomId);
-        res.render('./users/video-call', { title: "Video-call | My circle", roomId: roomId, layout: "blank" });
+        const { receiver } = req.query;
+        if (receiver) {
+            const result = await db.models.call_history.countDocuments({
+                $or: [
+                    {
+                        receiver: new ObjectId(receiver)
+                    }, {
+                        caller: new ObjectId(receiver)
+                    }
+                ], status: 'in-progress'
+            });
+            if (!result) {
+                const roomId = uuidv4();
+                // await db.models.call_history.create({ receiver: receiver, caller: req.user._id, status: "in-progress", room: roomId });
+                io.to(receiver).emit("incoming-call", {
+                    caller: req.user._id,
+                    roomId: roomId
+                });
+                // res.redirect('./users/video-call', { title: "Video-call | My circle", roomId: roomId, layout: "blank" });
+                res.render('./users/video-call', { title: "Video-call | My circle", roomId: roomId, layout: "blank" });
+            } else {
+                res.status(400).json({
+                    "status": 400,
+                    "message": "તમે એવા વપરાશકર્તાને કૉલ કરી રહ્યાં છો જે બીજા કૉલ પર છે !"
+                })
+            }
+        }
     } catch (err) {
         console.log(`err :>> `, err);
         res.status(500).json({
@@ -132,7 +159,6 @@ router.get('/P2P-video-call', async function (req, res, next) {
 
 router.get('/P2P-video-call/:room', async function (req, res, next) {
     try {
-        console.log("P2P-video-call recevier");
         res.render('./users/video-call', { title: "Video-call | My circle", layout: "blank", roomId: req.params.room });
     } catch (err) {
         console.log(`err :>> `, err);

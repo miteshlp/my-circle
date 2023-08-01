@@ -1,11 +1,16 @@
 <div class="d-flex flex-row" style="cursor: pointer;">
-    <img src="{{chatPartner.path}}" alt="avatar" onclick="window.location.href=&quot;/users/profile/{{chatPartner._id}}&quot;" class="rounded-circle me-3 shadow-1-strong" width="60" height="60">
+    <img src="{{chatPartner.path}}" alt="avatar"
+        onclick="window.location.href=&quot;/users/profile/{{chatPartner._id}}&quot;"
+        class="rounded-circle me-3 shadow-1-strong" width="60" height="60">
     <div class="d-flex justify-content-between align-items-center w-100 me-3">
         <div class="text-start" onclick="window.location.href=&quot;/users/profile/{{chatPartner._id}}&quot;">
             <p class="fw-bold mb-0">{{chatPartner.name}}</p>
         </div>
         <div class="ms-auto">
-            <i class="fas fa-video custom-icon-size-video-call" id="P2P-video-call"></i>
+            <i class="fas fa-video custom-icon-size-video-call
+            {{#if running_call}} text-success {{/if}}" data-id="{{chatPartner._id}}" id="P2P-video-call" {{#if
+                running_call}} data-roomid="{{running_call.room}}" {{/if}}></i>
+            <!-- Button trigger modal -->
         </div>
     </div>
 </div>
@@ -31,8 +36,7 @@
     </div>
     {{else}}
     <li class="d-flex justify-content-between mb-2 w-75">
-        <img src={{../chatPartner.path}} alt="avatar"
-            class="rounded-circle me-3 shadow-1-strong chat-user-icon">
+        <img src={{../chatPartner.path}} alt="avatar" class="rounded-circle me-3 shadow-1-strong chat-user-icon">
         <div class="card mask-custom w-100">
             <div class="card-header d-flex justify-content-between pt-2 pb-2"
                 style="border-bottom: 1px solid rgba(255,255,255,.3);">
@@ -49,7 +53,8 @@
 </ul>
 <div id="messageBox">
     <div class="card-footer text-muted d-flex justify-content-start align-items-center px-2">
-        <input type="text" class="form-control form-control-lg" id="chat-message-box" placeholder="Type message" autofocus>
+        <input type="text" class="form-control form-control-lg" id="chat-message-box" placeholder="Type message"
+            autofocus>
         <a class="ms-3 text-muted" href="#!"><i class="fas fa-smile"></i></a>
         <a class="ms-3" id="sendMessage" data-id="{{chatPartner._id}}"><i class="fas fa-paper-plane"></i></a>
     </div>

@@ -24,7 +24,7 @@ $(document).ready(function () {
         },
         submitHandler: function (form) {
             const data = new FormData(form);
-            console.log($("form").serialize())
+            $("form").serialize()
             $.ajax({
                 method: "POST",
                 url: `/posts/create`,

@@ -35,8 +35,7 @@ $(document).ready(function () {
         submitHandler: function (form) {
             const data = new FormData(form);
             data.append("account_privacy", $("#privacy").text());
-            console.log($("form").serialize())
-            console.log(data);
+            $("form").serialize()
             $.ajax({
                 method: "PUT",
                 url: "/users/profile",

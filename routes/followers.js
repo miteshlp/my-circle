@@ -70,7 +70,6 @@ router.get('/followers/requests', async function (req, res, next) {
                 $project: { follower: { $arrayElemAt: ["$followerDetails", 0] }, createdOn: 1, status: 1 }
             }
         ]);
-        console.log(requests);
         res.render('./users/requests', { requests: requests });
     } catch (err) {
         res.status(500).json({
@@ -112,7 +111,6 @@ router.put('/followers/requests/:requestId/:status', async function (req, res, n
     try {
         if (req.params.status == "true") {
             const request = await db.models.follower.findOneAndUpdate({ _id: new ObjectId(req.params.requestId) }, { $set: { status: "following" } });
-            console.log("request" ,request);
             const notificationObject = {
                 receiverId: request.followerId,
                 notifireId: req.user._id

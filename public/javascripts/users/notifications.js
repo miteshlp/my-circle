@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    console.log("document ready");
 
     $(document).on('click', '.specificNotification', function () {
         const postId = $(this).data('postid');
@@ -9,7 +8,6 @@ $(document).ready(function () {
             return getUserProfile(profileId);
         }
         else {
-            console.log("from herrer", postId);
             $(this).removeClass("unSeen");
             $.ajax({
                 type: "get",
