@@ -119,8 +119,18 @@ router.post('/chats/message', async function (req, res, next) {
     }
 });
 
-router.get('/P2P-video-call', async function (req, res, next) {
+router.get('/P2P-video-call/:room?', async function (req, res, next) {
     try {
+        if (req.params.room) {
+            if (req.query?.status === "disconnect") {
+                await db.models.call_history.updateOne({ room: req.params.room }, { status: "completed" });
+                return res.status(200).json({
+                    "status": 200,
+                    "message": "Video call disconnected !"
+                })
+            }
+            return res.render('./users/video-call', { title: "Video-call | My circle", layout: "blank", roomId: req.params.room });
+        }
         const { receiver } = req.query;
         if (receiver) {
             const result = await db.models.call_history.countDocuments({
@@ -134,15 +144,16 @@ router.get('/P2P-video-call', async function (req, res, next) {
             });
             if (!result) {
                 const roomId = uuidv4();
-                // await db.models.call_history.create({ receiver: receiver, caller: req.user._id, status: "in-progress", room: roomId });
+                console.log(`receiver :>> `, receiver);
+                await db.models.call_history.create({ receiver: receiver, caller: req.user._id, status: "in-progress", room: roomId });
                 io.to(receiver).emit("incoming-call", {
                     caller: req.user._id,
+                    name: req.user.name.full,
                     roomId: roomId
                 });
-                // res.redirect('./users/video-call', { title: "Video-call | My circle", roomId: roomId, layout: "blank" });
-                res.render('./users/video-call', { title: "Video-call | My circle", roomId: roomId, layout: "blank" });
+                return res.render('./users/video-call', { title: "Video-call | My circle", roomId: roomId, layout: "blank" });
             } else {
-                res.status(400).json({
+                return res.status(400).json({
                     "status": 400,
                     "message": "તમે એવા વપરાશકર્તાને કૉલ કરી રહ્યાં છો જે બીજા કૉલ પર છે !"
                 })
@@ -150,21 +161,9 @@ router.get('/P2P-video-call', async function (req, res, next) {
         }
     } catch (err) {
         console.log(`err :>> `, err);
-        res.status(500).json({
+        return res.status(500).json({
             "status": 500,
-            "message": "Error while connecting to video call !"
-        })
-    }
-});
-
-router.get('/P2P-video-call/:room', async function (req, res, next) {
-    try {
-        res.render('./users/video-call', { title: "Video-call | My circle", layout: "blank", roomId: req.params.room });
-    } catch (err) {
-        console.log(`err :>> `, err);
-        res.status(500).json({
-            "status": 500,
-            "message": "Error while connecting to video call !"
+            "message": "Error in video-call management !"
         })
     }
 });

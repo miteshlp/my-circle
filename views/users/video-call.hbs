@@ -1,8 +1,8 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
 <link rel="stylesheet" href="/stylesheets/video-call.css" />
-<script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
 <script>
     var ROOM_ID = "{{{roomId}}}";
+    var peer = new Peer();
 </script>
 
 <div class="main">
@@ -12,11 +12,11 @@
         </div>
         <div class="main__controls">
             <div class="main__controls_block">
-                <div class="main__controls_button" id="muteButton" onclick="muteUnmute()">
+                <div class="main__controls_button" id="muteButton">
                     <i class="fa fa-microphone"></i>
                     <span>Mute</span>
                 </div>
-                <div class="main__controls_button" id="playPauseVideo" onclick="playStop()">
+                <div class="main__controls_button" id="playPauseVideo">
                     <i class="fa fa-video-camera"></i>
                     <span>Pause Video</span>
                 </div>
@@ -38,7 +38,7 @@
             </div>
 
             <div class="main__controls_block">
-                <div class="main__controls_button leaveMeeting" id="leave-meeting">
+                <div class="main__controls_button leaveMeeting" id="leave-meeting" data-roomid="{{roomId}}">
                     <i class="fa fa-times"></i>
                     <span class="">Leave Meeting</span>
                 </div>

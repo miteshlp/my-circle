@@ -30,6 +30,10 @@ module.exports = function (server) {
             socket.on("message", (message) => {
                 io.to(roomId).emit("createMessage", message);
             });
+            socket.on("call-disconnect", (roomId) => {
+                io.to(roomId).emit("call-disconnect");
+                io.socketsLeave(roomId);
+            });
         });
     });
 }

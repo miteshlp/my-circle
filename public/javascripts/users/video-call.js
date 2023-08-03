@@ -6,8 +6,6 @@ $(document).ready(function () {
     const myVideo = document.createElement("video");
     myVideo.muted = true;
 
-    window.peer = new Peer();
-
     let myVideoStream;
 
     var getUserMedia =
@@ -98,7 +96,7 @@ $(document).ready(function () {
         }
     };
 
-    const playStop = () => {
+    $(document).on('click', "#playPauseVideo", function () {
         let enabled = myVideoStream.getVideoTracks()[0].enabled;
         if (enabled) {
             myVideoStream.getVideoTracks()[0].enabled = false;
@@ -107,9 +105,9 @@ $(document).ready(function () {
             setStopVideo();
             myVideoStream.getVideoTracks()[0].enabled = true;
         }
-    };
+    });
 
-    const muteUnmute = () => {
+    $(document).on('click', "#muteButton", function () {
         const enabled = myVideoStream.getAudioTracks()[0].enabled;
         if (enabled) {
             myVideoStream.getAudioTracks()[0].enabled = false;
@@ -118,7 +116,7 @@ $(document).ready(function () {
             setMuteButton();
             myVideoStream.getAudioTracks()[0].enabled = true;
         }
-    };
+    });
 
     const setPlayVideo = () => {
         const html = `<i class="unmute fa fa-pause-circle"></i>
@@ -143,16 +141,27 @@ $(document).ready(function () {
         document.getElementById("muteButton").innerHTML = html;
     };
 
-    $(document).on('click', ('#leave-meeting , #leave-meeting-modal'), function () {
-        console.log("leave meeting ...");
+    $(document).one('click', ('#leave-meeting , #leave-meeting-modal'), function () {
         peer.destroy();
-        $("#video-call-modal").modal('hide');
-        $("#P2P-video-call").removeClass("text-success");
         if (myVideoStream) {
             // disable/stop camera and mic
             myVideoStream.getTracks().forEach(track => track.stop());
         }
-        // Release the media stream object
-        myVideoStream = null;
+        const roomId = $("#leave-meeting").data("roomid");
+        $.ajax({
+            type: "get",
+            url: `/users/P2P-video-call/${roomId}`,
+            data: {
+                status: "disconnect"
+            },
+            success: function (response) {
+                if (response.status == "200" || response.status == 200) {
+                    socket.emit("call-disconnect", ROOM_ID);
+                }
+            },
+            error: function (error) {
+                toastr.error(error.responseJSON.message).delay(3000).fadeOut(1000);
+            }
+        });
     });
 });

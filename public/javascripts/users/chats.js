@@ -2,11 +2,13 @@ $(document).ready(function () {
 
     $("#userNavbar").removeClass("bg-white");
 
-    socket.on("incoming-call", (data) => {
-        if ($('#user-list li.selected').data("id") == data.caller) {
-            $("#P2P-video-call").attr("data-roomid", data.roomId);
-            $("#P2P-video-call").addClass("text-success");
-        }
+    socket.on("call-disconnect", () => {
+        audio.pause();
+        $("#P2P-video-call").removeAttr("data-roomid");
+        $("#P2P-video-call").removeClass("text-success");
+        $("#video-call-modal").modal('hide');
+        $("#video-call-loader").html("");
+        toastr.success("Video call disconnected !").delay(3000).fadeOut(1000);
     })
 
     socket.on("newmessage", (data) => {
@@ -123,10 +125,12 @@ $(document).ready(function () {
 
     $(document).on("click", "#P2P-video-call", function () {
         let url = `/users/P2P-video-call/`;
-        const roomId = $(this).data("roomid");
+        const roomId = $(this).attr("data-roomid");
         if (roomId) {
             url = url + roomId;
         }
+        audio.pause();
+        audio.currentTime = 0;
         $(this).addClass("text-success");
         const receiver = $(this).data("id");
         $.ajax({
