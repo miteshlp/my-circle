@@ -20,10 +20,30 @@
         <div class="modal-content">
             <div class="modal-header bg-dark">
                 <h5 class="modal-title text-white" id="exampleModalLabel">Modal title</h5>
-                <button type="button" id="leave-meeting-modal" class="btn-close bg-danger btn-danger" aria-label="Close"></button>
+                <button type="button" id="call-end-modal" class="btn-close bg-danger btn-danger"
+                    aria-label="Close"></button>
             </div>
             <div class="modal-body p-0" id="video-call-loader">
                 {{!-- Modal body content --}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Incoming call Modal -->
+<div class="modal fade" id="incoming-call-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body d-flex justify-content-between">
+                <div id="caller-details">Incoming call ...</div>
+                <div class="d-flex justify-content-between" style="width: 30%;">
+                    <div class="call-button bg-success fa-rotate-90" id="call-accept">
+                        <i class="fas fa-phone text-white"></i>
+                    </div>
+                    <div class="call-button fa-rotate-270" id="call-reject">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

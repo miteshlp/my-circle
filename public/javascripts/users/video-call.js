@@ -141,13 +141,14 @@ $(document).ready(function () {
         document.getElementById("muteButton").innerHTML = html;
     };
 
-    $(document).one('click', ('#leave-meeting , #leave-meeting-modal'), function () {
+    $(document).one('click', ('#call-end , #call-end-modal'), function () {
         peer.destroy();
         if (myVideoStream) {
             // disable/stop camera and mic
             myVideoStream.getTracks().forEach(track => track.stop());
         }
-        const roomId = $("#leave-meeting").data("roomid");
+        const roomId = $("#call-end").data("roomid");
+        const receiver = $("#P2P-video-call").data("id");
         $.ajax({
             type: "get",
             url: `/users/P2P-video-call/${roomId}`,
@@ -156,11 +157,11 @@ $(document).ready(function () {
             },
             success: function (response) {
                 if (response.status == "200" || response.status == 200) {
-                    socket.emit("call-disconnect", ROOM_ID);
+                    socket.emit("call-disconnect", { roomId: ROOM_ID, receiver: receiver });
                 }
             },
             error: function (error) {
-                toastr.error(error.responseJSON.message).delay(3000).fadeOut(1000);
+                toastr.error(error.responseJSON.message).delay(2000).fadeOut(1000);
             }
         });
     });

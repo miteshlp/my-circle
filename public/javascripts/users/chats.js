@@ -3,12 +3,19 @@ $(document).ready(function () {
     $("#userNavbar").removeClass("bg-white");
 
     socket.on("call-disconnect", () => {
-        audio.pause();
+        // audio.pause();
         $("#P2P-video-call").removeAttr("data-roomid");
         $("#P2P-video-call").removeClass("text-success");
         $("#video-call-modal").modal('hide');
         $("#video-call-loader").html("");
-        toastr.success("Video call disconnected !").delay(3000).fadeOut(1000);
+        toastr.success("Video call ended !").delay(2000).fadeOut(1000);
+    });
+
+    socket.on("call-rejected", () => {
+        $("#P2P-video-call").removeClass("text-success");
+        $("#video-call-loader").html("");
+        $("#video-call-modal").modal('hide');
+        toastr.error("Video call rejected !").delay(2000).fadeOut(1000);
     })
 
     socket.on("newmessage", (data) => {
@@ -121,31 +128,5 @@ $(document).ready(function () {
                 }
             });
         }
-    });
-
-    $(document).on("click", "#P2P-video-call", function () {
-        let url = `/users/P2P-video-call/`;
-        const roomId = $(this).attr("data-roomid");
-        if (roomId) {
-            url = url + roomId;
-        }
-        audio.pause();
-        audio.currentTime = 0;
-        $(this).addClass("text-success");
-        const receiver = $(this).data("id");
-        $.ajax({
-            type: "get",
-            url: url,
-            data: {
-                receiver: receiver
-            },
-            success: function (response) {
-                $("#video-call-loader").html(response);
-                $("#video-call-modal").modal('show');
-            },
-            error: function (error) {
-                toastr.error(error.responseJSON.message).delay(3000).fadeOut(1000);
-            }
-        });
     });
 })

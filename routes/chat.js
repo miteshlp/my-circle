@@ -128,6 +128,13 @@ router.get('/P2P-video-call/:room?', async function (req, res, next) {
                     "status": 200,
                     "message": "Video call disconnected !"
                 })
+            } else if (req.query?.status === "rejected") {
+                await db.models.call_history.updateOne({ room: req.params.room }, { status: "rejected" });
+                io.to(req.query.receiver).emit("call-rejected");
+                return res.status(200).json({
+                    "status": 200,
+                    "message": "Video call rejected !"
+                })
             }
             return res.render('./users/video-call', { title: "Video-call | My circle", layout: "blank", roomId: req.params.room });
         }
@@ -148,6 +155,7 @@ router.get('/P2P-video-call/:room?', async function (req, res, next) {
                 await db.models.call_history.create({ receiver: receiver, caller: req.user._id, status: "in-progress", room: roomId });
                 io.to(receiver).emit("incoming-call", {
                     caller: req.user._id,
+                    path: req.user.path,
                     name: req.user.name.full,
                     roomId: roomId
                 });

@@ -79,6 +79,38 @@
       cursor: pointer !important;
       text-decoration: none !important;
     }
+
+    .fa-rotate-90 {
+      transform: rotate(90deg);
+    }
+
+    .fa-rotate-270 {
+      transform: rotate(225deg);
+    }
+
+    .call-button {
+      width: 40px;
+      height: 40px;
+      position: relative;
+      /* Add relative positioning */
+      border-radius: 50%;
+      background-color: red;
+      color: white;
+      cursor: pointer;
+    }
+
+    .call-button i {
+      position: absolute;
+      /* Absolute positioning */
+      top: 50%;
+      /* Vertically center */
+      left: 50%;
+      /* Horizontally center */
+      transform: translate(-50%, -50%);
+      /* Center using transform */
+      font-size: 20px;
+      transition: transform 0.2s;
+    }
   </style>
 </head>
 
@@ -102,7 +134,22 @@
         $("#P2P-video-call").addClass("text-success");
       }
       audio.play();
-      toastr.success(`Incoming call from  ${data.name}!`).delay(3000).fadeOut(1000);
+      $("#caller-details").html(`<div href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                          <span class="avatar me-1 rounded" style="background-image: url(${data.path})"></span>
+                          <div class="d-none d-xl-block ps-2">
+                              <div>${data.name} is calling ...</div>
+                          </div>
+                      </div>`)
+      $("#incoming-call-modal").modal('show');
+      $("#call-accept").attr("data-id", data.caller);
+      $("#call-reject").attr("data-id", data.caller);
+      $("#call-accept").attr("data-roomid", data.roomId);
+      $("#call-reject").attr("data-roomid", data.roomId);
+    });
+
+    socket.on("missed-call", () => {
+      $("#incoming-call-modal").modal('hide');
+      toastr.error(`Missed call !`).delay(2000).fadeOut(1000);
     });
 
     function getNotifyCount() {

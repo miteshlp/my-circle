@@ -17,7 +17,7 @@ module.exports = function (mongoose) {
         },
         status: {
             type: String,
-            enum: ["in-progress", "completed"],
+            enum: ["in-progress", "completed","rejected"],
         },
         room: {
             type: String,
