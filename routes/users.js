@@ -94,7 +94,7 @@ router.put('/profile', upload.single('aavtar'), async function (req, res, next) 
         const squareSize = 1000; // You can set the desired size for the square image
         const inputFilePath = req.file.path;
         const imagePath = "/uploads" + req.file.path.replace("public", "");
-        const outputFilePath = `/public${imagePath}`;
+        const outputFilePath = `./public${imagePath}`;
         await sharp(inputFilePath)
           .resize(squareSize, squareSize, { fit: 'cover', position: 'center' })
           .jpeg({ quality: 100, chromaSubsampling: '4:4:4' })
