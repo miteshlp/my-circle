@@ -21,9 +21,9 @@ router.get('/', async function (req, res) {
     }
     const obj = pagination(result.postCount, result.page, limit);
     if (req.xhr) {
-      return res.render('./posts/filter', { postList: result.postList, layout: "blank", obj: obj, total: result.postCount });
+      return res.render('./posts/filter', { postList: result.postList, layout: "blank", obj: obj, total: result.postCount, range: result.fromTo });
     }
-    res.render('index', { title: 'My circle', postList: result.postList, total: result.postCount, menu: "sign-in", layout: 'public', obj: obj });
+    res.render('index', { title: 'My circle', postList: result.postList, total: result.postCount, menu: "sign-in", layout: 'public', obj: obj ,range:result.fromTo});
   } catch (err) {
     res.status(500).json({
       "status": 500,

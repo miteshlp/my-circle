@@ -61,7 +61,7 @@ module.exports = {
                                 $filter: {
                                     input: '$allMessages',
                                     as: 'message',
-                                    cond: { $and: [{ $eq: ['$$message.isSeen', false] }, { $ne: ['$$message.senderId', new ObjectId(userId) ] }] }
+                                    cond: { $and: [{ $eq: ['$$message.isSeen', false] }, { $ne: ['$$message.senderId', new ObjectId(userId)] }] }
                                 }
                             }
                         }, lastMessage: { $arrayElemAt: ['$allMessages', -1] }, path: 1, name: "$name.full", createdOn: 1
@@ -91,6 +91,7 @@ module.exports = {
             }, {
                 isSeen: true
             });
+            await db.models.user.updateOne({ _id: new ObjectId(currentUser) }, { last_chat_with: new ObjectId(otherUser) });
             return chat;
         } catch (error) {
             console.log(`error :>> `, error);

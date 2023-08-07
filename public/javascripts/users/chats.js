@@ -129,4 +129,8 @@ $(document).ready(function () {
             });
         }
     });
+
+    if (last_chat_with) {
+        console.log($(`li[data-id=${last_chat_with}]`).trigger("click"));
+    }
 })

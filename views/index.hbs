@@ -36,7 +36,6 @@
         <!-- Page body -->
         <div class="page-body">
             <div class="container-xl">
-                <div class="text-muted mt-1 mb-2">{{postList.length}} Posts</div>
                 <div class="row row-cards">
 
                     {{#each postList}}
@@ -64,7 +63,8 @@
                                                     d="M22 12c-2.667 4.667 -6 7 -10 7s-7.333 -2.333 -10 -7c2.667 -4.667 6 -7 10 -7s7.333 2.333 10 7" />
                                             </svg>
                                         </a>
-                                        <a class="ms-3 text-muted save-post" href="/sign-in" data-id="{{_id}}" title="Save">
+                                        <a class="ms-3 text-muted save-post" href="/sign-in" data-id="{{_id}}"
+                                            title="Save">
                                             <!-- Download SVG icon from http://tabler-icons.io/i/heart -->
                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                 class="icon icon-tabler icon-tabler-bookmark" width="24" height="24"
@@ -126,6 +126,7 @@
                 {{#if postList}}
                 <br><br>
                 <div class="d-flex">
+                    <div class="badge bg-white-lt text-info mt-1 pb-0">Showing {{range}} of {{total}} posts</div>
                     <ul class="pagination ms-auto">
                         {{{pagination "getValue" obj}}}
                     </ul>

@@ -39,7 +39,8 @@ async function chatAPI(content, user) {
 router.get('/chats', async function (req, res, next) {
     try {
         const allUsers = await chat_controller.getChatUsers(req.user._id);
-        res.render('./users/chatBox', { allUsers: allUsers });
+        const userDetail = await db.models.user.findOne({ _id: new ObjectId(req.user._id) }, { last_chat_with: 1 });
+        res.render('./users/chatBox', { allUsers: allUsers, last_chat_with: userDetail.last_chat_with });
     } catch (err) {
         console.log(`err :>> `, err);
         res.status(500).json({
