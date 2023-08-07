@@ -94,13 +94,12 @@ router.put('/profile', upload.single('aavtar'), async function (req, res, next) 
         const squareSize = 1000; // You can set the desired size for the square image
         const inputFilePath = req.file.path;
         const imagePath = "/uploads" + req.file.path.replace("public", "");
-        const outputFilePath = `/home/mitesh.p/Desktop/final-project2/public/${imagePath}`;
+        const outputFilePath = `/public${imagePath}`;
         await sharp(inputFilePath)
           .resize(squareSize, squareSize, { fit: 'cover', position: 'center' })
           .jpeg({ quality: 100, chromaSubsampling: '4:4:4' })
           .toFile(outputFilePath);
         update.path = imagePath;
-        fs.unlinkSync(`/home/mitesh.p/Desktop/final-project2/${req.file.path}`);
       } catch (error) {
         return res.status(500).send('Error processing image.');
       }
