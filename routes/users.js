@@ -101,6 +101,7 @@ router.put('/profile', upload.single('aavtar'), async function (req, res, next) 
           .toFile(outputFilePath);
         update.path = imagePath;
       } catch (error) {
+        console.log(`error :>> `, error);
         return res.status(500).send('Error processing image.');
       }
     }
