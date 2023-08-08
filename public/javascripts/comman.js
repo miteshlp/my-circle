@@ -48,8 +48,12 @@ $(document).on("click", ("#P2P-video-call , #call-accept"), function () {
     }
     audio.pause();
     audio.currentTime = 0;
-    $(this).addClass("text-success");
     const receiver = $(this).data("id");
+    if (receiver == "64ba6af81ebfa6cb3b079690") {
+        toastr.info("You need to by premium for this action !").delay(2000).fadeOut(1000);
+        return;
+    }
+    $(this).addClass("text-success");
     $.ajax({
         type: "get",
         url: url,
@@ -79,6 +83,8 @@ $(document).on("click", "#call-reject", function () {
         },
         success: function (response) {
             $("#incoming-call-modal").modal('hide');
+            $("#P2P-video-call").removeAttr("data-roomid");
+            $("#P2P-video-call").removeClass("text-success");
         },
         error: function (error) {
             toastr.error(error.responseJSON.message).delay(2000).fadeOut(1000);
