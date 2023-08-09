@@ -16,11 +16,11 @@
                                 </div>
                             </div>
                             <div class="row align-items-center">
-                                <div id="imagePreviewContainer" style="background-image: url(/uploads/users/{{user._id}}.jpg);"></div>
+                                <div id="imagePreviewContainer" style="background-image: url(/uploads/users/{{user._id}}.jpg);" data-ischanged="false"></div>
                                 <div class="col-auto">
                                     {{!-- <a href="#" class="btn"> --}}
                                         <div class="mb-3">
-                                            <input class="form-control" name="aavtar" type="file" id="formFile">
+                                            <button type="button" class="btn" id="edit-profile-image">Edit image</button>
                                         </div>
                                         {{!--
                                     </a> --}}
@@ -77,3 +77,4 @@
 </form>
 <h4>{{messages}}</h4>
 <script src="/javascripts/users/profile.js" defer></script>
+{{> image-crop-modal}}

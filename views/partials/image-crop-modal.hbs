@@ -1,0 +1,37 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js"></script>
+<style>
+    .cropArea {
+        background: #E4E4E4;
+        overflow: hidden;
+        width: 500px;
+        height: 350px;
+    }
+</style>
+
+<!-- Profile image crop Modal -->
+<div class="modal modal-blur fade" id="image-crop-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content p-3" id="image-crop-loader">
+            <table>
+                <td>
+                    <div class="mb-3"><input style="max-width: 500px;" class="form-control" type="file"
+                            id="fileInput" /></div>
+                    <div class="cropArea">
+                        <img id="previewImage" style="max-width: 100%; height: auto;">
+                    </div>
+                </td>
+                <td>
+                    <div class="mb-3">Cropped Image</div>
+                    <div><img id="croppedImage" height="350px" /></div>
+                </td>
+            </table>
+            <div class="card-footer bg-transparent mt-auto">
+                <div class="btn-list justify-content-center mt-3">
+                    <button class="btn btn-primary" id="crop-image-done" disabled>Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/javascripts/users/image-crop.js"></script>

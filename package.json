@@ -16,6 +16,8 @@
     "express-formidable": "^1.2.0",
     "express-handlebars": "^7.0.4",
     "express-session": "^1.17.3",
+    "firebase": "^10.1.0",
+    "firebase-admin": "^11.10.1",
     "formidable": "^2.1.1",
     "handlebars-helpers": "^0.10.0",
     "hbs": "~4.0.4",

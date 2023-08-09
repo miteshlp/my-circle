@@ -6,11 +6,12 @@ const fs = require('fs');
 var path = require('path');
 const pagination = require('../controllers/pagination');
 const usersController = require('../controllers/users');
+const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
 
 var storage = multer.diskStorage(
   {
     destination: function (req, file, cb) {
-      cb(null, './public/users')
+      cb(null, './public/uploads/users')
     },
     filename: function (req, file, cb) {
       cb(null, req.user._id + ".jpg");
@@ -34,6 +35,10 @@ var upload = multer({
   },
 });
 
+// Create file metadata including the content type for firebase image upload
+const metadata = {
+  contentType: 'image/jpg',
+};
 
 /* GET users listing. */
 router.get('/', async function (req, res, next) {
@@ -91,15 +96,20 @@ router.put('/profile', upload.single('aavtar'), async function (req, res, next) 
     }
     if (req.file) {
       try {
-        const squareSize = 1000; // You can set the desired size for the square image
-        const inputFilePath = req.file.path;
-        const imagePath = "/uploads" + req.file.path.replace("public", "");
-        const outputFilePath = `./public${imagePath}`;
-        await sharp(inputFilePath)
-          .resize(squareSize, squareSize, { fit: 'cover', position: 'center' })
-          .jpeg({ quality: 100, chromaSubsampling: '4:4:4' })
-          .toFile(outputFilePath);
-        update.path = imagePath;
+        const sourcePath = req.file.path;
+        const destinationPath = req.file.path.replace("public/", "");
+
+        // Upload image on firebase storage
+        const storageRef = ref(firebaseStorage, destinationPath);
+        const file = fs.readFileSync(sourcePath);
+
+        // Upload the file and metadata
+        await uploadBytes(storageRef, file, metadata)
+          .then(() => {
+            return getDownloadURL(storageRef);
+          }).then((url) => {
+            return update.path = url;
+          });
       } catch (error) {
         console.log(`error :>> `, error);
         return res.status(500).send('Error processing image.');

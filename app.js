@@ -20,6 +20,8 @@ global.ObjectId = mongoose.Types.ObjectId;
 global.db = require('./models/index')(mongoose);
 // console.log(db.models.user);
 
+// Firebase storage connection authentication
+global.firebaseStorage = require('./firebase_storage').initialize();
 var app = express();
 
 const hbs = create({
