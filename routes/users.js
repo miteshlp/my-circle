@@ -8,6 +8,12 @@ const pagination = require('../controllers/pagination');
 const usersController = require('../controllers/users');
 const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
 
+// Create file metadata including the content type for firebase image upload
+const metadata = {
+  contentType: 'image/jpg',
+};
+
+
 var storage = multer.diskStorage(
   {
     destination: function (req, file, cb) {
@@ -34,11 +40,6 @@ var upload = multer({
     callback(null, true)
   },
 });
-
-// Create file metadata including the content type for firebase image upload
-const metadata = {
-  contentType: 'image/jpg',
-};
 
 /* GET users listing. */
 router.get('/', async function (req, res, next) {
@@ -72,7 +73,7 @@ router.get('/profile/:userId?', async function (req, res, next) {
       return res.render('./users/userProfile', { title: "Profile | My circle", userProfile: userProfile, followCount: followCount });
     }
     const followCount = await usersController.getFollowCount(req.user._id);
-    res.render('./users/profile', { title: "Profile | My circle", path: (req.user.path) ? req.user.path : "/images/no-image.png", followCount: followCount });
+    return res.render('./users/profile', { title: "Profile | My circle", path: (req.user.path) ? req.user.path : "/images/no-image.png", followCount: followCount });
 
   }
   catch (error) {

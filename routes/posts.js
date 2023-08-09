@@ -6,6 +6,13 @@ const path = require('path');
 const pagination = require('../controllers/pagination');
 const postsController = require('../controllers/posts');
 const { session } = require('passport');
+const fs = require('fs');
+const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
+
+// Create file metadata including the content type for firebase image upload
+const metadata = {
+  contentType: 'image/jpg',
+};
 
 const storage = multer.diskStorage(
   {
@@ -48,7 +55,7 @@ router.get('/', async function (req, res, next) {
     if (req.xhr) {
       return res.render('./posts/filter', { postList: result.postList, layout: "blank", total: result.postCount, obj: obj, range: result.fromTo });
     }
-    res.render('./posts/list', {title:"Timeline | My circle" , postList: result.postList, total: result.postCount, obj: obj, range: result.fromTo });
+    res.render('./posts/list', { title: "Timeline | My circle", postList: result.postList, total: result.postCount, obj: obj, range: result.fromTo });
   } catch (err) {
     res.status(500).json({
       "status": 500,
@@ -184,11 +191,28 @@ router.post('/create', upload.single('aavtar'), async function (req, res, next) 
         "message": req.fileError
       });
     }
+
     const create = {
-      path: req.file.path.replace("public", ""),
       title: req.body.title.trim(),
       description: req.body.description.trim(),
       postby: req.user._id
+    }
+
+    if (req.file) {
+      const sourcePath = req.file.path;
+      const destinationPath = req.file.path.replace("public/", "");
+
+      // Upload image on firebase storage
+      const storageRef = ref(firebaseStorage, destinationPath);
+      const file = fs.readFileSync(sourcePath);
+
+      // Upload the file and metadata
+      await uploadBytes(storageRef, file, metadata)
+        .then(() => {
+          return getDownloadURL(storageRef);
+        }).then((url) => {
+          return create.path = url;
+        });
     }
     await db.models.post.create(create);
     res.status(201).json({
@@ -229,7 +253,20 @@ router.put('/edit', upload.single('aavtar'), async function (req, res, next) {
       description: req.body.description.trim()
     }
     if (req.file) {
-      update.path = req.file.path.replace("public", "");
+      const sourcePath = req.file.path;
+      const destinationPath = req.file.path.replace("public/", "");
+
+      // Upload image on firebase storage
+      const storageRef = ref(firebaseStorage, destinationPath);
+      const file = fs.readFileSync(sourcePath);
+
+      // Upload the file and metadata
+      await uploadBytes(storageRef, file, metadata)
+        .then(() => {
+          return getDownloadURL(storageRef);
+        }).then((url) => {
+          return update.path = url;
+        });
     }
     await db.models.post.updateOne({ _id: new ObjectId(id), postby: new ObjectId(req.user._id) }, { $set: update })
     return res.status(202).json({
@@ -237,6 +274,7 @@ router.put('/edit', upload.single('aavtar'), async function (req, res, next) {
       "message": "Post updated successfully !"
     });
   } catch (err) {
+    console.log(`err :>> `, err);
     res.status(400).json({
       "status": 400,
       "message": "error while post edit"
