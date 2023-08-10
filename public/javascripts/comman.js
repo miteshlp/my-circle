@@ -74,6 +74,8 @@ $(document).on("click", "#call-reject", function () {
     const receiver = $(this).data("id");
     const roomId = $(this).attr("data-roomid");
     let url = `/users/P2P-video-call/${roomId}`;
+    audio.pause();
+    audio.currentTime = 0;
     $.ajax({
         type: "get",
         url: url,
