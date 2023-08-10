@@ -24,12 +24,41 @@ body {
 
 video {
     display: block;
-    flex: 1;
+    flex: 100;
     object-fit: cover;
-    border: 5px solid #000;
-    max-width: 600px;
+    max-width: 1050px;
 }
 
+.main__videos {
+    flex-grow: 1;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+#myVideo,
+#remoteVideo {
+    position: absolute;
+    width: 400px;
+    /* Adjust the width as needed */
+    max-height: 300%;
+    /* Adjust the max-height as needed */
+    object-fit: cover;
+}
+
+#myVideo {
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    /* Put your video on top */
+}
+
+#remoteVideo {
+    z-index: 0;
+    /* Put the remote video behind */
+}
 .main {
     height: 100%;
     display: flex;
@@ -47,14 +76,6 @@ video {
     flex-direction: column;
     background-color: #242324;
     border-left: 1px solid #3d3d42;
-}
-
-.main__videos {
-    flex-grow: 1;
-    background-color: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .main__controls {

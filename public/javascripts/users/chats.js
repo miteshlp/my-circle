@@ -82,7 +82,7 @@ $(document).ready(function () {
                 nestedElement.scrollTop(nestedElement[0]?.scrollHeight);
             },
             error: function (error) {
-                console.log(`error.responseJSON.message :>> `, error.responseJSON.message);
+                toastr.error(error.responseJSON.message).delay(2000).fadeOut(1000);
             }
         });
     });
@@ -124,7 +124,7 @@ $(document).ready(function () {
                     nestedElement.scrollTop(nestedElement[0]?.scrollHeight);
                 },
                 error: function (error) {
-                    console.log(`error.responseJSON.message :>> `, error.responseJSON.message);
+                    toastr.error(error.responseJSON.message).delay(2000).fadeOut(1000);
                 }
             });
         }

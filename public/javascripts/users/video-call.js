@@ -4,9 +4,13 @@ $(document).ready(function () {
     const main__chat__window = document.getElementById("main__chat__window");
     const videoGrid = document.getElementById("video-grid");
     const myVideo = document.createElement("video");
+    myVideo.id = "myVideo";
     myVideo.muted = true;
+    const myId = $("#userId").attr("class");
 
     let myVideoStream;
+    let remoteVideoStream; // To store the remote user's video stream
+    let remoteVideoElement; // To store the remote user's video element
 
     var getUserMedia =
         navigator.getUserMedia ||
@@ -24,10 +28,11 @@ $(document).ready(function () {
 
             peer.on("call", (call) => {
                 call.answer(stream);
-                const video = document.createElement("video");
+                remoteVideoElement = document.createElement("video");
 
                 call.on("stream", (userVideoStream) => {
-                    addVideoStream(video, userVideoStream);
+                    remoteVideoStream = userVideoStream;
+                    addVideoStream(remoteVideoElement, userVideoStream);
                 });
             });
 
@@ -37,34 +42,21 @@ $(document).ready(function () {
 
             document.addEventListener("keydown", (e) => {
                 if (e.which === 13 && chatInputBox.value != "") {
-                    socket.emit("message", chatInputBox.value);
+
+                    socket.emit("message", myId, chatInputBox.value);
                     chatInputBox.value = "";
                 }
             });
 
-            socket.on("createMessage", (msg) => {
-                let li = document.createElement("li");
-                li.innerHTML = msg;
-                all_messages.append(li);
+            socket.on("createMessage", (id, msg) => {
+                if (id == myId) {
+                    $("#all_messages").append(`<li class="text-end text-success">${msg}</li>`);
+                } else {
+                    $("#all_messages").append(`<li class="text-danger">${msg}</li>`);
+                }
                 main__chat__window.scrollTop = main__chat__window.scrollHeight;
             });
         });
-
-    peer.on("call", function (call) {
-        getUserMedia(
-            { video: true, audio: true },
-            function (stream) {
-                call.answer(stream); // Answer the call with an A/V stream.
-                const video = document.createElement("video");
-                call.on("stream", function (remoteStream) {
-                    addVideoStream(video, remoteStream);
-                });
-            },
-            function (err) {
-                console.log("Failed to get local stream", err);
-            }
-        );
-    });
 
     peer.on("open", (id) => {
         socket.emit("join-room", ROOM_ID, id);
@@ -73,11 +65,15 @@ $(document).ready(function () {
     // CHAT
 
     const connectToNewUser = (userId, streams) => {
-        var call = peer.call(userId, streams);
-        var video = document.createElement("video");
-        call.on("stream", (userVideoStream) => {
-            addVideoStream(video, userVideoStream);
-        });
+        if (!remoteVideoStream) {
+            var call = peer.call(userId, streams);
+            remoteVideoElement = document.createElement("video");
+            remoteVideoElement.id = "remotevideo";
+            call.on("stream", (userVideoStream) => {
+                remoteVideoStream = userVideoStream;
+                addVideoStream(remoteVideoElement, userVideoStream);
+            });
+        }
     };
 
     const addVideoStream = (videoEl, stream) => {
@@ -86,15 +82,11 @@ $(document).ready(function () {
             videoEl.play();
         });
 
-        videoGrid.append(videoEl);
-        let totalUsers = document.getElementsByTagName("video").length;
-        if (totalUsers > 1) {
-            for (let index = 0; index < totalUsers; index++) {
-                document.getElementsByTagName("video")[index].style.width =
-                    100 / totalUsers + "%";
-            }
+        if (videoGrid.childElementCount < 2) {
+            videoGrid.append(videoEl);
         }
     };
+
 
     $(document).on('click', "#playPauseVideo", function () {
         let enabled = myVideoStream.getVideoTracks()[0].enabled;
@@ -143,10 +135,7 @@ $(document).ready(function () {
 
     $(document).one('click', ('#call-end , #call-end-modal'), function () {
         peer.destroy();
-        if (myVideoStream) {
-            // disable/stop camera and mic
-            myVideoStream.getTracks().forEach(track => track.stop());
-        }
+        delete peer;
         const roomId = $("#call-end").data("roomid");
         const receiver = $("#P2P-video-call").data("id");
         $.ajax({
@@ -164,5 +153,11 @@ $(document).ready(function () {
                 toastr.error(error.responseJSON.message).delay(2000).fadeOut(1000);
             }
         });
+    });
+    socket.on("call-disconnect", () => {
+        if (myVideoStream) {
+            // disable/stop camera and mic
+            myVideoStream.getTracks().forEach(track => track.stop());
+        }
     });
 });

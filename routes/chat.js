@@ -152,7 +152,6 @@ router.get('/P2P-video-call/:room?', async function (req, res, next) {
             });
             if (!result) {
                 const roomId = uuidv4();
-                console.log(`receiver :>> `, receiver);
                 await db.models.call_history.create({ receiver: receiver, caller: req.user._id, status: "in-progress", room: roomId });
                 io.to(receiver).emit("incoming-call", {
                     caller: req.user._id,

@@ -27,8 +27,8 @@ module.exports = function (server) {
             socket.join(roomId);
             socket.to(roomId).emit("user-connected", userId);
 
-            socket.on("message", (message) => {
-                io.to(roomId).emit("createMessage", message);
+            socket.on("message", (id, message) => {
+                io.to(roomId).emit("createMessage", id, message);
             });
             socket.on("call-disconnect", (data) => {
                 if (io.sockets.adapter.rooms.get(data.roomId)?.size == 1) {
