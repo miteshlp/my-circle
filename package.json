@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "SET NODE_ENV=development&& node ./bin/www",
-    "start": "nodemon ./bin/www"
+    "start": "node ./bin/www"
   },
   "dependencies": {
     "connect-flash": "^0.1.1",
