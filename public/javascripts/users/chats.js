@@ -3,12 +3,8 @@ $(document).ready(function () {
     $("#userNavbar").removeClass("bg-white");
 
     socket.on("call-disconnect", () => {
-        // audio.pause();
         $("#P2P-video-call").removeAttr("data-roomid");
         $("#P2P-video-call").removeClass("text-success");
-        $("#video-call-modal").modal('hide');
-        $("#video-call-loader").html("");
-        toastr.success("Video call ended !").delay(2000).fadeOut(1000);
     });
 
     socket.on("call-rejected", () => {

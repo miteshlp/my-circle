@@ -90,4 +90,13 @@ $(document).on("click", "#call-reject", function () {
             toastr.error(error.responseJSON.message).delay(2000).fadeOut(1000);
         }
     });
+
+});
+
+socket.on("newmessage", (data) => {
+
+    // if chat is not open of messanger user
+    if ($('#user-list li.selected').data("id") != data.id) {
+        toastr.info(`New message from ${data.name}`).delay(2000).fadeOut(1000);
+    }
 });

@@ -159,5 +159,7 @@ $(document).ready(function () {
             // disable/stop camera and mic
             myVideoStream.getTracks().forEach(track => track.stop());
         }
+        $("#video-call-modal").modal('hide');
+        $("#video-call-loader").html("");
     });
 });
