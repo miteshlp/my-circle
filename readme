@@ -32,3 +32,9 @@ Setting up the project is a breeze! Just follow these simple steps to get starte
     -   Once the process is complete, open your web browser and visit the URL: [http://localhost:4000/](http://localhost:4000/)
 
 That's it! You're all set up and ready to explore the project. Enjoy your coding journey!
+
+
+
+### Note:
+-   Permanently remove the project - execute below command.
+    -   `sudo sh ./remove.sh` (all the containers and images related to this project will be removed).
