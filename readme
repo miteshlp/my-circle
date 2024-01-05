@@ -1,0 +1,34 @@
+# Project Setup Guide
+
+Setting up the project is a breeze! Just follow these simple steps to get started:
+
+1.  **Download and Extract:**
+    -   Download the project from GitHub and extract the folder to your desired location.
+
+2.  **Navigate to Project Folder:**
+    -   Open your command line interface (CMD) and navigate to the path where you extracted the project folder.
+
+3.  **Check Docker Installation:**
+    -   Ensure that Docker is installed on your system by executing the following command:
+        `docker --version` 
+    -   If Docker is not installed, follow the appropriate steps below based on your operating system.
+
+4.  **Install Docker (if needed):**
+    -   For Ubuntu:
+        -   `sudo apt-get update`
+        -   `sudo apt install docker.io`
+        -   `sudo snap install docker`
+        -   `docker --version`
+    
+    -   For Windows: [Follow Docker Installation Guide for Windows](https://docs.docker.com/desktop/install/windows-install/)
+
+5.  **Run the Project:**
+    -   Execute the following command to run the project:
+        -   `sudo sh ./start.sh` 
+    
+    -   Allow some time for the Docker image to build and the container to start.
+
+6.  **Access the Project:**
+    -   Once the process is complete, open your web browser and visit the URL: [http://localhost:4000/](http://localhost:4000/)
+
+That's it! You're all set up and ready to explore the project. Enjoy your coding journey!

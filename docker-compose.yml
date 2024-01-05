@@ -1,0 +1,33 @@
+version: '3'
+services:
+    mongo_db:
+        image: 'mongo:5.0.14-focal'
+        container_name: my_circle_database
+        ports:
+            - '27007:27017'
+        restart: always
+        volumes:
+            - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+            - './data:/data/db'
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: admin
+            MONGO_INITDB_ROOT_PASSWORD: admin
+            MONGO_INITDB_DATABASE: admin
+
+    my_circle_node: 
+        container_name: my_circle_with_docker
+        build: .
+        ports: 
+            - 4000:3001
+        environment:
+            url: "mongodb://mitesh:mitesh@mongo_db/my-circle"
+            # firebase storage configurations
+            API_KEY: "AIzaSyDyb_un6Me-5eG0dbk7GNYf_8JHEaouZv8"
+            AUTH_DOMAIN: "my-circle-d1bbe.firebaseapp.com"
+            PROJECT_ID: "my-circle-d1bbe"
+            STORAGE_BUCKET: "my-circle-d1bbe.appspot.com"
+            MESSAGING_SENDER_ID: "5851468535"
+            APP_ID: "1:5851468535:web:3c3058fcab465569f139f2"
+
+        depends_on:
+            - mongo_db
